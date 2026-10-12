@@ -253,3 +253,57 @@ class UsageStatsRepository @Inject constructor(
   - `GlanceUpdateWorker` scheduled via `WorkManager` every 15 minutes.
   - Reactive trigger on `app_category_overrides` modification or `FocusTimerService` session completion.
 
+---
+
+## 6. Permissions Architecture & System Health Pipeline
+
+### 6.1 `PermissionChecker` Engine
+```kotlin
+@Singleton
+class PermissionChecker @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    fun isNotificationGranted(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else true
+
+    fun isUsageStatsGranted(): Boolean {
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        } else {
+            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        }
+        return mode == AppOpsManager.MODE_ALLOWED
+    }
+
+    fun isOverlayGranted(): Boolean = Settings.canDrawOverlays(context)
+
+    fun isAccessibilityGranted(): Boolean {
+        val expectedComponentName = ComponentName(context, FocusAccessibilityService::class.java).flattenToString()
+        val enabledServices = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
+        val colonSplitter = TextUtils.SimpleStringSplitter(':')
+        colonSplitter.setString(enabledServices)
+        while (colonSplitter.hasNext()) {
+            if (colonSplitter.next().equals(expectedComponentName, ignoreCase = true)) return true
+        }
+        return false
+    }
+
+    fun isBatteryOptimizationIgnored(): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return powerManager.isIgnoringBatteryOptimizations(context.packageName)
+    }
+
+    fun areMandatoryShieldsActive(): Boolean =
+        isNotificationGranted() && isUsageStatsGranted() && isOverlayGranted() && isAccessibilityGranted()
+}
+```
+
+### 6.2 Lifecycle Auto-Detection on Resume
+- `OnboardingViewModel` listens to Compose `ON_RESUME` events.
+- System Settings intent launches invoke `startActivity()`.
+- Returning from system settings triggers `refreshPermissionStates()`, instantly converting `[ Enable ➔ ]` into `[ Granted 🟢 ]` with zero manual refresh gestures.
+
+

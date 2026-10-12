@@ -41,6 +41,7 @@ prompts_v2/
         ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode
         ├── FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md # Stats Screen, App Detail Page, Focus Ratio & Glance Widget
         ├── FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md # Preset Editor, Multi-State Filtering & Whitelists
+        ├── FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md # Permissions Checklist, OEM Guides & System Health
         └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus
 ```
 

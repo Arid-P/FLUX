@@ -147,6 +147,7 @@ dependencies {
 3. **Planner Screen (`Tab.Planner`):** 7-day strip, scheduled session cards, and `+ Schedule Session` FAB with preset-first selection and automatic fallback naming.
 4. **Preset Editor (`/presets/create`, `/presets/edit`) & Whitelist Hub:** Full-screen push screen with full Gboard/Android EmojiPicker (`androidx.emoji2`), break steppers, multi-state content filtering (YouTube & Web Browsers), dedicated app selector (`/presets/select-apps`), and global content whitelist hub with discipline sentence typing verification.
 5. **Limits, Stats & App Detail Screens:** App limit configuration, 3-second hold friction disable, 5/10/20/40m intervention overlay, `Tab.Stats` (`Daily` & `Weekly Trends`), Focus Ratio card, 7-day stacked charts, dedicated `AppDetailScreen` with single-app bar charts and category overrides, and Jetpack Glance 4-segment donut ring widget.
+6. **Permissions Onboarding Wizard (`/onboarding/wizard`) & System Health Monitor:** Single-page interactive Focus Shields checklist, `ON_RESUME` auto-detection, OEM background cleaner guidance (OneUI, MIUI/HyperOS, OxygenOS), and ambient health alert banner on `Tab.Home`.
 
 ---
 

@@ -133,6 +133,18 @@ To eliminate impulsive session quits:
 - **Center:** Total daily screen time with top Focus Ratio badge.
 - **4×2 Quick Launcher:** One-tap button to launch the last-used focus session directly from the home screen.
 
+### 3.11 Permissions Onboarding Wizard & System Health Monitor
+- **Single-Page Interactive Checklist (`/onboarding/wizard`):** Guides Ari through activating the 5 core Focus Shields:
+  1. `POST_NOTIFICATIONS` (Mandatory runtime alert)
+  2. `PACKAGE_USAGE_STATS` (Mandatory usage access)
+  3. `SYSTEM_ALERT_WINDOW` (Mandatory overlay permission)
+  4. `BIND_ACCESSIBILITY_SERVICE` (Mandatory core interceptor)
+  5. `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` (Optional background exception)
+- **Lifecycle Auto-Detection:** Using Compose `LifecycleEventEffect(ON_RESUME)`, returning from OS settings automatically checks and marks shields as `[ Granted 🟢 ]` with haptic feedback.
+- **OEM Killer Survival:** Manufacturer-aware guides (`Build.MANUFACTURER`) providing targeted tips for Samsung OneUI, Xiaomi MIUI/HyperOS, and OnePlus OxygenOS.
+- **Ambient System Health Monitor:** Continuously evaluates permission status on `Tab.Home`. If Android OS revokes an accessibility service after reboot, an ambient alert banner provides 1-tap recovery.
+- Detailed in [`FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md).
+
 ---
 
 ## 4. UI Design System Lock: Holst (Холст)

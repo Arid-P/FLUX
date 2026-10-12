@@ -232,3 +232,18 @@ The central command surface for starting sessions with any preset:
   - Header: Focus Ratio badge (e.g., `⚡ 2.1x Focus`).
 - **4×2 Quick Launcher:** One-tap button launching the last-used preset directly into a focus session.
 
+---
+
+### 3.13 Permissions Onboarding Wizard (`/onboarding/wizard`) & System Health UI
+- **Single-Page Checklist:**
+  - Surface `#1B263B` with border `#415A77` and corner radius 12dp per card.
+  - Interactive status button: `[ Enable ➔ ]` in Warm Sand `#D4C4A8` ➔ updates automatically to `[ Granted 🟢 ]` in Sage `#778D7A` upon return from Android settings.
+  - Primary bottom button *"Continue to Dashboard"* remains disabled until Notifications, Usage Access, Overlays, and Accessibility are granted.
+  - Optional Unrestricted Battery card does not block completion.
+- **OEM Killer Guide Dialog:**
+  - Manufacturer-aware tips (`Build.MANUFACTURER`) for Samsung OneUI, Xiaomi MIUI/HyperOS, and OnePlus OxygenOS.
+- **Ambient Health Recovery Card (Tab.Home):**
+  - Emergency card in `#1B263B` with Coral border `#E07A5F`: *"⚠️ Focus Shields Compromised: Accessibility service was disabled. [Restore Protection ➔]"*.
+- Detailed in [`FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md).
+
+
