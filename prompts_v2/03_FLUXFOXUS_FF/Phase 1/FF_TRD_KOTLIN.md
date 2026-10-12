@@ -258,6 +258,35 @@ CREATE TABLE session_templates (
 );
 ```
 
+### 3.13 Table: `category_limits` (Phase 4)
+```sql
+CREATE TABLE category_limits (
+    category TEXT PRIMARY KEY NOT NULL,            -- 'DISTRACTING', 'SEMI_PRODUCTIVE', 'ENTERTAINMENT', 'SOCIAL'
+    daily_budget_minutes INTEGER NOT NULL,
+    extra_time_passes_used INTEGER NOT NULL DEFAULT 0, -- Max 3 per day
+    is_enabled INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL
+);
+```
+
+### 3.14 Table: `smart_limit_suggestions` (Phase 4)
+```sql
+CREATE TABLE smart_limit_suggestions (
+    id TEXT PRIMARY KEY NOT NULL,                  -- UUID
+    target_type TEXT NOT NULL,                     -- 'INDIVIDUAL_APP' or 'CATEGORY_POOL'
+    target_identifier TEXT NOT NULL,               -- Package name or Category name
+    target_label TEXT NOT NULL,                    -- Display name e.g. 'Instagram'
+    suggestion_type TEXT NOT NULL,                 -- 'TIGHTEN' or 'LOOSEN'
+    current_budget_minutes INTEGER NOT NULL,
+    suggested_budget_minutes INTEGER NOT NULL,
+    rationale TEXT NOT NULL,                       -- Concise analytical reasoning (max 40 words)
+    status TEXT NOT NULL,                          -- 'PENDING', 'APPLIED', 'DISMISSED', 'EXPIRED'
+    week_start_date TEXT NOT NULL,                 -- 'YYYY-MM-DD' (Sunday date)
+    created_at INTEGER NOT NULL,
+    actioned_at INTEGER
+);
+```
+
 ---
 
 ## 4. Enforcement Architecture
