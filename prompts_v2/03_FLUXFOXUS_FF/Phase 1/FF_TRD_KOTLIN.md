@@ -115,19 +115,22 @@ CREATE TABLE preset_app_rules (
 ```sql
 CREATE TABLE focus_sessions (
     id TEXT PRIMARY KEY NOT NULL,
-    session_origin TEXT NOT NULL DEFAULT 'NATIVE_FF', -- 'NATIVE_FF' (ssession/msession) or 'SYNCED_FD' (tsession)
+    session_origin TEXT NOT NULL DEFAULT 'MANUAL',    -- 'MANUAL' (impulse), 'SCHEDULED' (calendar), or 'TASK_SYNC' (FD synced)
     preset_id TEXT NOT NULL,                          -- FK to presets(id)
     session_title TEXT NOT NULL,                      -- Custom title or fallback to preset name
     linked_task_id TEXT,                              -- Nullable UUID from FluxDone (if synced)
     timer_mode TEXT NOT NULL,                         -- 'COUNTDOWN', 'STOPWATCH', 'FROM_TO'
     start_time INTEGER NOT NULL,                      -- UTC epoch ms
     end_time INTEGER,                                 -- Nullable UTC epoch ms (computed or actual)
+    actual_start_time INTEGER,                        -- Nullable UTC epoch ms (when foreground service actually began)
     target_duration_minutes INTEGER NOT NULL,
     actual_duration_seconds INTEGER NOT NULL DEFAULT 0,
     breaks_taken INTEGER NOT NULL DEFAULT 0,
     breaks_total_seconds INTEGER NOT NULL DEFAULT 0,
     recurrence_rule TEXT,                             -- Nullable RRULE JSON
-    status TEXT NOT NULL,                             -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY'
+    series_id TEXT,                                   -- Nullable UUID linking recurring instances
+    status TEXT NOT NULL,                             -- 'PLANNED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY', 'SKIPPED', 'EXPIRED_ON_BOOT'
+    reflection_rating TEXT,                           -- Nullable: 'LOW', 'MEDIUM', 'HIGH', or NULL (P2)
     penalty_delay_applied_seconds INTEGER NOT NULL DEFAULT 0,
     headsup_notification_armed INTEGER NOT NULL DEFAULT 1,
     created_at INTEGER NOT NULL,
@@ -154,13 +157,17 @@ CREATE TABLE streaks (
     id INTEGER PRIMARY KEY CHECK (id = 1), -- Single row record
     current_streak INTEGER NOT NULL DEFAULT 0,
     best_streak INTEGER NOT NULL DEFAULT 0,
-    last_completed_date TEXT NOT NULL,      -- 'YYYY-MM-DD'
+    last_completed_date TEXT NOT NULL,                  -- 'YYYY-MM-DD'
     relief_days_json TEXT NOT NULL DEFAULT '["SUNDAY"]', -- Relief/rest days
+    accumulated_grace_shields INTEGER NOT NULL DEFAULT 1, -- Phase 2 Stacking Grace Shields
+    shields_used_lifetime INTEGER NOT NULL DEFAULT 0,
+    last_shield_granted_month TEXT NOT NULL DEFAULT '2026-10', -- 'YYYY-MM'
+    last_shield_used_date TEXT,                         -- 'YYYY-MM-DD'
     updated_at INTEGER NOT NULL
 );
 ```
 
-### 3.8 Table: `app_limit_streaks`
+### 3.6 Table: `app_limit_streaks`
 ```sql
 CREATE TABLE app_limit_streaks (
     package_name TEXT PRIMARY KEY NOT NULL,
@@ -171,7 +178,7 @@ CREATE TABLE app_limit_streaks (
 );
 ```
 
-### 3.6 Table: `app_category_overrides`
+### 3.7 Table: `app_category_overrides`
 ```sql
 CREATE TABLE app_category_overrides (
     package_name TEXT PRIMARY KEY NOT NULL,
@@ -181,7 +188,7 @@ CREATE TABLE app_category_overrides (
 );
 ```
 
-### 3.7 Table: `global_content_whitelists`
+### 3.8 Table: `global_content_whitelists`
 ```sql
 CREATE TABLE global_content_whitelists (
     id TEXT PRIMARY KEY NOT NULL,
@@ -189,6 +196,65 @@ CREATE TABLE global_content_whitelists (
     target_identifier TEXT NOT NULL,  -- e.g. '@3blue1brown' or 'desmos.com'
     display_label TEXT NOT NULL,      -- e.g. '3Blue1Brown' or 'Desmos Graphing'
     created_at INTEGER NOT NULL
+);
+```
+
+### 3.9 Table: `ai_break_negotiations` (Phase 2)
+```sql
+CREATE TABLE ai_break_negotiations (
+    id TEXT PRIMARY KEY NOT NULL,
+    session_id TEXT NOT NULL,
+    engine_type TEXT NOT NULL,                     -- 'GEMINI_AI' or 'STAMINA_PROTOCOL'
+    rounds_count INTEGER NOT NULL,
+    conversation_transcript_json TEXT NOT NULL,
+    granted INTEGER NOT NULL,                      -- 0 or 1
+    granted_duration_minutes INTEGER,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY(session_id) REFERENCES focus_sessions(id) ON DELETE CASCADE
+);
+```
+
+### 3.10 Table: `streak_day_history` (Phase 2)
+```sql
+CREATE TABLE streak_day_history (
+    date TEXT PRIMARY KEY NOT NULL,                -- 'YYYY-MM-DD'
+    status TEXT NOT NULL,                          -- 'MET', 'RELIEF_DAY', 'GRACE_CONSUMED', 'BROKEN'
+    sessions_completed_count INTEGER NOT NULL DEFAULT 0,
+    focus_duration_minutes INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL
+);
+```
+
+### 3.11 Table: `daily_focus_scores` (Phase 3)
+```sql
+CREATE TABLE daily_focus_scores (
+    date TEXT PRIMARY KEY NOT NULL,                -- 'YYYY-MM-DD'
+    total_score INTEGER NOT NULL,                  -- 0 to 100
+    time_score REAL NOT NULL,
+    break_score REAL NOT NULL,
+    limit_score REAL NOT NULL,
+    completion_score REAL NOT NULL,
+    focus_minutes_actual INTEGER NOT NULL,
+    target_minutes INTEGER NOT NULL,
+    is_checkpoint_day INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL
+);
+```
+
+### 3.12 Table: `session_templates` (Phase 3)
+```sql
+CREATE TABLE session_templates (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    preset_id TEXT NOT NULL,
+    target_duration_minutes INTEGER NOT NULL,
+    preferred_start_time TEXT,                     -- 'HH:mm'
+    preferred_end_time TEXT,                       -- 'HH:mm'
+    description TEXT,
+    is_system_starter INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY(preset_id) REFERENCES presets(id) ON DELETE RESTRICT
 );
 ```
 
