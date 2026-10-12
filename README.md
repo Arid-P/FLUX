@@ -38,6 +38,7 @@ prompts_v2/
         ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
         ├── FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md # 3D Flip Clock, 2-row controls, Break mode & completion
         ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode
+        ├── FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md # Stats Screen, App Detail Page, Focus Ratio & Glance Widget
         └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus
 ```
 

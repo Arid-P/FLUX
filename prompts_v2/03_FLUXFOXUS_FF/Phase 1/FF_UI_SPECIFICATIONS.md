@@ -160,13 +160,50 @@ The central command surface for starting sessions with any preset:
 
 ---
 
-### 3.10 Home Screen Widget (Jetpack Glance)
-- Compact 2x2 or 4x2 Android home screen widget.
+### 3.10 Stats Screen (`Tab.Stats`)
+- Accessible via the 5th bottom navigation tab.
+- **Top Segmented Switcher:** Holst pill container (`#1B263B` with border `#415A77`) toggling between **`Daily`** and **`Weekly Trends`**.
+- **Hero Focus Ratio Card:**
+  - Multiplier ratio display: e.g. **`2.1x`** in Eggshell Cream (`#F4F1DE`, 28sp bold) with discipline badge (e.g. `[Monk Mode ⚡]`).
+  - Subtext: *"3h 15m Deep Focus vs 1h 32m Casual Screen"*.
+  - Horizontal dual-split progress bar: Sage Green (`#778D7A`) focus share vs Terracotta Coral (`#E07A5F`) casual share.
+- **7-Day Stacked Bar Chart:**
+  - In `Daily`: Shows rolling 7-day stacked bars (Productive, Semi-Productive, Distracting, Others) with today's bar highlighted in Warm Sand (`#D4C4A8`) border.
+  - In `Weekly Trends`: Shows Monday–Sunday stacked usage with horizontal average daily line, week-over-week deltas (Focus Δ, Distraction Δ), and discipline grade.
+- **Category Filter Pills:** Horizontal row of 4 category pills (`🟢 Productive`, `🟡 Semi-Productive`, `🔴 Distracting`, `⚪ Others`) that filter the app list below.
+- **App Usage List:**
+  - Card list ranked descending by screen time.
+  - Displays app icon, title, duration + percentage, and category indicator dot.
+  - **Tapping any app row navigates immediately to `AppDetailScreen`.**
+
+---
+
+### 3.11 Dedicated App Detail Page (`AppDetailScreen`)
+- Full-screen view opened when any app is clicked from `Tab.Stats` or `Tab.Limits`.
+- **Top Bar:** Back button `←`, App icon (32×32dp), App title (`#F4F1DE`), and contextual Help button.
+- **Period Dropdown:**
+  - **`Daily ▾` Mode:** Shows selected day usage (e.g. `6h 34m`), `< Sun, 11 Oct >` date navigation, and 7-day bar chart where the selected day is highlighted in the category color (Sage `#778D7A` or Coral `#E07A5F`) while other days are muted steel `#415A77`.
+  - **`Weekly ▾` Mode:** Shows daily average (e.g. `2h 57m`), date range `< 05 Oct - 11 Oct >`, delta comparison pill (`- 12% vs last week`), and all active days colored by category.
+- **Usage Category Card:**
+  - Card `#1B263B` with label *"Category"* and selector pill (e.g. `🟢 Productive ▾`).
+  - Tapping opens modal bottom sheet with 4 categories (`Productive`, `Semi-Productive`, `Distracting`, `Others`).
+  - Changing category triggers instant Room DB update (`app_category_overrides`) with zero-latency reactive recalculation across all app screens.
+- **Manage Blocks Section:**
+  - Direct bridge to `Tab.Limits`: displays current daily limit with button to add/edit limit.
+  - Granular feature-level sub-blocks (e.g. IG Reels or YouTube Shorts toggle).
+- **Privacy Lock Footer:** Locked badge confirming all data stays strictly on-device.
+
+---
+
+### 3.12 Home Screen Widget: 4-Category Donut Ring (Jetpack Glance)
+- Compact 2×2 or 4×2 Android home screen widget built with Jetpack Glance.
 - **Visuals:**
-  - Donut ring divided into 4 colored segments representing daily usage categories:
-    - Productive: Green (`#2E7D32`)
-    - Semi-Productive: Blue (`#1565C0`)
-    - Distracting: Red / Orange (`#E64A19`)
-    - Others: Grey (`#64748B`)
-  - Center of Donut: Total Screen Time (e.g., `"4h 12m"`).
-  - Quick launcher button for last-used preset.
+  - 4-segment Canvas Donut Ring strictly styled in Holst tokens:
+    - Productive: Muted Sage Green (`#778D7A`)
+    - Semi-Productive: Warm Sand Khaki (`#D4C4A8`)
+    - Distracting: Terracotta Coral (`#E07A5F`)
+    - Others: Muted Steel Blue (`#415A77`)
+  - Center of Donut: Total Screen Time (e.g., `"4h 12m"`) in Eggshell Cream (`#F4F1DE`, 20sp bold).
+  - Header: Focus Ratio badge (e.g., `⚡ 2.1x Focus`).
+- **4×2 Quick Launcher:** One-tap button launching the last-used preset directly into a focus session.
+

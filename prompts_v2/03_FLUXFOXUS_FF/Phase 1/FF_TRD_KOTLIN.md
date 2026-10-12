@@ -158,6 +158,16 @@ CREATE TABLE streaks (
 );
 ```
 
+### 3.6 Table: `app_category_overrides`
+```sql
+CREATE TABLE app_category_overrides (
+    package_name TEXT PRIMARY KEY NOT NULL,
+    app_label TEXT NOT NULL,
+    category TEXT NOT NULL, -- 'PRODUCTIVE', 'SEMI_PRODUCTIVE', 'DISTRACTING', 'OTHERS'
+    updated_at INTEGER NOT NULL
+);
+```
+
 ---
 
 ## 4. Enforcement Architecture
@@ -179,3 +189,42 @@ CREATE TABLE streaks (
 - Posts a high-priority ongoing notification showing remaining time (`HH:MM`) and active mode.
 - Holds `PARTIAL_WAKE_LOCK` to ensure Android Doze mode does not pause countdown timers.
 - Exposes a Kotlin `StateFlow<SessionState>` that Compose UI observes in real time.
+
+---
+
+## 5. Usage Stats Aggregation & Jetpack Glance Widget Engine
+
+### 5.1 Reactive Stats Pipeline
+```kotlin
+@Singleton
+class UsageStatsRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val appCategoryDao: AppCategoryDao,
+    private val focusSessionDao: FocusSessionDao
+) {
+    private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+    // Reactive flow combining Android system stats with Room user overrides
+    fun getDailyStatsFlow(startEpoch: Long, endEpoch: Long): Flow<DailyStatsAggregate> {
+        return appCategoryDao.observeAllOverrides().map { overridesMap ->
+            val rawStats = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                startEpoch,
+                endEpoch
+            )
+            val focusSessions = focusSessionDao.getSessionsBetweenSync(startEpoch, endEpoch)
+            buildDailyAggregate(rawStats, overridesMap, focusSessions)
+        }
+    }
+}
+```
+
+### 5.2 Jetpack Glance Home Screen Widget (`GlanceAppWidget`)
+- **Component:** `FocusDonutWidget : GlanceAppWidget()`
+- **Layout:**
+  - Compact 2×2: Canvas-drawn 4-segment arc ring using Holst color tokens (`#778D7A`, `#D4C4A8`, `#E07A5F`, `#415A77`), center screen time text, and top focus ratio badge.
+  - Large 4×2: Left half Donut Ring, Right half Quick Launcher CTA (`actionStartActivity<MainActivity>()` invoking the last-used preset).
+- **Background Refresh:**
+  - `GlanceUpdateWorker` scheduled via `WorkManager` every 15 minutes.
+  - Reactive trigger on `app_category_overrides` modification or `FocusTimerService` session completion.
+

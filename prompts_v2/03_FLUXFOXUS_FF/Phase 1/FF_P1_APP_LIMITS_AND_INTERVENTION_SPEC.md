@@ -54,8 +54,9 @@ Accessible via the 4th bottom navigation tab.
   - Progress Sub-label: E.g., *"42m spent / 45m limit"* in `#8E9CAE`.
   - Status Pill: E.g., `Active` (Muted Sage Green `#778D7A`) or `Paused` (Grey).
 
-### 2.2 App Limit Configuration Bottom Sheet
-Tapping any app card opens the detailed configuration modal:
+### 2.2 Navigation & App Limit Configuration
+- **Unified Navigation:** Tapping any app card in `Tab.Limits` navigates directly to the dedicated **`AppDetailScreen`** (detailed in [`FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md)), showing the app's single-app 7-day bar chart, usage category dropdown, and limit controls.
+- **Limit Configuration Modal (Opened from App Card or `AppDetailScreen`):**
 1. **Time Budget Picker:**
    - Dual-wheel scroll for Hours (`0–6h`) and Minutes (`0–55m` in 5-minute increments).
    - Sourced with a minimum selectable limit of 15 minutes.

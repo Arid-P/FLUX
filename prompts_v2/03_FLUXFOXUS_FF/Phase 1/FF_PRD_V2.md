@@ -103,12 +103,26 @@ To eliminate impulsive session quits:
   - A persistent floating pill displays remaining seconds. When the window hits `0`, the app is minimized and locked for a mandatory cooldown period.
   - Does not reset focus session streaks.
 
-### 3.9 Screen Time Categorization & Usage Stats
-Uses Android `UsageStatsManager` to aggregate daily screen time across 4 categories:
-1. **Productive:** Academic tools, Notewise, FD, educational readers.
-2. **Semi-Productive:** Utility, system settings, communication.
-3. **Distracting:** Social media, video entertainment, games.
-4. **Others:** Unclassified apps.
+### 3.9 Stats Screen (`Tab.Stats`), App Detail Page & Category Overrides
+- **Dual-View Structure:** Features a top segmented pill switcher between **`Daily`** and **`Weekly Trends`**.
+- **Focus vs Screen Time Ratio:**
+  $$\text{Focus Ratio} = \frac{\text{Focus Time}}{\max(1\text{ min}, \text{Casual Screen Time})}$$
+  Evaluates device discipline via tiers: Attention Leak ($<0.5x$), Developing Rhythm ($0.5x–1.0x$), Deep Work ($1.0x–2.0x$), and Monk Mode ($>2.0x$).
+- **7-Day Stacked Trends & Week-over-Week Reports:**
+  - `Daily`: 7-day stacked bar chart with today highlighted, daily category summary pills, and today's app usage ranking list.
+  - `Weekly Trends`: Weekly total and daily averages, week-over-week deltas (Focus Δ, Distraction Δ), weekly stacked usage chart, and weekly app usage rankings.
+- **Dedicated App Detail Page (`AppDetailScreen`):**
+  - Tapping any app from `Tab.Stats` or `Tab.Limits` opens its dedicated detail page.
+  - Features `Daily ▾` and `Weekly ▾` dropdown modes, date navigator, hero usage duration, and 7-day single-app bar chart.
+  - **Category Customization:** User can change the app's category (`Productive`, `Semi-Productive`, `Distracting`, `Others`) with instant, zero-latency reactive recalculation across the app via Room DB table `app_category_overrides`.
+  - **Manage Blocks Integration:** Direct links to configure daily time budget limits and feature-level blocks (e.g. IG Reels, YouTube Shorts).
+  - Detailed in [`FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md).
+
+### 3.10 Home Screen Widget (Jetpack Glance)
+- Compact 2×2 and 4×2 Android home screen widgets.
+- **Visuals:** 4-segment Donut Ring in Holst colors (`#778D7A` Productive, `#D4C4A8` Semi-Productive, `#E07A5F` Distracting, `#415A77` Others).
+- **Center:** Total daily screen time with top Focus Ratio badge.
+- **4×2 Quick Launcher:** One-tap button to launch the last-used focus session directly from the home screen.
 
 ---
 
