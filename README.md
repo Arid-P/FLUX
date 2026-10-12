@@ -52,13 +52,21 @@ prompts_v2/
     │   ├── FF_P2_POST_SESSION_REFLECTION_SPEC.md # 3-Tile Flow Rating & Notification Actions (Topic FF-P2-5)
     │   └── GMP_FF_P2_BUILD.md                 # Grand Master Prompt for building FluxFoxus P2
     │
-    └── Phase 3/                   # Phase 3 Intelligence & Session Ergonomics (100% Complete)
-        ├── FF_P3_FOCUS_SCORE_SPEC.md          # 0-100 Daily Focus Score Engine (Topic FF-P3-1)
-        ├── FF_P3_SESSION_TEMPLATES_SPEC.md    # Session Blueprints & Auto-Scheduling (Topic FF-P3-2)
-        ├── FF_P3_LOCK_SCREEN_STATUS_SPEC.md   # Live Lock Screen Ambient Chronometer (Topic FF-P3-3)
-        ├── FF_P3_AI_COACHING_SPEC.md          # AI Focus Coaching & Granular Settings Hub (Topic FF-P3-4)
-        ├── FF_P3_POLISH_AND_OPTIMIZATIONS_SPEC.md # YouTube Shorts Guard, WakeLock & Polish (Topic FF-P3-5)
-        └── GMP_FF_P3_BUILD.md                 # Grand Master Prompt for building FluxFoxus P3
+    ├── Phase 3/                   # Phase 3 Intelligence & Session Ergonomics (100% Complete)
+    │   ├── FF_P3_FOCUS_SCORE_SPEC.md          # 0-100 Daily Focus Score Engine (Topic FF-P3-1)
+    │   ├── FF_P3_SESSION_TEMPLATES_SPEC.md    # Session Blueprints & Auto-Scheduling (Topic FF-P3-2)
+    │   ├── FF_P3_LOCK_SCREEN_STATUS_SPEC.md   # Live Lock Screen Ambient Chronometer (Topic FF-P3-3)
+    │   ├── FF_P3_AI_COACHING_SPEC.md          # AI Focus Coaching & Granular Settings Hub (Topic FF-P3-4)
+    │   ├── FF_P3_POLISH_AND_OPTIMIZATIONS_SPEC.md # YouTube Shorts Guard, WakeLock & Polish (Topic FF-P3-5)
+    │   └── GMP_FF_P3_BUILD.md                 # Grand Master Prompt for building FluxFoxus P3
+    │
+    └── Phase 4/                   # Phase 4 Daemon, Group Limits & Habit Breaking (100% Complete)
+        ├── FF_P4_FOCUS_SCORE_AI_ENHANCEMENT_SPEC.md # Focus Score 5th Component & AI Task Alignment (Topic FF-P4-1)
+        ├── FF_P4_PRE_OPEN_FRICTION_SPEC.md          # Pre-Open Habit Friction Screen & Breathing Timer (Topic FF-P4-2)
+        ├── FF_P4_CATEGORY_LIMITS_SPEC.md            # Category Pools & Shared Intervention (Topic FF-P4-3)
+        ├── FF_P4_SMART_LIMIT_SUGGESTIONS_SPEC.md    # Smart Usage Anomaly Detection & Sunday Report (Topic FF-P4-4)
+        ├── FF_P4_CROSS_DEVICE_SYNC_SPEC.md          # Cross-Device Sync Engine & Linux Daemon (Topic FF-P4-5)
+        └── GMP_FF_P4_BUILD.md                       # Grand Master Prompt for building FluxFoxus P4
 ```
 
 ---
