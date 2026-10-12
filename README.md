@@ -31,18 +31,26 @@ prompts_v2/
 │       └── GMP_FD_BUILD.md         # Grand Master Prompt for building FluxDone
 │
 └── 03_FLUXFOXUS_FF/               # 4. FluxFoxus (Discipline & Focus Enforcer)
-    └── Phase 1/                   # Phase 1 Core Specs
-        ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
-        ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
-        ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette (5 bottom tabs)
-        ├── FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md # Home Dashboard, 24h Momentum & Daily Streak Engine
-        ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
-        ├── FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md # 3D Flip Clock, 2-row controls, Break mode & completion
-        ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode
-        ├── FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md # Stats Screen, App Detail Page, Focus Ratio & Glance Widget
-        ├── FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md # Preset Editor, Multi-State Filtering & Whitelists
-        ├── FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md # Permissions Checklist, OEM Guides & System Health
-        └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus
+    ├── Phase 1/                   # Phase 1 Core Specs (100% Complete)
+    │   ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
+    │   ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
+    │   ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette (5 bottom tabs)
+    │   ├── FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md # Home Dashboard, 24h Momentum & Daily Streak Engine
+    │   ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
+    │   ├── FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md # 3D Flip Clock, 2-row controls, Break mode & completion
+    │   ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode
+    │   ├── FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md # Stats Screen, App Detail Page, Focus Ratio & Glance Widget
+    │   ├── FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md # Preset Editor, Multi-State Filtering & Whitelists
+    │   ├── FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md # Permissions Checklist, OEM Guides & System Health
+    │   └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus P1
+    │
+    └── Phase 2/                   # Phase 2 Hardened Enforcement Specs (100% Complete)
+        ├── FF_P2_UNINSTALL_PROTECTION_SPEC.md # Device Admin & Anti-Tamper Guard (Topic FF-P2-1)
+        ├── FF_P2_SCHEDULED_SESSIONS_SPEC.md   # Exact Alarms & Automatic Start Calendar (Topic FF-P2-2)
+        ├── FF_P2_BREAK_NEGOTIATION_SPEC.md    # AI Break Negotiation & Stamina Protocol (Topic FF-P2-3)
+        ├── FF_P2_STREAK_GRACE_SPEC.md         # Stacking Grace Shields & Calendar Audit (Topic FF-P2-4)
+        ├── FF_P2_POST_SESSION_REFLECTION_SPEC.md # 3-Tile Flow Rating & Notification Actions (Topic FF-P2-5)
+        └── GMP_FF_P2_BUILD.md                 # Grand Master Prompt for building FluxFoxus P2
 ```
 
 ---
