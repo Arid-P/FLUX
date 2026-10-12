@@ -104,8 +104,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Jetpack Glance (Widgets) & WorkManager
+    // Jetpack Glance (Widgets), EmojiPicker & WorkManager
     implementation("androidx.glance:glance-appwidget:1.0.0")
+    implementation("androidx.emoji2:emoji2-emojipicker:1.4.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Coroutines & Serialization
@@ -121,12 +122,12 @@ dependencies {
 ### Phase 1: Holst (Холст) Design System & Flip Clock
 1. Implement `FluxFoxusTheme.kt` mapping exclusively to Holst hex tokens from `Theme/Холст.jpeg`.
 2. Build the custom `@Composable FlipClock` using `JetBrains Mono` tabular figures, split flap cards in `#1B263B`, and `#D4C4A8` hairline dividers.
-3. Build the `StopFocusingModal` with locked delay timers.
+3. Build the `StopFocusingModal` with asymmetric lock (`Keep Going` free at all times, `Confirm Quit` locked behind 15–25s delay).
 
 ### Phase 2: Room SQLite Database Layer
-1. Implement Entities: `PresetEntity`, `PresetAppRuleEntity`, `FocusSessionEntity`, `AppLimitEntity`, `StreakEntity`.
+1. Implement Entities: `PresetEntity`, `PresetAppRuleEntity`, `FocusSessionEntity`, `AppLimitEntity`, `StreakEntity`, `AppLimitStreakEntity`, `AppCategoryOverrideEntity`, `GlobalContentWhitelistEntity`.
 2. Implement DAOs with reactive Kotlin `Flow` queries.
-3. Implement `DataStore` repository for last-used preset ID and channel whitelist.
+3. Implement `DataStore` repository for last-used preset ID and user preferences.
 
 ### Phase 3: Android System Services
 1. **`FocusTimerService` (Foreground Service):**
@@ -136,7 +137,7 @@ dependencies {
 2. **`FocusAccessibilityService`:**
    - Detects `TYPE_WINDOW_STATE_CHANGED`.
    - Checks against active preset blocklist; redirects to Home launcher if blocked.
-   - Reads YouTube channel name nodes for Whitelist compliance.
+   - Multi-State Content Inspection: Inspects YouTube channel handles/titles and Web Browser URL domains against `global_content_whitelists`.
 3. **`FdIntegrationReceiver` (IPC Gateway):**
    - Receives `com.flux.action.FOCUS_BLOCK_SYNC`.
    - Calls `goAsync()` to persist scheduled session in Room DB without blocking the main thread.

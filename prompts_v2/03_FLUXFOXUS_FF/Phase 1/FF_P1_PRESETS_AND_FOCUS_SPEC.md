@@ -193,24 +193,38 @@ CREATE TABLE presets (
     break_count INTEGER NOT NULL DEFAULT 2,          -- 0 to 6
     break_duration_minutes INTEGER NOT NULL DEFAULT 5, -- 1 to 15
     youtube_mode TEXT NOT NULL DEFAULT 'STUDY_MODE', -- 'BLOCK', 'ALLOW', 'STUDY_MODE'
+    browser_mode TEXT NOT NULL DEFAULT 'STUDY_MODE', -- 'BLOCK', 'ALLOW', 'STUDY_MODE'
     description TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
 );
 
+-- Per-Preset App Rules Table
+CREATE TABLE preset_app_rules (
+    preset_id TEXT NOT NULL,
+    package_name TEXT NOT NULL,
+    rule_mode TEXT NOT NULL DEFAULT 'BLOCKED',       -- 'BLOCKED', 'ALLOWED', 'STUDY_MODE'
+    PRIMARY KEY(preset_id, package_name),
+    FOREIGN KEY(preset_id) REFERENCES presets(id) ON DELETE CASCADE
+);
+
 -- Scheduled & Active Focus Sessions (Both Native FF & FD Synced)
 CREATE TABLE focus_sessions (
     id TEXT PRIMARY KEY NOT NULL,
-    session_origin TEXT NOT NULL,      -- 'NATIVE_FF' (ssession/msession) or 'SYNCED_FD' (tsession)
-    preset_id TEXT NOT NULL,           -- FK to presets(id)
-    session_title TEXT NOT NULL,       -- Custom name or fallback to preset name
-    timer_mode TEXT NOT NULL,          -- 'COUNTDOWN', 'STOPWATCH', 'FROM_TO'
-    start_time INTEGER NOT NULL,       -- UTC epoch ms
-    end_time INTEGER,                  -- UTC epoch ms (computed or actual)
-    duration_minutes INTEGER NOT NULL,
+    session_origin TEXT NOT NULL DEFAULT 'NATIVE_FF', -- 'NATIVE_FF' (ssession/msession) or 'SYNCED_FD' (tsession)
+    preset_id TEXT NOT NULL,                          -- FK to presets(id)
+    session_title TEXT NOT NULL,                      -- Custom name or fallback to preset name
+    linked_task_id TEXT,                              -- Nullable UUID from FluxDone (if synced)
+    timer_mode TEXT NOT NULL,                         -- 'COUNTDOWN', 'STOPWATCH', 'FROM_TO'
+    start_time INTEGER NOT NULL,                      -- UTC epoch ms
+    end_time INTEGER,                                 -- Nullable UTC epoch ms (computed or actual)
+    target_duration_minutes INTEGER NOT NULL,
     actual_duration_seconds INTEGER NOT NULL DEFAULT 0,
-    recurrence_rule TEXT,              -- Nullable RRULE JSON
-    status TEXT NOT NULL,              -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY', 'CANCELLED'
+    breaks_taken INTEGER NOT NULL DEFAULT 0,
+    breaks_total_seconds INTEGER NOT NULL DEFAULT 0,
+    recurrence_rule TEXT,                             -- Nullable RRULE JSON
+    status TEXT NOT NULL,                             -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY', 'CANCELLED'
+    penalty_delay_applied_seconds INTEGER NOT NULL DEFAULT 0,
     headsup_notification_armed INTEGER NOT NULL DEFAULT 1,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
