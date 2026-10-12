@@ -142,11 +142,11 @@ dependencies {
    - Calls `goAsync()` to persist scheduled session in Room DB without blocking the main thread.
 
 ### Phase 4: UI Screens & ViewModels
-1. **Home Screen:** Preset card, streak counter (`🔥`), and primary CTA.
-2. **Focus Screen:** Mechanical flip clock, break management, and friction quit dialog.
-3. **Presets & Limits Screens:** Preset configuration forms, app search, and slider budgets.
-4. **Stats Screen:** Query `UsageStatsManager` and render screen time breakdown.
-5. **Widget:** Implement Glance 4-segment donut ring widget.
+1. **Home Screen (`Tab.Home`):** Dashboard card, streak flame pill, and quick session launcher.
+2. **Focus & Presets Screen (`Tab.Focus`):** Scrollable presets list with sorting, Floating Island Mode Selector (Timer, Stopwatch, From-To), "Start Focusing" CTA, and full-screen mechanical flip clock.
+3. **Planner Screen (`Tab.Planner`):** 7-day strip, scheduled session cards, and `+ Schedule Session` FAB with preset-first selection and automatic fallback naming.
+4. **Preset Editor (`/presets/create` & `/presets/edit`):** Full-screen push screen for emoji, breaks, app categories, and YouTube whitelist.
+5. **Limits & Stats Screens:** App limit sliders, 3-second hold disable, UsageStats queries, and Glance 4-segment donut ring widget.
 
 ---
 

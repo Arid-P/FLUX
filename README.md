@@ -34,7 +34,8 @@ prompts_v2/
     └── Phase 1/                   # Phase 1 Core Specs
         ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
         ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
-        ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette
+        ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette (5 bottom tabs)
+        ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
         └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus
 ```
 

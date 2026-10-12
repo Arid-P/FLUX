@@ -31,8 +31,8 @@ FluxFoxus (FF) is an uncompromising screen discipline and focus enforcement tool
 
 ## 3. Core Feature Specifications
 
-### 3.1 Presets (The Central Abstraction)
-A **Preset** is a reusable focus blueprint that encapsulates an enforcement strategy:
+### 3.1 Presets & Focus Unified Hub (`Tab.Focus`)
+A **Preset** is the central abstraction in FF encapsulating an enforcement strategy. Presets and the focus launcher are unified under the **Focus** tab:
 - **Preset Properties:**
   - Name (e.g., *"Olympiad Math Deep Work"*, *"JEE Lecture"*, *"Reading"*)
   - Emoji identifier (e.g., 📐, 🔬, 📖)
@@ -41,17 +41,26 @@ A **Preset** is a reusable focus blueprint that encapsulates an enforcement stra
   - Per-app blocking rules: Whitelist or Blacklist configuration
   - YouTube Study Mode state: `BLOCK`, `ALLOW`, or `STRICT_WHITELIST`
 - **Default Selection:** The last-used preset automatically defaults for the next session.
+- **Sorting:** Interactive dropdown on the tab (*Recently Used*, *Alphabetical*, *Most Used*).
+- **The Floating Island Mode Selector:** A pill container spanning above the CTA button offering 3 focus launch modes:
+  1. **Timer (Countdown):** Set minutes (`25m`, `45m`, `60m`, `90m`, `120m`, custom).
+  2. **Stopwatch (Count-up):** Counts up indefinitely from `00:00`.
+  3. **From–To (Window):** Explicit start and end clock times.
 - **60-Hour Inactivity Guard:** If FF has not been used in 60+ hours, an explicit confirmation sheet prompts the user to verify preset settings before starting.
 
-### 3.2 The Mechanical Flip Clock & Focus Timer
+### 3.2 Standalone Planner Scheduling (Phase 1 Core)
+FF provides complete standalone scheduling capability in Phase 1:
+- The Planner screen features a **`+ Schedule Session`** FAB.
+- **Preset-First Selection:** User selects the Preset first.
+- **Auto-Fallback Naming:** If no custom session title is provided, the **Preset’s title is automatically assigned**.
+- Direct persistence to local Room SQLite with 15-minute heads-up notification scheduled via `AlarmManager`. Zero dependence on FluxDone.
+
+### 3.3 The Mechanical Flip Clock & Focus Timer
 - **Visual Design:** Fullscreen immersive mechanical split-flap clock displaying hours and minutes (`HH:MM`). Rendered strictly in **Holst (Холст)** (`#0D1B2A` background, `#1B263B` flap tiles, `#D4C4A8` split hairline, `#F4F1DE` tabular digits).
-- **Timer Modes:**
-  1. **Countdown:** Decrements from set duration to `00:00`.
-  2. **Stopwatch:** Increments from `00:00` upwards without preset ceiling.
-  3. **Open-Ended:** Increments upwards; end time is unconstrained until manually terminated.
+- **Timer Modes:** Countdown, Stopwatch, and From-To.
 - **Active Session Takeover:** On mobile, active focus engages Android Fullscreen Immersive Sticky mode. On Ubuntu desktop, an always-on-top borderless overlay window is spawned.
 
-### 3.3 The Stop-Focusing Friction Modal
+### 3.4 The Stop-Focusing Friction Modal
 To eliminate impulsive session quits:
 - When the user taps *"Quit Session"* or presses `Esc`:
   - An emergency friction dialog appears displaying two buttons: *"Keep Going"* and *"Quit Session"*.
@@ -60,30 +69,30 @@ To eliminate impulsive session quits:
   - Delay calculation: Base 15 seconds + 1 additional second per 15 minutes of distracting app usage recorded today (capped at 25 seconds).
   - Quitting an active session resets the user's daily focus streak to `0`.
 
-### 3.4 Break Management System
+### 3.5 Break Management System
 - User taps *"Take Break"* during an active session (if breaks remain).
 - The flip clock shifts to the secondary accent color (`#778D7A`) and counts down the designated break minutes.
 - When break duration expires, an aggressive heads-up notification and audio chime summon the user back.
 - When all preset breaks are spent, the *"Take Break"* button is disabled and greystyled.
 
-### 3.5 App Limits & Daily Budgets
+### 3.6 App Limits & Daily Budgets
 - Daily time budgets configured per distracting app (e.g., 30 mins max on Instagram).
 - **Emergency Extra Time:** User can request extra time passes (up to 3 passes of 5/10/15 mins per day, maximum 45 mins total).
 - **Hard Turn-Off Protection:** Disabling an active app limit requires surviving a 3-second hold button with an explicit warning showing streak forfeiture.
 
-### 3.6 YouTube Study Mode (Mobile & Desktop)
+### 3.7 YouTube Study Mode (Mobile & Desktop)
 - Restricts YouTube viewing strictly to pre-approved educational channels (PW, Olympiad math channels, 3Blue1Brown).
 - **Friction Sentence Engine:** Attempting to watch non-whitelisted videos triggers a full-screen block requiring the user to type verification sentences:
   - First 25 violations: 5 short sentences.
   - 25+ violations: Escalates to 50 complex philosophical and discipline sentences.
 
-### 3.7 The Distracted Intervention Window (2 / 5 / 10 / 20 min)
+### 3.8 The Distracted Intervention Window (2 / 5 / 10 / 20 min)
 - When a blacklisted distracting app is opened *outside* of a scheduled focus session:
   - FF immediately launches a system overlay window on top of the distracting app.
   - Forces the user to intentionally pick an allowed usage window: **2 min**, **5 min**, **10 min**, or **20 min**.
   - A persistent floating pill displays remaining seconds. When the window hits `0`, the app is minimized and locked for a mandatory 5-minute cool-down period.
 
-### 3.8 Screen Time Categorization & Usage Stats
+### 3.9 Screen Time Categorization & Usage Stats
 Uses Android `UsageStatsManager` to aggregate daily screen time across 4 categories:
 1. **Productive:** Academic tools, Notewise, FD, educational readers.
 2. **Semi-Productive:** Utility, system settings, communication.

@@ -23,9 +23,9 @@
 ## 2. Navigation Architecture (5 Bottom Tabs)
 
 The mobile interface is structured around 5 bottom navigation items:
-1. **Home (`Tab.Home`):** Dashboard overview, current streak, quick preset launcher.
-2. **Focus (`Tab.Focus`):** Direct entry to the active or standby mechanical flip-clock timer.
-3. **Presets (`Tab.Presets`):** Management of reusable focus presets and YouTube whitelist.
+1. **Home (`Tab.Home`):** Dashboard overview, current streak, quick summary, jump to active session.
+2. **Focus (`Tab.Focus`):** Presets selection list + Floating Island Mode Selector + "Start Focusing" CTA (displays active flip-clock timer when session runs).
+3. **Planner (`Tab.Planner`):** Horizontal day strip, daily session timeline, and `+ Schedule Session` FAB (preset-first scheduling).
 4. **Limits (`Tab.Limits`):** Per-app daily time budgets, extra time tokens, and friction controls.
 5. **Stats (`Tab.Stats`):** Usage statistics, 4-category breakdown, and streak history.
 
@@ -44,7 +44,28 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.2 Focus Session Screen (Mechanical Flip Clock)
+### 3.2 Focus & Presets Screen (`Tab.Focus`)
+The central command surface for starting sessions with any preset:
+- **Header:** Title *"Focus & Presets"*, Sorting dropdown at top right (*Recently Used*, *Alphabetical*, *Most Used*), `+ New` button.
+- **Presets Selection List:**
+  - Vertical scrollable list of user presets rendered in `#1B263B` cards.
+  - **Last-used preset is selected by default** with a `#D4C4A8` border highlight and radio dot.
+  - Each card displays emoji, name, break pill (`#778D7A`), YouTube status, and edit pencil icon.
+  - Tapping any card selects it as the active candidate.
+- **Floating Island Mode Selector:**
+  - Docked just above the primary CTA button, spanning the full button width.
+  - Pill container in `#1B263B` with 3 segmented mode selectors:
+    1. **Timer (Countdown):** Quick chips (`25m`, `45m`, `60m`, `90m`, `120m`, custom).
+    2. **Stopwatch (Count-up):** Increments from `00:00`.
+    3. **From–To (Window):** Select explicit start and end times (e.g., `4:00 PM - 5:30 PM`).
+  - Active segment highlighted in `#778D7A` (Muted Sage Green).
+- **Primary Action Button ("Start Focusing"):**
+  - Full-width pill in `#D4C4A8` (Warm Sand Khaki) with bold `#0D1B2A` text.
+  - Tapping launches the **Full-Screen Mechanical Flip Clock** in the selected mode with the chosen preset.
+
+---
+
+### 3.3 Focus Session Screen (Mechanical Flip Clock)
 - **Immersive Mode:** System bars hidden (Immersive Sticky). Screen stays awake (`FLAG_KEEP_SCREEN_ON`).
 - **Flip Clock Layout (Custom `@Composable`):**
   - Two large rectangular split cards: Top card displays Hours (`01`), bottom card displays Minutes (`45`).
@@ -58,7 +79,22 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.3 Stop-Focusing Friction Modal
+### 3.4 Planner Screen & Standalone Scheduling (`Tab.Planner`)
+- **Header:** Month-Year display, "Today" quick-jump button.
+- **Calendar Strip:** Horizontally scrollable 7-day strip (Mon–Sun).
+- **Scheduled Sessions List:** Cards showing time window, title, origin badge (`[FF]` or `[FD]`), linked preset, and heads-up reminder status.
+- **FAB (`+ Schedule Session`):**
+  - Positioned at bottom right.
+  - Tapping opens the **Schedule Session Bottom Sheet**:
+    1. **Select Preset (First Field):** Carousel of presets, defaults to last-used.
+    2. **Session Name:** Auto-populates with selected Preset’s name if left empty; editable for custom titles.
+    3. **Date & Times:** Start time, End time, auto-calculated duration.
+    4. **Recurrence & Reminder:** Recurrence rule picker + 15-minute heads-up notification toggle.
+    5. Saves directly to Room DB (`status = 'SCHEDULED'`) with zero dependency on FluxDone.
+
+---
+
+### 3.5 Stop-Focusing Friction Modal
 - Displayed when the user taps *"Quit Session"* during active focus.
 - **Backdrop:** Dimmed translucent scrim (`#0D1B2A` with 80% alpha).
 - **Center Dialog Container:** Surface `#1B263B` with `#415A77` border.
@@ -71,7 +107,7 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.4 Break Session State
+### 3.6 Break Session State
 - When break is active:
   - The flip clock border and primary accents shift from Warm Sand (`#D4C4A8`) to Muted Sage Green (`#778D7A`).
   - Top header label reads: *"Break in Progress (4m 12s remaining)"*.
@@ -80,7 +116,7 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.5 Preset Creation & Edit Flow
+### 3.7 Preset Creation & Edit Flow
 - Single-page form inside a bottom sheet or screen:
   - Preset Name text field.
   - Emoji picker grid (⏳, 📐, 🔬, 📚, 💻, 🎯, ⚡, 🧠).
@@ -92,7 +128,7 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.6 Distracted Intervention Overlay (2 / 5 / 10 / 20 min)
+### 3.8 Distracted Intervention Overlay (2 / 5 / 10 / 20 min)
 - Rendered via Android `WindowManager` with `LayoutParams.TYPE_APPLICATION_OVERLAY`.
 - Floats directly over any blacklisted app that is launched outside a scheduled session.
 - **UI Card:** Dark card `#1B263B` with border `#415A77` and text: *"Intentional Usage Check: How long do you need Instagram?"*
@@ -103,7 +139,7 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ---
 
-### 3.7 YouTube Study Mode Friction Screen
+### 3.9 YouTube Study Mode Friction Screen
 - Invoked when user opens a non-whitelisted YouTube video.
 - Full-screen takeover displaying:
   - Video title and channel name.

@@ -114,21 +114,24 @@ CREATE TABLE preset_app_rules (
 ```sql
 CREATE TABLE focus_sessions (
     id TEXT PRIMARY KEY NOT NULL,
-    preset_id TEXT,             -- Nullable FK to presets(id)
-    linked_task_id TEXT,        -- Nullable UUID from FluxDone
-    task_name TEXT,             -- Display title from FD
-    timer_mode TEXT NOT NULL,   -- 'COUNTDOWN', 'STOPWATCH', 'OPEN_ENDED'
-    start_time INTEGER NOT NULL,-- UTC epoch ms
-    end_time INTEGER,           -- Nullable UTC epoch ms
+    session_origin TEXT NOT NULL DEFAULT 'NATIVE_FF', -- 'NATIVE_FF' (ssession/msession) or 'SYNCED_FD' (tsession)
+    preset_id TEXT NOT NULL,                          -- FK to presets(id)
+    session_title TEXT NOT NULL,                      -- Custom title or fallback to preset name
+    linked_task_id TEXT,                              -- Nullable UUID from FluxDone (if synced)
+    timer_mode TEXT NOT NULL,                         -- 'COUNTDOWN', 'STOPWATCH', 'FROM_TO'
+    start_time INTEGER NOT NULL,                      -- UTC epoch ms
+    end_time INTEGER,                                 -- Nullable UTC epoch ms (computed or actual)
     target_duration_minutes INTEGER NOT NULL,
     actual_duration_seconds INTEGER NOT NULL DEFAULT 0,
     breaks_taken INTEGER NOT NULL DEFAULT 0,
     breaks_total_seconds INTEGER NOT NULL DEFAULT 0,
-    status TEXT NOT NULL,       -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY'
+    recurrence_rule TEXT,                             -- Nullable RRULE JSON
+    status TEXT NOT NULL,                             -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY'
     penalty_delay_applied_seconds INTEGER NOT NULL DEFAULT 0,
+    headsup_notification_armed INTEGER NOT NULL DEFAULT 1,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
-    FOREIGN KEY(preset_id) REFERENCES presets(id) ON DELETE SET NULL
+    FOREIGN KEY(preset_id) REFERENCES presets(id) ON DELETE CASCADE
 );
 ```
 
