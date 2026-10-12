@@ -92,3 +92,19 @@ When verifying builds, agents must run:
 
 ### Rule 4: Preserving Offline Integrity
 Network calls must never be embedded directly inside local UI repositories. All data operations hit the local Room SQLite database first. Cloud sync (Phase 2) is strictly a separate background synchronization layer.
+
+### Rule 5: Zero Hardcoded Data Policy & Branch-Testing Isolation Workflow
+> [!IMPORTANT]
+> **Strict Anti-Mocking Guardrail:** Under no circumstances should production application code (`@Composable` screens, ViewModels, Repositories, DAOs, Services) contain hardcoded dummy strings, static lists (e.g. `listOf("Olympiad Math", ...)`), fake metric literals (e.g. `"18 Days"`, `"2h 53m"`), or stubbed database responses. AI coding agents have a notorious tendency to insert hardcoded mocks to bypass data plumbing—this is strictly forbidden.
+
+All UI screens must reactively collect state from genuine Kotlin `StateFlow` emitted by Room DAOs, DataStore preferences, Android `UsageStatsManager`, or native OS broadcast streams.
+
+**The Branch-Testing Isolation Workflow:**
+If hardcoded test fixtures or mock stubs are required for isolated visual or algorithmic verification:
+1. **Branch Out:** Check out an isolated testing branch (`git checkout -b test/feature-name`).
+2. **Inject Test Fixture:** Apply temporary static fixtures only on that isolated branch.
+3. **Verify Execution:** Run unit tests or visual inspection.
+4. **Clean & Wire Dynamic Flow:**
+   - **If successful:** Completely remove/revert all hardcoded data, wire the component to the live Room DAO / Repository pipeline, verify with dynamic data, and only then merge into `main`.
+   - **If failed:** Revert to the clean unmocked state, diagnose the dynamic flow logic, re-branch, and repeat.
+5. **Zero Mocks in Main:** No mock/stub literals are ever permitted to be committed into `main`.

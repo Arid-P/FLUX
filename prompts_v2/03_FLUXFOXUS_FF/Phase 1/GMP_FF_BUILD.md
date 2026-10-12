@@ -165,3 +165,21 @@ Before declaring the build complete, execute and pass all verification checks:
 # 3. Verify APK exists and has zero manifest or resource conflicts
 ls -lh app/build/outputs/apk/debug/app-debug.apk
 ```
+
+---
+
+## 4. Zero Hardcoded Data & Branch-Testing Isolation Mandate
+
+> [!CAUTION]
+> **STRICT BAN ON HARDCODED MOCKS IN PRODUCTION CODE:**
+> AI coding agents are strictly prohibited from embedding hardcoded dummy strings, static lists (e.g. `listOf(...)`), fake streak numbers, or mocked time stats inside `@Composable` screens, ViewModels, or Repositories. All data must dynamically originate from live Room SQLite DAOs, DataStore preferences, or Android `UsageStatsManager`.
+
+**Branch-Testing Isolation Workflow:**
+- If test stubs or static fixtures are needed for isolated visual or algorithmic verification:
+  1. Check out an isolated testing branch (`git checkout -b test/feature-name`).
+  2. Implement temporary fixtures only on that isolated branch.
+  3. Verify execution.
+  4. If successful: completely revert all hardcoded data, wire the component to live Room DAOs / dynamic repositories, and verify with live data before merging into `main`.
+  5. If failed: revert to clean state, diagnose dynamic flow, re-branch and repeat.
+  6. Zero mock or stub literals are ever permitted to remain in `main`.
+
