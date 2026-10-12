@@ -9,27 +9,27 @@
 ## 1. Architectural Theme Overview
 
 The Flux family maintains two distinct visual personalities unified under modern, distraction-free principles:
-1. **FluxFoxus (FF):** Strictly dark, disciplined, and mechanical. Governed authoritatively by the **Rustic Medley** aesthetic. No shadows, flat 2D surfaces, high contrast, tactile mechanical timer elements.
-2. **FluxDone (FD):** Academic precision. Clean, structured, token-driven list hierarchy. Governed by the **7 System-Locked Academic Domain Colors** for Olympiad and JEE preparation, with customizable accent palettes for secondary personal lists. Supports both Dark and Light themes from Day 1.
+1. **FluxFoxus (FF):** Strictly dark, disciplined, and mechanical. Governed authoritatively by the **Holst (Холст)** aesthetic sourced from `Theme/Холст.jpeg`. No shadows, flat 2D surfaces, high contrast, tactile mechanical timer elements.
+2. **FluxDone (FD):** Academic precision. Clean, structured, token-driven list hierarchy. Governed by the **7 System-Locked Academic Domain Colors** for Olympiad and JEE preparation, with customizable accent palettes for secondary personal lists. Harmonizes cleanly with the deep Holst navy/slate dark surfaces. Supports both Dark and Light themes from Day 1.
 
 ---
 
-## 2. FluxFoxus Design System: "Rustic Medley" (Authoritative Override)
+## 2. FluxFoxus Design System: "Holst" (Холст) — Authoritative Override
 
 > [!IMPORTANT]
-> **Strict Color Lock:** The previous Electric Indigo / Midnight Slate / Soft Cyan color scheme is permanently decommissioned. Under no circumstances should an AI agent generate purple, blue, cyan, or neon accents for FluxFoxus.
+> **Strict Color Lock (Holst):** Sourced directly from `Theme/Холст.jpeg`. All previous palettes (Rustic Medley, Electric Indigo, Midnight Slate) are permanently superseded. Under no circumstances should an AI agent generate purple, cyan, or oversaturated neon accents for FluxFoxus.
 
 ### 2.1 Color Tokens Specification
 
 | Token Name | Hex Code | Compose Color Definition | Semantic Role |
 | :--- | :--- | :--- | :--- |
-| `ff_background` | `#13191F` | `Color(0xFF13191F)` | **River Styx:** Master screen background. Deep, warm slate-black. |
-| `ff_surface` | `#2B2F2E` | `Color(0xFF2B2F2E)` | **Carbon Fibre:** Cards, bottom sheets, navigation bar, dialog backdrops. |
-| `ff_border` | `#594C3D` | `Color(0xFF594C3D)` | **Afternoon Tea:** 1dp card borders, list dividers, hairline separators. |
-| `ff_accent` | `#906D4B` | `Color(0xFF906D4B)` | **Tanned Wood:** Secondary badges, break timers, sub-labels, active chip borders. |
-| `ff_primary` | `#CA9C68` | `Color(0xFFCA9C68)` | **Amber Autumn:** Primary action buttons, active countdown digits, flip-clock split line, streak flames. |
-| `ff_text_primary` | `#F8FAFC` | `Color(0xFFF8FAFC)` | **Ghost White:** High-contrast text, primary headers, active time digits. |
-| `ff_text_muted` | `#94A3B8` | `Color(0xFF94A3B8)` | **Slate Grey:** Secondary labels, disabled action states, timestamps. |
+| `ff_background` | `#0D1B2A` | `Color(0xFF0D1B2A)` | **Abyssal Navy:** Master screen background. Deep, tranquil, anti-glare canvas. |
+| `ff_surface` | `#1B263B` | `Color(0xFF1B263B)` | **Oxford Slate:** Cards, bottom sheets, navigation bar, dialog backdrops, flip flap tiles. |
+| `ff_border` | `#415A77` | `Color(0xFF415A77)` | **Muted Steel Blue:** 1dp card borders, list dividers, hairline separators. |
+| `ff_accent` | `#778D7A` | `Color(0xFF778D7A)` | **Muted Sage Green:** Secondary badges, break timers, streak badges, secondary status pills. |
+| `ff_primary` | `#D4C4A8` | `Color(0xFFD4C4A8)` | **Warm Sand Khaki:** Primary action buttons ("Start Focusing"), active countdown digits, flip-clock split line, active tab pills. |
+| `ff_text_primary` | `#F4F1DE` | `Color(0xFFF4F1DE)` | **Eggshell Cream:** High-contrast text, primary headers, active time digits without harsh glare. |
+| `ff_text_muted` | `#8E9CAE` | `Color(0xFF8E9CAE)` | **Slate Blue-Grey:** Secondary labels, disabled action states, timestamps. |
 | `ff_error_danger` | `#DC2626` | `Color(0xFFDC2626)` | **Crimson Alert:** Destructive actions, quit confirmation warnings, expired intervention indicators. |
 
 ### 2.2 Typography Tokens (Compose `Typography`)
@@ -38,7 +38,9 @@ The Flux family maintains two distinct visual personalities unified under modern
 - **Weights:** Regular (400), Medium (500), SemiBold (600), Bold (700).
 
 ### 2.3 Tactile Flip-Clock Design Rules
-- Split flap card rendering with a horizontal 1dp hairline divider colored in `ff_primary` (`#CA9C68`).
+- Split flap card rendering with a horizontal 1.5dp hairline divider colored in `ff_primary` (`#D4C4A8`).
+- Top flap card and bottom flap card rendered in `ff_surface` (`#1B263B`).
+- Numerals rendered in tabular `ff_text_primary` (`#F4F1DE`).
 - Subtle top-half shadow gradient simulated via pure hex shades (no heavy blur rendering).
 - Tabular figures (`FontFeatureSettings("tnum")`) to ensure zero digit wobble during millisecond and second ticks.
 

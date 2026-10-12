@@ -15,7 +15,7 @@ To guarantee successful execution and zero architectural drift, AI coding agents
 prompts_v2/
 ├── 00_CORE/                       # 1. Foundation & Global Guardrails
 │   ├── FLUX_SYSTEM_CONTEXT.md      # Master context: Ari persona, dual-device setup, architectural pivot
-│   ├── FLUX_DESIGN_TOKENS.md       # Authoritative design tokens (Rustic Medley + 7 Academic Domain Colors)
+│   ├── FLUX_DESIGN_TOKENS.md       # Authoritative design tokens (Holst Theme + 7 Academic Domain Colors)
 │   └── FLUX_AGENT_SKILLS_GUIDE.md  # Toolchain, JDK 17/21, Android SDK 34, KSP, and Gradle rules
 │
 ├── 01_INTEGRATION_SYNC/           # 2. Cross-Device & Inter-App Contracts
@@ -24,16 +24,18 @@ prompts_v2/
 │   └── CENTRAL_SYNC_ROADMAP.md     # Phase 2 Central DB (Supabase/Postgres) & Web Portal sync
 │
 ├── 02_FLUXDONE_FD/                # 3. FluxDone (Task & Habit Management)
-│   ├── FD_PRD_V2.md                # Product requirements (TickTick parity, calendar timeline tapping)
-│   ├── FD_TRD_KOTLIN.md            # Technical requirements (Compose UI, Room SQLite, StateFlow)
-│   ├── FD_UI_SPECIFICATIONS.md     # Screen specs SCR-01 to SCR-13
-│   └── GMP_FD_BUILD.md             # Grand Master Prompt for building FluxDone
+│   └── Phase 1/                   # Phase 1 Core Specs
+│       ├── FD_PRD_V2.md            # Product requirements (TickTick parity, calendar timeline tapping)
+│       ├── FD_TRD_KOTLIN.md        # Technical requirements (Compose UI, Room SQLite, StateFlow)
+│       ├── FD_UI_SPECIFICATIONS.md # Screen specs SCR-01 to SCR-13
+│       └── GMP_FD_BUILD.md         # Grand Master Prompt for building FluxDone
 │
 └── 03_FLUXFOXUS_FF/               # 4. FluxFoxus (Discipline & Focus Enforcer)
-    ├── FF_PRD_V2.md                # Product requirements (Regain replacement, presets, flip clock)
-    ├── FF_TRD_KOTLIN.md            # Technical requirements (Accessibility, UsageStats, Overlays)
-    ├── FF_UI_SPECIFICATIONS.md     # Screen specs in Rustic Medley palette
-    └── GMP_FF_BUILD.md             # Grand Master Prompt for building FluxFoxus
+    └── Phase 1/                   # Phase 1 Core Specs
+        ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
+        ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
+        ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette
+        └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus
 ```
 
 ---
@@ -44,5 +46,5 @@ prompts_v2/
 2. **Zero `build_runner`:** Code generation is handled natively via **KSP (Kotlin Symbol Processing)** in Gradle.
 3. **Offline-First Room Storage:** Local SQLite operations never rely on cloud availability.
 4. **Authoritative Design System:**
-   - **FluxFoxus:** Strictly **Rustic Medley** (`#13191F`, `#2B2F2E`, `#594C3D`, `#906D4B`, `#CA9C68`). Prohibits purples, blues, cyans.
+   - **FluxFoxus:** Strictly **Holst (Холст)** (`#0D1B2A`, `#1B263B`, `#415A77`, `#778D7A`, `#D4C4A8`, `#F4F1DE`). Sourced directly from `Theme/Холст.jpeg`.
    - **FluxDone:** The **7 locked academic domain colors** (`#2E7D32`, `#1565C0`, `#43A047`, `#FB8C00`, `#E64A19`, `#E53935`, `#576481`) must be used for Olympiad and JEE lists.

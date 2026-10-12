@@ -2,21 +2,21 @@
 
 **Version:** 2.0 (Jetpack Compose Screen & Overlay Specifications)  
 **Target:** Native Android & Compose Desktop  
-**Theme:** Strictly Dark Mode — **Rustic Medley** Palette (`FLUX_DESIGN_TOKENS.md`)
+**Theme:** Strictly Dark Mode — **Holst (Холст)** Palette (`FLUX_DESIGN_TOKENS.md`)
 
 ---
 
-## 1. Design System Rules (Rustic Medley)
+## 1. Design System Rules (Holst / Холст)
 
 > [!IMPORTANT]
-> **Zero Neon / Zero Purple:** Under no circumstances should any Composable render blue, purple, cyan, or neon accents.
-> - Background: `#13191F` (River Styx)
-> - Surface Cards: `#2B2F2E` (Carbon Fibre)
-> - Border / Dividers: `#594C3D` (Afternoon Tea)
-> - Accent / Break State: `#906D4B` (Tanned Wood)
-> - Primary / Action: `#CA9C68` (Amber Autumn)
-> - Text Primary: `#F8FAFC` (Ghost White)
-> - Text Muted: `#94A3B8` (Slate Grey)
+> **Strict Color Lock (Holst):** Sourced directly from `Theme/Холст.jpeg`.
+> - Background: `#0D1B2A` (Abyssal Navy)
+> - Surface Cards: `#1B263B` (Oxford Slate)
+> - Border / Dividers: `#415A77` (Muted Steel Blue)
+> - Accent / Break State: `#778D7A` (Muted Sage Green)
+> - Primary / Action: `#D4C4A8` (Warm Sand Khaki)
+> - Text Primary: `#F4F1DE` (Eggshell Cream)
+> - Text Muted: `#8E9CAE` (Slate Blue-Grey)
 
 ---
 
@@ -36,10 +36,10 @@ The mobile interface is structured around 5 bottom navigation items:
 ### 3.1 Home Screen
 - **Header:** Current date, user avatar / Ari profile badge, streak flame counter with count (e.g., `"🔥 18 Days"`).
 - **Active / Last-Used Preset Card:**
-  - Surface container in `#2B2F2E` with 1dp border `#594C3D`.
+  - Surface container in `#1B263B` with 1dp border `#415A77`.
   - Emoji icon (e.g., 📐), Preset title (*"Olympiad Math Deep Work"*), Break pills (*"2 breaks · 5m each"*), YouTube status (*"Study Mode Whitelist"*).
   - Dropdown chevron allowing instant switching between saved presets.
-- **Primary CTA:** Wide pill button in `#CA9C68` with bold black/dark text: `"Start Focusing"`.
+- **Primary CTA:** Wide pill button in `#D4C4A8` with dark navy text: `"Start Focusing"`.
 - **Today's Summary Strip:** Horizontal row showing Total Focus Time (`3h 45m`), Distracted Time (`22m`), and Tasks Done (`7`).
 
 ---
@@ -48,20 +48,21 @@ The mobile interface is structured around 5 bottom navigation items:
 - **Immersive Mode:** System bars hidden (Immersive Sticky). Screen stays awake (`FLAG_KEEP_SCREEN_ON`).
 - **Flip Clock Layout (Custom `@Composable`):**
   - Two large rectangular split cards: Top card displays Hours (`01`), bottom card displays Minutes (`45`).
-  - Font: Monospace tabular numerals (`JetBrains Mono`), color `#F8FAFC`.
-  - Flap divider: 1.5dp horizontal hairline separator colored in `#CA9C68`.
+  - Container color: Oxford Slate (`#1B263B`).
+  - Font: Monospace tabular numerals (`JetBrains Mono`), color Eggshell Cream (`#F4F1DE`).
+  - Flap divider: 1.5dp horizontal hairline separator colored in Warm Sand (`#D4C4A8`).
   - Subtle split shadow gradient simulated along the flap crease.
 - **Controls Footer:**
-  - Left Button: *"Take Break"* (displays remaining count: `2/2`). If `0`, button is greystyled (`#2B2F2E` with `#94A3B8` text).
+  - Left Button: *"Take Break"* (displays remaining count: `2/2`). If `0`, button is greystyled (`#1B263B` with `#8E9CAE` text).
   - Right Button: *"Quit Session"* (triggers Stop-Focusing Friction Modal).
 
 ---
 
 ### 3.3 Stop-Focusing Friction Modal
 - Displayed when the user taps *"Quit Session"* during active focus.
-- **Backdrop:** Dimmed translucent scrim (`#13191F` with 80% alpha).
-- **Center Dialog Container:** Surface `#2B2F2E` with `#594C3D` border.
-- **Delay Ring Indicator:** Circular progress ring in `#CA9C68` displaying locked seconds countdown (e.g., `"19s"`).
+- **Backdrop:** Dimmed translucent scrim (`#0D1B2A` with 80% alpha).
+- **Center Dialog Container:** Surface `#1B263B` with `#415A77` border.
+- **Delay Ring Indicator:** Circular progress ring in `#D4C4A8` displaying locked seconds countdown (e.g., `"19s"`).
 - **Warning Text:** *"Quitting will forfeit your 18-day streak and register a premature quit penalty."*
 - **Button Controls:**
   - Button 1: *"Keep Going"*
@@ -72,7 +73,7 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ### 3.4 Break Session State
 - When break is active:
-  - The flip clock border and primary accents shift from Amber (`#CA9C68`) to Tanned Wood (`#906D4B`).
+  - The flip clock border and primary accents shift from Warm Sand (`#D4C4A8`) to Muted Sage Green (`#778D7A`).
   - Top header label reads: *"Break in Progress (4m 12s remaining)"*.
   - Footer displays a single button: *"End Break Early"*.
   - When break timer expires, plays audio alert and automatically resumes focus session countdown.
@@ -87,16 +88,16 @@ The mobile interface is structured around 5 bottom navigation items:
   - Break Duration: Slider from `1 min` to `15 min`.
   - App Restriction Mode: Multi-select list of installed apps with search bar and quick filters (*Distracting*, *All*).
   - YouTube Mode: Segmented control: `Block` | `Allow` | `Study Mode`.
-  - Save button in `#CA9C68`.
+  - Save button in `#D4C4A8`.
 
 ---
 
 ### 3.6 Distracted Intervention Overlay (2 / 5 / 10 / 20 min)
 - Rendered via Android `WindowManager` with `LayoutParams.TYPE_APPLICATION_OVERLAY`.
 - Floats directly over any blacklisted app that is launched outside a scheduled session.
-- **UI Card:** Dark card `#2B2F2E` with text: *"Intentional Usage Check: How long do you need Instagram?"*
+- **UI Card:** Dark card `#1B263B` with border `#415A77` and text: *"Intentional Usage Check: How long do you need Instagram?"*
 - **Time Selection Buttons:**
-  - 4 pill buttons in `#906D4B`: `2 min`, `5 min`, `10 min`, `20 min`.
+  - 4 pill buttons in `#778D7A`: `2 min`, `5 min`, `10 min`, `20 min`.
   - Tapping a button dismisses the overlay and starts a floating countdown badge.
   - When time expires, accessibility service closes the distracting app and enforces a 5-minute cooldown.
 

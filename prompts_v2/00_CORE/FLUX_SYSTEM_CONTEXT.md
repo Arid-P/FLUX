@@ -108,15 +108,15 @@ FF completely replaces Regain. It is not a gentle "wellness" app; it is an **enf
 - **Stop Focusing Modal:** To prevent impulsive session quits, both dialog buttons (*"Keep Going"* and *"Quit Session"*) are locked and disabled for 15–25 seconds. The delay is mathematically calculated based on streak count and today's distraction time.
 - **Intervention Overlays (2 / 5 / 10 / 20 min):** When a marked distracting app is opened outside a scheduled focus session, a system overlay appears forcing the user to pick an intentional usage window. Once expired, access is blocked.
 - **YouTube Study Mode:** Only whitelisted academic channels are allowed. Attempting to view non-whitelisted videos requires typing friction sentences (5 short sentences initially, scaling to 50 longer sentences).
-- **Authoritative UI Theme (Rustic Medley):**
-  Strictly governed by the design override. All blues, purples, and cyans are forbidden:
-  - Background: `#13191F` (River Styx)
-  - Surface: `#2B2F2E` (Carbon Fibre)
-  - Border / Dividers: `#594C3D` (Afternoon Tea)
-  - Accent / Secondary: `#906D4B` (Tanned Wood)
-  - Primary / Action: `#CA9C68` (Amber Autumn)
-  - Text Primary: `#F8FAFC` (Ghost White)
-  - Text Muted: `#94A3B8` (Slate Grey)
+- **Authoritative UI Theme: Holst (Холст):**
+  Strictly governed by the design override sourced from `Theme/Холст.jpeg`:
+  - Background: `#0D1B2A` (Abyssal Navy)
+  - Surface: `#1B263B` (Oxford Slate)
+  - Border / Dividers: `#415A77` (Muted Steel Blue)
+  - Accent / Breaks: `#778D7A` (Muted Sage Green)
+  - Primary / Action: `#D4C4A8` (Warm Sand Khaki)
+  - Text Primary: `#F4F1DE` (Eggshell Cream)
+  - Text Muted: `#8E9CAE` (Slate Blue-Grey)
 
 ---
 
@@ -192,5 +192,5 @@ timeline
 ## 10. Rules for AI Agents Working on Flux
 1. **Never generate Flutter or Dart code.** The stack is strictly **Kotlin, Jetpack Compose, Android Jetpack, and Compose Multiplatform**.
 2. **Never propose `build_runner` or custom code-gen plugins.** Use Kotlin standard tools (`kotlinx.serialization`, Room KSP, Kotlin Data Classes).
-3. **Respect UI Theme Locks:** All FF screens must strictly map to the **Rustic Medley** palette. No purples, blues, or cyans. All FD academic screens must use the 7 locked academic domain hex values.
+3. **Respect UI Theme Locks:** All FF screens must strictly map to the **Holst (Холст)** palette (`#0D1B2A`, `#1B263B`, `#415A77`, `#778D7A`, `#D4C4A8`, `#F4F1DE`). No unapproved purples or neon cyans. All FD academic screens must use the 7 locked academic domain hex values.
 4. **Offline First is Non-Negotiable:** Local Room SQLite database operations must never fail due to network absence.

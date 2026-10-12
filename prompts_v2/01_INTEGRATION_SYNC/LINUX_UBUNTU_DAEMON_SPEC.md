@@ -11,7 +11,7 @@
 
 On Ubuntu Linux, FluxFoxus is partitioned into two specialized components:
 1. **`flux-daemon` (The Enforcer):** A lightweight background service running as a `systemd --user` unit. It tracks active desktop windows, manages distraction domain blocking, enforces process suspension, and communicates with browsers for YouTube Study Mode.
-2. **`flux-desktop` (The UI & Timer):** A native **Compose for Desktop** application. It renders the system tray indicator, active session management, and the full-screen mechanical flip clock overlay matching the **Rustic Medley** theme.
+2. **`flux-desktop` (The UI & Timer):** A native **Compose for Desktop** application. It renders the system tray indicator, active session management, and the full-screen mechanical flip clock overlay matching the **Holst (Холст)** theme.
 
 ```mermaid
 graph TD
@@ -56,10 +56,10 @@ The desktop UI is built using **Compose Multiplatform (Kotlin JVM)**, sharing th
 
 ### 3.2 Fullscreen Mechanical Flip Clock Takeover
 - When a focus session begins or when invoked via hotkey (e.g., `Super + F`), displays a full-screen borderless window on the primary monitor.
-- Styled exclusively in **Rustic Medley**:
-  - Background: River Styx (`#13191F`)
-  - Mechanical Flaps: Carbon Fibre (`#2B2F2E`) with hairline Amber divider (`#CA9C68`)
-  - Numbers: Monospace tabular Ghost White (`#F8FAFC`).
+- Styled exclusively in **Holst (Холст)**:
+  - Background: Abyssal Navy (`#0D1B2A`)
+  - Mechanical Flaps: Oxford Slate (`#1B263B`) with hairline Warm Sand divider (`#D4C4A8`)
+  - Numbers: Monospace tabular Eggshell Cream (`#F4F1DE`).
 - Pressing `Esc` or clicking *"Quit Session"* triggers the **15–25 second penalty countdown** dialog before the button becomes clickable.
 
 ---

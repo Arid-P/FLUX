@@ -44,7 +44,7 @@ A **Preset** is a reusable focus blueprint that encapsulates an enforcement stra
 - **60-Hour Inactivity Guard:** If FF has not been used in 60+ hours, an explicit confirmation sheet prompts the user to verify preset settings before starting.
 
 ### 3.2 The Mechanical Flip Clock & Focus Timer
-- **Visual Design:** Fullscreen immersive mechanical split-flap clock displaying hours and minutes (`HH:MM`). Rendered strictly in **Rustic Medley** (`#13191F` background, `#2B2F2E` flap tiles, `#CA9C68` split hairline, `#F8FAFC` tabular digits).
+- **Visual Design:** Fullscreen immersive mechanical split-flap clock displaying hours and minutes (`HH:MM`). Rendered strictly in **Holst (Холст)** (`#0D1B2A` background, `#1B263B` flap tiles, `#D4C4A8` split hairline, `#F4F1DE` tabular digits).
 - **Timer Modes:**
   1. **Countdown:** Decrements from set duration to `00:00`.
   2. **Stopwatch:** Increments from `00:00` upwards without preset ceiling.
@@ -62,7 +62,7 @@ To eliminate impulsive session quits:
 
 ### 3.4 Break Management System
 - User taps *"Take Break"* during an active session (if breaks remain).
-- The flip clock shifts to the secondary accent color (`#906D4B`) and counts down the designated break minutes.
+- The flip clock shifts to the secondary accent color (`#778D7A`) and counts down the designated break minutes.
 - When break duration expires, an aggressive heads-up notification and audio chime summon the user back.
 - When all preset breaks are spent, the *"Take Break"* button is disabled and greystyled.
 
@@ -92,15 +92,15 @@ Uses Android `UsageStatsManager` to aggregate daily screen time across 4 categor
 
 ---
 
-## 4. UI Design System Lock: Rustic Medley
+## 4. UI Design System Lock: Holst (Холст)
 
-All screens, widgets, and dialogs are governed by the authoritative **Rustic Medley** palette:
-- **Background:** `#13191F` (River Styx)
-- **Surface Cards:** `#2B2F2E` (Carbon Fibre)
-- **Border / Dividers:** `#594C3D` (Afternoon Tea)
-- **Accent / Breaks:** `#906D4B` (Tanned Wood)
-- **Primary / Actions:** `#CA9C68` (Amber Autumn)
-- **High Contrast Text:** `#F8FAFC` (Ghost White)
-- **Muted Text:** `#94A3B8` (Slate Grey)
+All screens, widgets, and dialogs are governed by the authoritative **Holst (Холст)** palette sourced from `Theme/Холст.jpeg`:
+- **Background:** `#0D1B2A` (Abyssal Navy)
+- **Surface Cards:** `#1B263B` (Oxford Slate)
+- **Border / Dividers:** `#415A77` (Muted Steel Blue)
+- **Accent / Breaks:** `#778D7A` (Muted Sage Green)
+- **Primary / Actions:** `#D4C4A8` (Warm Sand Khaki)
+- **High Contrast Text:** `#F4F1DE` (Eggshell Cream)
+- **Muted Text:** `#8E9CAE` (Slate Blue-Grey)
 
-*Zero purple, blue, cyan, or neon colors are permitted.*
+*Zero unapproved purples or oversaturated neon cyans are permitted.*

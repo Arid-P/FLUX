@@ -10,9 +10,9 @@
 ## 0. Non-Negotiable Operational Rules
 
 1. **Zero Flutter / Zero Dart:** You are strictly forbidden from writing Dart, using Flutter SDK, or referencing Flutter plugins. FluxFoxus is 100% **Native Android Kotlin**.
-2. **Strict Rustic Medley Theming:** All UI components, dialogs, and overlays must strictly map to the Rustic Medley palette:
-   - `#13191F` (Background), `#2B2F2E` (Surface), `#594C3D` (Border), `#906D4B` (Accent/Breaks), `#CA9C68` (Primary Action).
-   - *Purples, blues, cyans, and neon colors are strictly forbidden.*
+2. **Strict Holst (Холст) Theming:** Sourced directly from `Theme/Холст.jpeg`. All UI components, dialogs, and overlays must strictly map to the Holst palette:
+   - `#0D1B2A` (Abyssal Navy Background), `#1B263B` (Oxford Slate Surface), `#415A77` (Muted Steel Blue Border), `#778D7A` (Muted Sage Green Accent/Breaks), `#D4C4A8` (Warm Sand Khaki Primary Action), `#F4F1DE` (Eggshell Cream Text).
+   - *Purples, cyans, and oversaturated neon colors are strictly forbidden.*
 3. **No Brittle Code-Gen Loops:** Do not use `build_runner` or external CLI generators. Use **Kotlin Symbol Processing (KSP)** natively via Gradle.
 4. **Enforcement Services are First-Class:**
    - App interception must use a native `AccessibilityService`.
@@ -36,7 +36,7 @@ fluxfoxus/
 │       └── java/com/fluxfoxus/
 │           ├── core/
 │           │   ├── database/        // Room Database, DAOs, Entities
-│           │   ├── designsystem/    // Rustic Medley Theme, Typography, FlipClock Composable
+│           │   ├── designsystem/    // Holst Theme, Typography, FlipClock Composable
 │           │   ├── ipc/             // FdIntegrationReceiver (goAsync)
 │           │   └── service/         // FocusAccessibilityService, FocusTimerService, OverlayManager
 │           ├── domain/              // Use cases, Presets, Friction formula calculators
@@ -118,9 +118,9 @@ dependencies {
 
 ## 2. Implementation Execution Sequence
 
-### Phase 1: Rustic Medley Design System & Flip Clock
-1. Implement `FluxFoxusTheme.kt` mapping exclusively to Rustic Medley hex tokens.
-2. Build the custom `@Composable FlipClock` using `JetBrains Mono` tabular figures, split flap cards, and `#CA9C68` hairline dividers.
+### Phase 1: Holst (Холст) Design System & Flip Clock
+1. Implement `FluxFoxusTheme.kt` mapping exclusively to Holst hex tokens from `Theme/Холст.jpeg`.
+2. Build the custom `@Composable FlipClock` using `JetBrains Mono` tabular figures, split flap cards in `#1B263B`, and `#D4C4A8` hairline dividers.
 3. Build the `StopFocusingModal` with locked delay timers.
 
 ### Phase 2: Room SQLite Database Layer

@@ -12,7 +12,7 @@
 | Layer | Native Android Technology | Purpose |
 | :--- | :--- | :--- |
 | **Language** | Kotlin 1.9.20+ / 2.0+ | Modern type safety, Coroutines, Flow |
-| **UI Framework** | Jetpack Compose (Compose BOM) | Dark-only Rustic Medley UI, custom flip-clock canvas |
+| **UI Framework** | Jetpack Compose (Compose BOM) | Dark-only Holst (Холст) UI, custom flip-clock canvas |
 | **Local Storage** | Android Jetpack `Room` (via KSP) | Presets, sessions, streaks, app limit rules |
 | **Preferences** | Android Jetpack `DataStore` | Last-used preset, user configurations, whitelist |
 | **Screen Time** | `android.app.usage.UsageStatsManager` | System screen time metrics & category categorization |
