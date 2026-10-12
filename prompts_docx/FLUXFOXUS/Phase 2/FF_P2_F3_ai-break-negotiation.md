@@ -1,0 +1,306 @@
+# FF Phase 2 — Feature 3: AI Break Negotiation
+
+**Version:** 1.0  
+**Phase:** 2  
+**Status:** Locked  
+**Author:** Ari  
+
+---
+
+## 1. Overview
+
+AI Break Negotiation replaces or supplements the fixed preset-based break system with an AI-powered negotiation flow. Instead of a predetermined number of breaks at fixed durations, the user argues their case to an AI — which evaluates the reason and proposed duration and decides whether to grant the break, deny it, or counter-propose.
+
+The negotiation continues until the user either receives a break or gives up.
+
+This feature applies to **both session types** (tsession and msession) independently, with user-controlled mode selection per session type.
+
+---
+
+## 2. P1 References
+
+| Reference | Location |
+|---|---|
+| Break System — configuration and behaviour | PRD §3.3 |
+| Break button — greyscale on exhaustion | PRD §3.3.4 |
+| Break button — absent when 0 breaks configured | PRD §3.3.5 |
+| Focus Session screen — Break button placement | `ui_focus_session.md` |
+| Preset properties — break count + duration | PRD §3.1.2 |
+| Session types (tsession / msession) | Implicit across PRD §3.2, §3.8 |
+
+---
+
+## 3. AI Mode Configuration
+
+### 3.1 App-Wide AI Toggle
+
+**Location:** Settings → AI
+
+| Control | Type | Default |
+|---|---|---|
+| Enable AI Features | Toggle | OFF |
+| API Key | Text input (masked) | Empty |
+| API Key status | Status label | *"No key entered"* / *"Key saved"* / *"Key invalid"* |
+
+**Behaviour:**
+- AI toggle OFF → all AI features disabled app-wide. Original P1 break system applies to all sessions
+- AI toggle ON but no API key → AI features remain disabled. Persistent inline warning: *"Add an API key in Settings to enable AI features"*
+- API key is stored in `flutter_secure_storage` (TRD §1.2) — never in plaintext Hive or SQLite
+- Key validation: on save, a test request is made to the API. Response determines key status label
+
+### 3.2 Per-Session-Type Break Mode
+
+When AI is ON and a valid API key is present, the user configures the break mode independently for tsessions and msessions.
+
+**Location:** Settings → AI → Break Negotiation
+
+| Session Type | Options |
+|---|---|
+| Task Sessions (tsession) | Preset breaks only / AI negotiation only / Both |
+| Manual Sessions (msession) | Preset breaks only / AI negotiation only / Both |
+
+**Modes explained:**
+
+| Mode | Break Button Behaviour |
+|---|---|
+| Preset breaks only | Identical to P1. Break count from preset. AI not involved |
+| AI negotiation only | Preset break count is ignored. Break button always present (never greyscales). Tapping opens AI negotiation flow |
+| Both | Preset breaks available AND AI negotiation available. Two buttons shown: "Break" (preset) and "AI Break". Each operates independently |
+
+### 3.3 Negotiation Difficulty
+
+**Location:** Settings → AI → Break Negotiation → Difficulty
+
+| Level | Description |
+|---|---|
+| Easy | AI grants reasonable requests readily. Minimal pushback |
+| Medium | AI requires a clear, plausible reason. Will counter-propose duration |
+| Hard | AI is strict. Short, vague, or weak reasons are denied. Significant pushback |
+
+Difficulty is a global setting, not per-preset.
+
+### 3.4 Custom Prompt
+
+**Location:** Settings → AI → Break Negotiation → Custom Prompt
+
+An optional free-text field. If filled, this text is injected into the AI system prompt to personalise the negotiation persona.
+
+**Validation:** On save, the custom prompt itself is sent to the AI for self-validation before being stored.
+
+**Validation request:**
+```
+System: You are a safety validator. A user wants to set a custom prompt for an AI focus assistant 
+that decides whether to grant study breaks. Your job is to determine if the provided prompt would 
+make the AI unable to perform its core function (evaluating break requests and returning structured 
+responses), render it trivially permissive (always grant), or trivially restrictive (always deny). 
+Respond ONLY with valid JSON: {"valid": true/false, "reason": "string"}
+
+User: [custom prompt text]
+```
+
+- If `valid: false`: prompt is rejected. Inline error shown with the reason. Prompt not saved
+- If `valid: true`: prompt saved to Hive
+
+---
+
+## 4. Negotiation Flow
+
+### 4.1 Trigger
+
+User taps the "AI Break" button (or "Break" if mode = AI only) during an active session.
+
+### 4.2 Negotiation Screen
+
+A bottom sheet opens (not full-screen — session timer continues running in background).
+
+**Header:**
+- Session name + elapsed time (static at time of tap, updates every second)
+- Difficulty badge (Easy / Medium / Hard)
+
+**Conversation area:**
+- Scrollable message thread (chat-style)
+- AI messages: left-aligned, Electric Indigo bubble
+- User messages: right-aligned, Surface colour bubble
+
+**Input area:**
+- Text field: *"Give a reason for your break..."*
+- Duration selector: horizontal chip row — 5 min / 10 min / 15 min / 20 min / Custom
+- Send button (Electric Indigo)
+
+**First message (auto-generated by AI on sheet open):**
+> *"You want a break. Tell me why, and how long you need."*
+
+### 4.3 API Request Format
+
+Every user message triggers an API call to the configured model.
+
+**System prompt (assembled at runtime):**
+```
+You are a strict but fair AI focus assistant helping a student maintain their study sessions. 
+Your job is to evaluate break requests and decide whether to grant them.
+
+Difficulty: [Easy / Medium / Hard]
+Current session: [session name], elapsed: [HH:MM]
+[Custom prompt if set, validated and stored]
+
+You must respond ONLY with valid JSON in this exact format:
+{
+  "message": "string — your response to show the user (max 80 words)",
+  "granted": true/false,
+  "duration_minutes": integer or null
+}
+
+Rules:
+- If granted is true: duration_minutes must be a positive integer (the approved break duration)
+- If granted is false: duration_minutes must be null
+- message must be conversational, direct, and consistent with the difficulty level
+- Never break character. Never explain that you are an AI within the negotiation
+- The user can negotiate — they may respond to your denial and you must re-evaluate
+```
+
+**User message payload:**
+```json
+{
+  "role": "user",
+  "content": "Reason: [user text] | Requested duration: [N] minutes"
+}
+```
+
+Full conversation history is sent with each request (multi-turn context).
+
+### 4.4 Response Handling
+
+Parse JSON response:
+
+```dart
+class AIBreakResponse {
+  final String message;
+  final bool granted;
+  final int? durationMinutes;
+}
+```
+
+**If `granted: true`:**
+- AI message displayed in thread
+- Break starts immediately after a 1-second pause
+- Bottom sheet closes
+- Break runs for `durationMinutes` (standard break flow, PRD §3.3.3)
+- Break is logged with source = `ai`
+
+**If `granted: false`:**
+- AI message displayed in thread
+- Input field re-activates — user can respond and negotiate further
+- No limit on negotiation rounds
+- "Give up" button appears after the 2nd denial (subtle, secondary style): *"Skip break"* — closes sheet, no break granted
+
+**On API error / timeout:**
+- Inline error: *"Couldn't reach AI. Try again or use a preset break."*
+- If mode = AI only and preset breaks exist in preset: a fallback "Use preset break" button appears
+- If mode = AI only and preset has 0 breaks: only retry option available
+
+### 4.5 Conversation History
+
+The full negotiation thread for a session is stored in SQLite and linked to the `FocusSession` record. It is viewable post-session in session history (P2 addition to session history detail).
+
+---
+
+## 5. Data Model
+
+### 5.1 New Model: AIBreakNegotiation
+
+```dart
+@freezed
+class AIBreakNegotiation with _$AIBreakNegotiation {
+  const factory AIBreakNegotiation({
+    required String id,              // UUID
+    required String sessionId,       // FK to focus_sessions
+    required List<NegotiationMessage> messages,
+    required bool granted,
+    int? grantedDurationMinutes,
+    required DateTime startedAt,
+    DateTime? resolvedAt,
+  }) = _AIBreakNegotiation;
+}
+
+@freezed
+class NegotiationMessage with _$NegotiationMessage {
+  const factory NegotiationMessage({
+    required String role,    // 'user' or 'ai'
+    required String content,
+    required DateTime timestamp,
+  }) = _NegotiationMessage;
+}
+```
+
+### 5.2 AI Settings (Hive)
+
+| Key | Type | Description |
+|---|---|---|
+| `ai_enabled` | bool | App-wide AI toggle |
+| `ai_difficulty` | String | 'easy' / 'medium' / 'hard' |
+| `ai_custom_prompt` | String? | Validated custom prompt or null |
+| `ai_break_mode_tsession` | String | 'preset' / 'ai' / 'both' |
+| `ai_break_mode_msession` | String | 'preset' / 'ai' / 'both' |
+
+API key stored in `flutter_secure_storage` only — never in Hive.
+
+---
+
+## 6. Database Schema Changes
+
+### 6.1 New Table: ai_break_negotiations
+
+```sql
+CREATE TABLE ai_break_negotiations (
+  id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL,
+  messages_json TEXT NOT NULL,   -- JSON array of NegotiationMessage
+  granted INTEGER NOT NULL DEFAULT 0,
+  granted_duration_minutes INTEGER,
+  started_at INTEGER NOT NULL,
+  resolved_at INTEGER,
+  FOREIGN KEY (session_id) REFERENCES focus_sessions(id) ON DELETE CASCADE
+);
+```
+
+No changes to existing P1 tables.
+
+---
+
+## 7. API
+
+- **Provider:** Gemini Flash (free tier) as default recommendation. User enters their own key
+- **Model string:** configurable — user pastes their API key; model endpoint is fixed in app to a single supported free-tier model
+- **Request timeout:** 10 seconds. On timeout → error state (§4.4)
+- **Rate limiting:** No explicit in-app rate limiting in P2. If API returns rate limit error → error state with message: *"API rate limit reached. Wait a moment and try again."*
+
+**Note for implementation:** The API call must be made from Dart (Flutter) directly using `http` package. No server-side proxy in P2. The API key never leaves the device.
+
+---
+
+## 8. Module Boundary
+
+**Owned by:** new `ai/` module
+
+```
+features/
+└── ai/
+    ├── data/
+    │   ├── ai_break_dao.dart
+    │   ├── ai_api_client.dart              # http calls to AI provider
+    │   └── ai_settings_repository.dart     # Hive + flutter_secure_storage
+    ├── domain/
+    │   ├── ai_break_negotiation.dart
+    │   ├── negotiation_message.dart
+    │   └── use_cases/
+    │       ├── validate_custom_prompt.dart
+    │       ├── send_negotiation_message.dart
+    │       └── get_ai_break_response.dart
+    └── presentation/
+        ├── ai_break_sheet.dart             # Bottom sheet negotiation UI
+        └── ai_settings_section.dart        # Settings → AI section
+```
+
+Modifications to existing P1 modules:
+- `focus_timer/presentation/focus_session_screen.dart` — Break button logic extended to handle AI mode
+- `settings/presentation/` — AI settings section added
