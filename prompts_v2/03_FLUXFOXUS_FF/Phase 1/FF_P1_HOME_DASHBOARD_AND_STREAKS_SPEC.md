@@ -277,7 +277,7 @@ class StreakEvaluationWorker(
 CREATE TABLE streaks (
     id INTEGER PRIMARY KEY CHECK (id = 1),
     current_streak INTEGER NOT NULL DEFAULT 0,
-    longest_streak INTEGER NOT NULL DEFAULT 0,
+    best_streak INTEGER NOT NULL DEFAULT 0,            -- All-time personal best streak
     last_completed_date TEXT NOT NULL,         -- 'YYYY-MM-DD'
     relief_days_json TEXT NOT NULL DEFAULT '["SUNDAY"]', -- Relief days of week
     updated_at INTEGER NOT NULL

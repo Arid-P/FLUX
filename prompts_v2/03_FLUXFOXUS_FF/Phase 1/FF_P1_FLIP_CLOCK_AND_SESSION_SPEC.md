@@ -184,6 +184,7 @@ Displayed when *"Stop Focusing"* is pressed during an active countdown:
 - **`[ Quit Session ]` is STRICTLY LOCKED:**
   - Disabled, unclickable, and dimmed (30% alpha) until the countdown delay reaches `0s`.
   - **Once Timer Hits 0:** Becomes active in `#1B263B` with Crimson border (`#DC2626`). Tapping terminates session, resets daily streak to `0` (`💤 0`), and navigates to Home.
+  - *(Phase 2 Forward Integration: If the user has banked Grace Shields via [`FF_P2_STREAK_GRACE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%202/FF_P2_STREAK_GRACE_SPEC.md), quitting consumes 1 shield, protecting the streak at its current value and shielding the rest of the day).*
 
 ---
 
@@ -197,7 +198,7 @@ When a countdown session hits `00:00` or a stopwatch session is successfully fin
      - Header: *"Focus Session Complete!"*
      - Time Logged: E.g., *"1h 45m dedicated to Olympiad Math"*.
      - Streak Update: Animated flame counter: *"🔥 18 Days → 19 Days"*.
-3. **Smooth Transition:** Fades out after 2.5 seconds (or upon user tap) and smoothly returns to the Home dashboard (`Tab.Home`).
+3. **Smooth Transition & Flow Rating:** Fades out after 2.5 seconds (or upon user tap). If Post-Session Reflection is active ([`FF_P2_POST_SESSION_REFLECTION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%202/FF_P2_POST_SESSION_REFLECTION_SPEC.md)), the 1-tap rating bottom sheet appears before returning to the Home dashboard (`Tab.Home`).
 
 ---
 

@@ -101,6 +101,9 @@ A scrollable container presenting all 5 shield cards:
   - **Gating Logic:** Remains disabled, greyed out (`opacity 0.4`), and non-interactive until Shields 1, 2, 3, and 4 are marked `[ Granted 🟢 ]`.
   - Shield 5 (Battery Optimization) is marked `[ Optional ]` and does not block progression.
 
+> [!NOTE]
+> **Phase 2 Forward Integration:** Phase 2 introduces **Shield #6: Uninstall Guard (Device Admin)** ([`FF_P2_UNINSTALL_PROTECTION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%202/FF_P2_UNINSTALL_PROTECTION_SPEC.md)), which appears directly below Shield #5 as an additional Optional shield.
+
 ---
 
 ### 3.3 Step 3: OEM Device Killer Survival Guide

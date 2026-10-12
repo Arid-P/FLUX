@@ -23,7 +23,7 @@ Uninstall Protection introduces deliberate friction against impulsive app remova
 
 | Component | Upstream Dependency | Contract / Integration |
 |---|---|---|
-| **Onboarding Shield #5** | [`FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md) | Registers as the 5th shield on the interactive Permissions Checklist. Explicitly marked as **Optional**. |
+| **Onboarding Shield #6** | [`FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md) | Registers as the 6th shield (following Battery Optimization) on the interactive Permissions Checklist. Explicitly marked as **Optional**. |
 | **Active Session Guard** | [`FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md) | `SessionRepository.observeActiveSession()` supplies live session state. Disabling protection is **strictly blocked** while a session is active. |
 | **Streak Engine Integrity** | [`FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md) | Removing protection does **NOT** reset the streak to 0. The streak remains intact. |
 | **Settings Navigation** | `Tab.Home` Header Settings Gear | Navigates to `/settings/security` section containing the protection toggle. |
@@ -114,8 +114,8 @@ class FluxFoxusDeviceAdminReceiver : DeviceAdminReceiver() {
 ## 4. Feature Specifications & Behavioral Rules
 
 ### 4.1 Onboarding Flow Integration
-* **Placement:** Positioned as **Shield #5** on the interactive permissions screen (`/onboarding/permissions`).
-* **Optional Flag:** Unlike Accessibility and Usage Stats (which are mandatory for blocking), Shield #5 displays an `OPTIONAL` tag in Secondary Text (`#A0AAB2`).
+* **Placement:** Positioned as **Shield #6 (Uninstall Guard)** on the interactive permissions screen (`/onboarding/permissions`), placed directly below Shield #5 (Battery Optimization).
+* **Optional Flag:** Marked with an `OPTIONAL` tag in Secondary Text (`#A0AAB2`). Users can proceed through onboarding without enabling it.
 * **Grant Action:** Tapping `[ Enable ➔ ]` launches the system enrollment intent:
   ```kotlin
   val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {

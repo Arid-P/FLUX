@@ -211,7 +211,7 @@ CREATE TABLE preset_app_rules (
 -- Scheduled & Active Focus Sessions (Both Native FF & FD Synced)
 CREATE TABLE focus_sessions (
     id TEXT PRIMARY KEY NOT NULL,
-    session_origin TEXT NOT NULL DEFAULT 'NATIVE_FF', -- 'NATIVE_FF' (ssession/msession) or 'SYNCED_FD' (tsession)
+    session_origin TEXT NOT NULL DEFAULT 'MANUAL',    -- 'MANUAL' (impulse), 'SCHEDULED' (calendar), or 'TASK_SYNC' (FD synced)
     preset_id TEXT NOT NULL,                          -- FK to presets(id)
     session_title TEXT NOT NULL,                      -- Custom name or fallback to preset name
     linked_task_id TEXT,                              -- Nullable UUID from FluxDone (if synced)
@@ -223,7 +223,7 @@ CREATE TABLE focus_sessions (
     breaks_taken INTEGER NOT NULL DEFAULT 0,
     breaks_total_seconds INTEGER NOT NULL DEFAULT 0,
     recurrence_rule TEXT,                             -- Nullable RRULE JSON
-    status TEXT NOT NULL,                             -- 'SCHEDULED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY', 'CANCELLED'
+    status TEXT NOT NULL,                             -- 'PLANNED', 'ACTIVE', 'PAUSED_BREAK', 'COMPLETED', 'QUIT_PREMATURELY', 'SKIPPED', 'EXPIRED_ON_BOOT'
     penalty_delay_applied_seconds INTEGER NOT NULL DEFAULT 0,
     headsup_notification_armed INTEGER NOT NULL DEFAULT 1,
     created_at INTEGER NOT NULL,
