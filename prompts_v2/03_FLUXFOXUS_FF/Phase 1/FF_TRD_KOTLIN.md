@@ -147,6 +147,7 @@ CREATE TABLE app_limits (
     daily_budget_minutes INTEGER NOT NULL,
     extra_time_passes_used INTEGER NOT NULL DEFAULT 0, -- Max 3 per day
     is_enabled INTEGER NOT NULL DEFAULT 1,
+    limit_type TEXT NOT NULL DEFAULT 'INDIVIDUAL',     -- 'INDIVIDUAL' or 'CATEGORY_MEMBER' (Phase 4)
     created_at INTEGER NOT NULL
 );
 ```
@@ -230,10 +231,13 @@ CREATE TABLE streak_day_history (
 CREATE TABLE daily_focus_scores (
     date TEXT PRIMARY KEY NOT NULL,                -- 'YYYY-MM-DD'
     total_score INTEGER NOT NULL,                  -- 0 to 100
-    time_score REAL NOT NULL,
-    break_score REAL NOT NULL,
-    limit_score REAL NOT NULL,
-    completion_score REAL NOT NULL,
+    time_score REAL NOT NULL,                      -- Max 40
+    break_score REAL NOT NULL,                     -- Max 20 (Phase 4 rebalanced)
+    limit_score REAL NOT NULL,                     -- Max 20
+    completion_score REAL NOT NULL,                -- Max 15
+    task_score REAL NOT NULL DEFAULT 5.0,          -- Max 5 (Phase 4 Task Alignment)
+    task_component_reasoning TEXT,                 -- AI analytical explanation (max 40 words)
+    score_finalized INTEGER NOT NULL DEFAULT 0,
     focus_minutes_actual INTEGER NOT NULL,
     target_minutes INTEGER NOT NULL,
     is_checkpoint_day INTEGER NOT NULL DEFAULT 0,
