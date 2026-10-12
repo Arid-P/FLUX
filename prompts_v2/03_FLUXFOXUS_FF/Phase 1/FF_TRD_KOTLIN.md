@@ -155,6 +155,18 @@ CREATE TABLE streaks (
     current_streak INTEGER NOT NULL DEFAULT 0,
     best_streak INTEGER NOT NULL DEFAULT 0,
     last_completed_date TEXT NOT NULL,      -- 'YYYY-MM-DD'
+    relief_days_json TEXT NOT NULL DEFAULT '["SUNDAY"]', -- Relief/rest days
+    updated_at INTEGER NOT NULL
+);
+```
+
+### 3.8 Table: `app_limit_streaks`
+```sql
+CREATE TABLE app_limit_streaks (
+    package_name TEXT PRIMARY KEY NOT NULL,
+    current_streak INTEGER NOT NULL DEFAULT 0,
+    longest_streak INTEGER NOT NULL DEFAULT 0,
+    last_successful_date TEXT NOT NULL,     -- 'YYYY-MM-DD'
     updated_at INTEGER NOT NULL
 );
 ```

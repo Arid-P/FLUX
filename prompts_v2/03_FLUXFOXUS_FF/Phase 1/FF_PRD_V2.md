@@ -29,7 +29,15 @@ FluxFoxus (FF) is an uncompromising screen discipline and focus enforcement tool
 
 ---
 
-## 3. Core Feature Specifications
+### 3.0 Home Dashboard (`Tab.Home`) & Daily Streak Engine
+- **Executive Shortcut Cockpit:** Home acts as the instant launcher mirroring `Tab.Focus`. Tapping *"Start Focusing"* starts the timer immediately using the active preset.
+- **Header:** Features `[⚙️ FF] FluxFoxus [🔥 18]` (or dormant `💤 0` when unlit), responsive weekly average pills (`Focused: 2h 53m` & `Weekly: 3h 20m`), and a top-right Settings gear icon (`/settings`).
+- **Momentum Card:** Continuous 24-hour smooth Bézier stacked area chart (Productive `#778D7A`, Semi-Productive `#D4C4A8`, Distracting `#E07A5F`, Others `#415A77`) with 6am, 12pm, 6pm, 12am markers and 2×2 legend grid.
+- **Session Quick-Launcher:** Displays today's cumulative focus time (e.g. `1hr 43m`), active preset emoji, preset name pill with quick-switcher chevron `▾`, and full session details.
+- **Streak Rules:**
+  - **Daily Focus Qualifier:** Completing at least 1 focus session (scheduled or standalone) increments the streak (+1).
+  - **Weekly Relief Days (Sundays):** Designated rest days act as **Streak Neutral Days**—resting preserves the streak without resetting to zero.
+  - Detailed in [`FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md).
 
 ### 3.1 Presets & Focus Unified Hub (`Tab.Focus`)
 A **Preset** is the central abstraction in FF encapsulating an enforcement strategy. Presets and the focus launcher are unified under the **Focus** tab:
@@ -72,10 +80,10 @@ FF provides complete standalone scheduling capability in Phase 1:
 To eliminate impulsive session quits:
 - When the user taps *"Quit Session"* or presses `Esc`:
   - An emergency friction dialog appears displaying two buttons: *"Keep Going"* and *"Quit Session"*.
-  - **Both buttons are completely locked and unclickable for 15 to 25 seconds.**
+  - **Asymmetric Lock Rule:** *"Keep Going"* is **always FREE and unlocked at all times** (instantly clickable to return to study). *"Quit Session"* is **strictly locked and unclickable** for 15 to 25 seconds.
   - A countdown ring displays the remaining lock seconds.
   - Delay calculation: Base 15 seconds + 1 additional second per 15 minutes of distracting app usage recorded today (capped at 25 seconds).
-  - Quitting an active session resets the user's daily focus streak to `0`.
+  - Quitting an active session resets the user's daily focus streak to `0` (`💤 0`).
 
 ### 3.5 Break Management System
 - User taps *"Take Break"* during an active session (if breaks remain).

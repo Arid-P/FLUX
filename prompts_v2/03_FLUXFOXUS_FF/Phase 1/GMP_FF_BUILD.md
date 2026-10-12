@@ -142,7 +142,7 @@ dependencies {
    - Calls `goAsync()` to persist scheduled session in Room DB without blocking the main thread.
 
 ### Phase 4: UI Screens & ViewModels
-1. **Home Screen (`Tab.Home`):** Dashboard card, streak flame pill, and quick session launcher.
+1. **Home Dashboard (`Tab.Home`) & Streak Engine:** Executive shortcut cockpit, responsive weekly average pills, `🔥 18` and `💤 0` streak pill, 24-hour smooth Bézier Momentum area chart, session quick launcher card, and WorkManager midnight streak evaluation with Sunday relief day protection.
 2. **Focus & Presets Screen (`Tab.Focus`):** Scrollable presets list with sorting, Floating Island Mode Selector (Timer, Stopwatch, From-To), "Start Focusing" CTA, and full-screen mechanical flip clock.
 3. **Planner Screen (`Tab.Planner`):** 7-day strip, scheduled session cards, and `+ Schedule Session` FAB with preset-first selection and automatic fallback naming.
 4. **Preset Editor (`/presets/create`, `/presets/edit`) & Whitelist Hub:** Full-screen push screen with full Gboard/Android EmojiPicker (`androidx.emoji2`), break steppers, multi-state content filtering (YouTube & Web Browsers), dedicated app selector (`/presets/select-apps`), and global content whitelist hub with discipline sentence typing verification.

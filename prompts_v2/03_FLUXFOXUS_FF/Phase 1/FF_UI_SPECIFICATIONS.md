@@ -33,14 +33,29 @@ The mobile interface is structured around 5 bottom navigation items:
 
 ## 3. Screen Specifications
 
-### 3.1 Home Screen
-- **Header:** Current date, user avatar / Ari profile badge, streak flame counter with count (e.g., `"🔥 18 Days"`).
-- **Active / Last-Used Preset Card:**
-  - Surface container in `#1B263B` with 1dp border `#415A77`.
-  - Emoji icon (e.g., 📐), Preset title (*"Olympiad Math Deep Work"*), Break pills (*"2 breaks · 5m each"*), YouTube status (*"Study Mode Whitelist"*).
-  - Dropdown chevron allowing instant switching between saved presets.
-- **Primary CTA:** Wide pill button in `#D4C4A8` with dark navy text: `"Start Focusing"`.
-- **Today's Summary Strip:** Horizontal row showing Total Focus Time (`3h 45m`), Distracted Time (`22m`), and Tasks Done (`7`).
+### 3.1 Home Screen (`Tab.Home`)
+Executive shortcut cockpit for immediate momentum and deep work launch:
+- **Responsive Header:**
+  - Left: Aperture emblem (24dp) + *"FluxFoxus"* title (`#F4F1DE`, 20sp) + compact Streak Pill: **`🔥 18`** when active or **`💤 0`** when dormant.
+  - Center/Right: Responsive weekly average pills (side-by-side or stacked):
+    - `Focused: 2h 53m` (daily focus avg this week in Sage `#778D7A`).
+    - `Weekly: 3h 20m` (daily total screen time avg this week in Sand `#D4C4A8`).
+  - Far Right: Settings gear icon button (`Icons.Default.Settings`) navigating to App & Account settings.
+- **Momentum Card (Last 24h):**
+  - Surface `#1B263B` with border `#415A77` and title *"Momentum"* (subtitle *"Last 24h"*).
+  - Smooth Bézier stacked area chart (~150dp height) with 6am, 12pm, 6pm, 12am X-axis labels.
+  - Stacking layers: Productive (`#778D7A`), Semi-Productive (`#D4C4A8`), Distracting (`#E07A5F`), Others (`#415A77`).
+  - 2×2 Legend Grid beneath chart with hairlines displaying exact 24h category minutes.
+- **Upcoming Session Alert Banner (Dynamic):**
+  - Slides in when a session starts in $\le 15$ mins: *"⚡ [Preset Name] starts in [X] min"*.
+- **Session Quick-Launcher Card:**
+  - Displays today's cumulative focus duration in bold (e.g. `"1hr 43m"` in `#F4F1DE`).
+  - Active preset emoji (28dp), Preset name pill (`[ Olympiad Math ]`), and switcher chevron `▾` (pops quick preset picker bottom sheet).
+  - Detail rows: Duration window (or $\infty$), break count, break duration, and syllabus notes.
+- **Primary Action CTA:**
+  - Full-width sticky pill: **`"Start Focusing"`** in Warm Sand `#D4C4A8` (idle) or **`"Resume Session"`** in Sage `#778D7A` (running).
+  - Tapping invokes the exact same launch action as `Tab.Focus` with zero screen hopping.
+- Detailed in [`FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md).
 
 ---
 
@@ -105,10 +120,9 @@ The central command surface for starting sessions with any preset:
 - **Center Dialog Container:** Surface `#1B263B` with `#415A77` border.
 - **Delay Ring Indicator:** Circular progress ring in `#D4C4A8` displaying locked seconds countdown (e.g., `"19s"`).
 - **Warning Text:** *"Quitting will forfeit your 18-day streak and register a premature quit penalty."*
-- **Button Controls:**
-  - Button 1: *"Keep Going"*
-  - Button 2: *"Confirm Quit"*
-  - **Crucial Rule:** Both buttons remain disabled, unclickable, and muted until the countdown hits `0`.
+- **Button Controls & Asymmetric Lock Rule:**
+  - Button 1: *"Keep Going"* in Muted Sage Green (`#778D7A`). **Always FREE, unlocked, and immediately clickable at all times** to encourage instant return to focus.
+  - Button 2: *"Confirm Quit"* in Crimson Alert (`#DC2626`). **Strictly locked, disabled, and unclickable** until the countdown hits `0`.
 
 ---
 

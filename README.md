@@ -35,6 +35,7 @@ prompts_v2/
         ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
         ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
         ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette (5 bottom tabs)
+        ├── FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md # Home Dashboard, 24h Momentum & Daily Streak Engine
         ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
         ├── FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md # 3D Flip Clock, 2-row controls, Break mode & completion
         ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode

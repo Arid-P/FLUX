@@ -177,11 +177,13 @@ Displayed when *"Stop Focusing"* is pressed during an active countdown:
   $$\text{Wait Seconds} = \text{clamp}\left(15 + \left\lfloor\frac{\text{Today's Distraction Minutes}}{15}\right\rfloor, 15, 25\right)$$
   - Displays circular progress ring in `#D4C4A8` counting down to 0.
 
-### 5.2 Button Locking Rules
-- **Crucial Rule:** Both `"Keep Going"` and `"Quit Session"` remain disabled, unclickable, and dimmed (30% alpha) until the delay hits `0s`.
-- **Once Timer Hits 0:**
-  - `"Keep Going"`: Pill in `#D4C4A8` (Warm Sand) with dark navy text. Tapping closes modal and resumes session.
-  - `"Quit Session"`: Pill in `#1B263B` with Crimson border (`#DC2626`). Tapping terminates session, resets streak to `0`, and navigates to Home.
+### 5.2 Button Locking Rules & Asymmetric Gate
+- **`[ Keep Going ]` is ALWAYS FREE & UNLOCKED:**
+  - Active, full opacity, styled in Muted Sage Green (`#778D7A`).
+  - Immediately clickable at second 1 or second 19 to instantly abandon quitting and return to deep work with zero friction.
+- **`[ Quit Session ]` is STRICTLY LOCKED:**
+  - Disabled, unclickable, and dimmed (30% alpha) until the countdown delay reaches `0s`.
+  - **Once Timer Hits 0:** Becomes active in `#1B263B` with Crimson border (`#DC2626`). Tapping terminates session, resets daily streak to `0` (`💤 0`), and navigates to Home.
 
 ---
 
