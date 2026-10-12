@@ -17,7 +17,7 @@
 | **Preferences** | Android Jetpack `DataStore` | Last-used preset, user configurations, whitelist |
 | **Screen Time** | `android.app.usage.UsageStatsManager` | System screen time metrics & category categorization |
 | **App Enforcement**| Android `AccessibilityService` | Real-time foreground app interception & YouTube channel inspection |
-| **Overlays** | `android.view.WindowManager` (Overlay) | 2/5/10/20 intervention window (`TYPE_APPLICATION_OVERLAY`) |
+| **Overlays** | `android.view.WindowManager` (Overlay) | 5/10/20/40 intervention window (`TYPE_APPLICATION_OVERLAY`) |
 | **Timer Engine** | Android `ForegroundService` | Persistent timer service with ongoing notification |
 | **Background Tasks**| `WorkManager` & `AlarmManager` | Daily streak evaluation, widget refresh, precise scheduled start alarms |
 | **Widgets** | Android Jetpack `Glance` | 4-segment screen time donut ring home screen widget |
@@ -168,7 +168,7 @@ CREATE TABLE streaks (
 2. Checks if an active focus session is in progress:
    - If `packageName` is marked blocked in active Preset, immediately redirects user to Home Launcher (`Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)`), and displays a HUD notification: *"Focus Session Active: Instagram is blocked."*
 3. If no session is active, checks `app_limits`:
-   - If today's usage exceeds `daily_budget_minutes`, launches the 2/5/10/20 intervention overlay window.
+   - If today's usage exceeds `daily_budget_minutes`, launches the 5/10/20/40 intervention overlay window.
 4. **YouTube Window Inspection:**
    - When `packageName == "com.google.android.youtube"`:
    - Uses `AccessibilityNodeInfo` to inspect video description / channel name nodes.

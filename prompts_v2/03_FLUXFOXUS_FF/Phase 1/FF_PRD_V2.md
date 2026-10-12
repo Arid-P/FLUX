@@ -87,17 +87,21 @@ To eliminate impulsive session quits:
 - **Emergency Extra Time:** User can request extra time passes (up to 3 passes of 5/10/15 mins per day, maximum 45 mins total).
 - **Hard Turn-Off Protection:** Disabling an active app limit requires surviving a 3-second hold button with an explicit warning showing streak forfeiture.
 
-### 3.7 YouTube Study Mode (Mobile & Desktop)
+### 3.7 YouTube Study Mode & Edge Grabber (Mobile & Desktop)
 - Restricts YouTube viewing strictly to pre-approved educational channels (PW, Olympiad math channels, 3Blue1Brown).
 - **Friction Sentence Engine:** Attempting to watch non-whitelisted videos triggers a full-screen block requiring the user to type verification sentences:
   - First 25 violations: 5 short sentences.
   - 25+ violations: Escalates to 50 complex philosophical and discipline sentences.
+- **Dynamic Edge Grabber Pill:** A floating handle on the screen right edge inside YouTube:
+  - **Visible when Study Mode is OFF.**
+  - **Crucial Enforcement Trigger:** When the user toggles Study Mode OFF via the Edge Grabber, FF **immediately summons the 2×2 Time Selection Grid (5 min | 10 min | 20 min | 40 min)** to prevent open-ended binging.
 
-### 3.8 The Distracted Intervention Window (2 / 5 / 10 / 20 min)
+### 3.8 The Distracted Intervention Window (5 / 10 / 20 / 40 min)
 - When a blacklisted distracting app is opened *outside* of a scheduled focus session:
   - FF immediately launches a system overlay window on top of the distracting app.
-  - Forces the user to intentionally pick an allowed usage window: **2 min**, **5 min**, **10 min**, or **20 min**.
-  - A persistent floating pill displays remaining seconds. When the window hits `0`, the app is minimized and locked for a mandatory 5-minute cool-down period.
+  - Forces the user to intentionally pick an allowed usage window: **5 min**, **10 min**, **20 min**, or **40 min**.
+  - A persistent floating pill displays remaining seconds. When the window hits `0`, the app is minimized and locked for a mandatory cooldown period.
+  - Does not reset focus session streaks.
 
 ### 3.9 Screen Time Categorization & Usage Stats
 Uses Android `UsageStatsManager` to aggregate daily screen time across 4 categories:

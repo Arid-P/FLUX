@@ -106,7 +106,7 @@ FF completely replaces Regain. It is not a gentle "wellness" app; it is an **enf
   - Presets are applied to sessions on demand; they do not dictate session start times.
 - **The Focus Timer:** Mechanical flip-clock design (HH:MM). Supports Countdown, Stopwatch, and Open-Ended modes. Full-screen immersive takeover during active sessions.
 - **Stop Focusing Modal:** To prevent impulsive session quits, both dialog buttons (*"Keep Going"* and *"Quit Session"*) are locked and disabled for 15–25 seconds. The delay is mathematically calculated based on streak count and today's distraction time.
-- **Intervention Overlays (2 / 5 / 10 / 20 min):** When a marked distracting app is opened outside a scheduled focus session, a system overlay appears forcing the user to pick an intentional usage window. Once expired, access is blocked.
+- **Intervention Overlays (5 / 10 / 20 / 40 min):** When a marked distracting app is opened outside a scheduled focus session, a system overlay appears forcing the user to pick an intentional usage window. Once expired, access is blocked.
 - **YouTube Study Mode:** Only whitelisted academic channels are allowed. Attempting to view non-whitelisted videos requires typing friction sentences (5 short sentences initially, scaling to 50 longer sentences).
 - **Authoritative UI Theme: Holst (Холст):**
   Strictly governed by the design override sourced from `Theme/Холст.jpeg`:

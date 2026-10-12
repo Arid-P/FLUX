@@ -133,29 +133,34 @@ The central command surface for starting sessions with any preset:
 
 ---
 
-### 3.8 Distracted Intervention Overlay (2 / 5 / 10 / 20 min)
+### 3.8 Distracted Intervention Overlay (5 / 10 / 20 / 40 min)
 - Rendered via Android `WindowManager` with `LayoutParams.TYPE_APPLICATION_OVERLAY`.
 - Floats directly over any blacklisted app that is launched outside a scheduled session.
 - **UI Card:** Dark card `#1B263B` with border `#415A77` and text: *"Intentional Usage Check: How long do you need Instagram?"*
-- **Time Selection Buttons:**
-  - 4 pill buttons in `#778D7A`: `2 min`, `5 min`, `10 min`, `20 min`.
+- **2×2 Time Selection Grid:**
+  - 4 pill buttons in `#778D7A`: `5 min`, `10 min`, `20 min`, `40 min`.
   - Tapping a button dismisses the overlay and starts a floating countdown badge.
-  - When time expires, accessibility service closes the distracting app and enforces a 5-minute cooldown.
+  - When time expires, accessibility service closes the distracting app and enforces a mandatory cooldown before re-selection.
+- **Exit Button:** Full-width pill in `#D4C4A8`: `"Exit [App Name]"`.
 
 ---
 
-### 3.9 YouTube Study Mode Friction Screen
+### 3.9 YouTube Study Mode Friction Screen & Dynamic Edge Grabber
 - Invoked when user opens a non-whitelisted YouTube video.
 - Full-screen takeover displaying:
   - Video title and channel name.
   - Warning: *"Channel 'XYZ' is not on your academic study whitelist."*
   - Sentence prompt area: Displays random discipline quote (e.g., *"Discipline is choosing between what you want now and what you want most."*).
-  - Text input field: User must type the sentence with 100% character accuracy to unlock a 10-minute pass.
+  - Text input field: User must type the sentence with 100% character accuracy to unlock a pass.
   - Whitelist button: *"Add to Academic Whitelist"* (requires entering master passcode).
+- **Dynamic Edge Grabber:**
+  - Floating pill handle docked to screen right edge inside YouTube.
+  - **Visible when Study Mode is OFF.**
+  - **Turning Study Mode OFF:** If toggled OFF, immediately triggers the 2×2 Time Selection Grid (5 min | 10 min | 20 min | 40 min) to prevent unrestricted consumption.
 
 ---
 
-### 3.8 Home Screen Widget (Jetpack Glance)
+### 3.10 Home Screen Widget (Jetpack Glance)
 - Compact 2x2 or 4x2 Android home screen widget.
 - **Visuals:**
   - Donut ring divided into 4 colored segments representing daily usage categories:
