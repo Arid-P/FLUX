@@ -90,9 +90,10 @@ CREATE TABLE presets (
     id TEXT PRIMARY KEY NOT NULL,
     name TEXT NOT NULL,
     emoji TEXT NOT NULL DEFAULT '⏳',
-    break_count INTEGER NOT NULL DEFAULT 2,     -- 0 to 6
+    break_count INTEGER NOT NULL DEFAULT 2,          -- 0 to 6
     break_duration_minutes INTEGER NOT NULL DEFAULT 5, -- 1 to 15
     youtube_mode TEXT NOT NULL DEFAULT 'STUDY_MODE', -- 'BLOCK', 'ALLOW', 'STUDY_MODE'
+    browser_mode TEXT NOT NULL DEFAULT 'STUDY_MODE', -- 'BLOCK', 'ALLOW', 'STUDY_MODE'
     description TEXT,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
@@ -104,7 +105,7 @@ CREATE TABLE presets (
 CREATE TABLE preset_app_rules (
     preset_id TEXT NOT NULL,
     package_name TEXT NOT NULL,
-    is_blocked INTEGER NOT NULL DEFAULT 1,
+    rule_mode TEXT NOT NULL DEFAULT 'BLOCKED', -- 'BLOCKED', 'ALLOWED', 'STUDY_MODE'
     PRIMARY KEY(preset_id, package_name),
     FOREIGN KEY(preset_id) REFERENCES presets(id) ON DELETE CASCADE
 );
@@ -168,6 +169,17 @@ CREATE TABLE app_category_overrides (
 );
 ```
 
+### 3.7 Table: `global_content_whitelists`
+```sql
+CREATE TABLE global_content_whitelists (
+    id TEXT PRIMARY KEY NOT NULL,
+    app_type TEXT NOT NULL,          -- 'YOUTUBE_CHANNEL' or 'BROWSER_DOMAIN'
+    target_identifier TEXT NOT NULL,  -- e.g. '@3blue1brown' or 'desmos.com'
+    display_label TEXT NOT NULL,      -- e.g. '3Blue1Brown' or 'Desmos Graphing'
+    created_at INTEGER NOT NULL
+);
+```
+
 ---
 
 ## 4. Enforcement Architecture
@@ -179,10 +191,11 @@ CREATE TABLE app_category_overrides (
    - If `packageName` is marked blocked in active Preset, immediately redirects user to Home Launcher (`Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)`), and displays a HUD notification: *"Focus Session Active: Instagram is blocked."*
 3. If no session is active, checks `app_limits`:
    - If today's usage exceeds `daily_budget_minutes`, launches the 5/10/20/40 intervention overlay window.
-4. **YouTube Window Inspection:**
-   - When `packageName == "com.google.android.youtube"`:
-   - Uses `AccessibilityNodeInfo` to inspect video description / channel name nodes.
-   - If channel is not found in Whitelist, triggers friction overlay.
+4. **Multi-State Content Inspection (YouTube & Web Browsers):**
+   - When `packageName == "com.google.android.youtube"` in `STUDY_MODE`:
+     - Inspects video description / channel name nodes. If channel is not found in `global_content_whitelists`, triggers the friction overlay.
+   - When `packageName in BROWSER_PACKAGES` in `STUDY_MODE`:
+     - Inspects URL / address bar text. If active domain is not found in `global_content_whitelists`, redirects to a local focus blocked splash screen.
 
 ### 4.2 Foreground Timer Service
 - Running during active focus and breaks.

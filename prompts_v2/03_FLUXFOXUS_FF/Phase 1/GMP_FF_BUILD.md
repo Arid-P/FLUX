@@ -145,7 +145,7 @@ dependencies {
 1. **Home Screen (`Tab.Home`):** Dashboard card, streak flame pill, and quick session launcher.
 2. **Focus & Presets Screen (`Tab.Focus`):** Scrollable presets list with sorting, Floating Island Mode Selector (Timer, Stopwatch, From-To), "Start Focusing" CTA, and full-screen mechanical flip clock.
 3. **Planner Screen (`Tab.Planner`):** 7-day strip, scheduled session cards, and `+ Schedule Session` FAB with preset-first selection and automatic fallback naming.
-4. **Preset Editor (`/presets/create` & `/presets/edit`):** Full-screen push screen for emoji, breaks, app categories, and YouTube whitelist.
+4. **Preset Editor (`/presets/create`, `/presets/edit`) & Whitelist Hub:** Full-screen push screen with full Gboard/Android EmojiPicker (`androidx.emoji2`), break steppers, multi-state content filtering (YouTube & Web Browsers), dedicated app selector (`/presets/select-apps`), and global content whitelist hub with discipline sentence typing verification.
 5. **Limits, Stats & App Detail Screens:** App limit configuration, 3-second hold friction disable, 5/10/20/40m intervention overlay, `Tab.Stats` (`Daily` & `Weekly Trends`), Focus Ratio card, 7-day stacked charts, dedicated `AppDetailScreen` with single-app bar charts and category overrides, and Jetpack Glance 4-segment donut ring widget.
 
 ---

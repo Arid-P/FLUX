@@ -35,11 +35,12 @@ FluxFoxus (FF) is an uncompromising screen discipline and focus enforcement tool
 A **Preset** is the central abstraction in FF encapsulating an enforcement strategy. Presets and the focus launcher are unified under the **Focus** tab:
 - **Preset Properties:**
   - Name (e.g., *"Olympiad Math Deep Work"*, *"JEE Lecture"*, *"Reading"*)
-  - Emoji identifier (e.g., 📐, 🔬, 📖)
+  - Emoji identifier: Full Android/Gboard Unicode catalog (`androidx.emoji2:emoji2-emojipicker`) with quick academic favorites row (📐, 🔬, 📚, 💻, 🎯, ⚡, 🧠, ⏳, ✍️, ♟️)
   - Break count: `0` to `6` breaks per session (`0` = strict no-break session)
   - Break duration: `1` to `15` minutes per break
-  - Per-app blocking rules: Whitelist or Blacklist configuration
-  - YouTube Study Mode state: `BLOCK`, `ALLOW`, or `STRICT_WHITELIST`
+  - Per-app blocking rules: Configured via dedicated `/presets/select-apps` screen with one-tap *"Block All Distracting"*
+  - Multi-State Content-Filtered Apps: YouTube and Web Browsers (Chrome, Firefox, Brave) support `BLOCK`, `ALLOW`, or `STUDY_MODE` (enforced via native Accessibility Service)
+  - Global Academic Whitelists: Shared across all presets for study channels and academic domains, with 100% character accuracy discipline quote typing verification on additions (detailed in [`FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md))
 - **Default Selection:** The last-used preset automatically defaults for the next session.
 - **Sorting:** Interactive dropdown on the tab (*Recently Used*, *Alphabetical*, *Most Used*).
 - **The Floating Island Mode Selector:** A pill container spanning above the CTA button offering 3 focus launch modes:

@@ -121,15 +121,26 @@ The central command surface for starting sessions with any preset:
 
 ---
 
-### 3.7 Preset Creation & Edit Flow
-- Single-page form inside a bottom sheet or screen:
-  - Preset Name text field.
-  - Emoji picker grid (⏳, 📐, 🔬, 📚, 💻, 🎯, ⚡, 🧠).
-  - Break Count: Stepper selector (`0`, `1`, `2`, `3`, `4`, `5`, `6`). Setting `0` disables break duration.
-  - Break Duration: Slider from `1 min` to `15 min`.
-  - App Restriction Mode: Multi-select list of installed apps with search bar and quick filters (*Distracting*, *All*).
-  - YouTube Mode: Segmented control: `Block` | `Allow` | `Study Mode`.
-  - Save button in `#D4C4A8`.
+### 3.7 Preset Creation & Edit Flow (`/presets/create`, `/presets/edit`)
+- Full-screen push screen (`Scaffold`) with scrollable column and sticky bottom action bar.
+- **Top Bar:** Back arrow `←`, title *"New Preset"* / *"Edit Preset"*, and *"Save"* text CTA in `#D4C4A8`.
+- **Preset Identity:**
+  - Emoji button: Opens Gboard/Android standard full emoji picker (`androidx.emoji2:emoji2-emojipicker`) with a top quick-access row of academic icons (📐, 🔬, 📚, 💻, 🎯, ⚡, 🧠, ⏳, ✍️, ♟️).
+  - Outlined Preset Name text field in Eggshell Cream `#F4F1DE`.
+- **Break Configuration:**
+  - Break Count: Stepper `[ - ]` `2 breaks` `[ + ]` (`0` to `6`). Setting `0` disables break duration.
+  - Break Duration: Stepper `[ - ]` `5 mins` `[ + ]` (`1` to `15` min).
+- **Content-Filtered Apps (Multi-State Rules):**
+  - Granular 3-way segmented pill controls (`Block` | `Allow` | `Study Mode 🛡️`) for **YouTube** and **Web Browsers (Chrome, Firefox, Brave)**.
+  - Link: `[ ⚙️ Manage Global Content Whitelists → ]` routes to the **Content Whitelist Hub**.
+- **Dedicated App Selection Screen (`/presets/select-apps`):**
+  - Card displays summary: *"Blocked Apps: 5 Distracting, 1 Semi-Prod"*.
+  - Tapping opens dedicated screen with search bar, quick-action chips (`[ ⚡ Block All Distracting ]`, `[ Reset to Defaults ]`), and collapsible category groups (🔴 Distracting, 🟢 Productive, 🟡 Semi-Productive, ⚪ Others) with custom lock checkboxes.
+- **Global Content Whitelist Hub (`/presets/content-whitelists`):**
+  - Manages global study channels and academic web domains shared across all presets.
+  - **Discipline Sentence Verification:** Adding any channel or domain requires typing a randomly selected academic discipline aphorism with 100% character accuracy to prevent impulse whitelisting.
+- **Sticky Footer:** Full-width pill *"Save Preset"* in Warm Sand `#D4C4A8` (and muted *"🗑️ Delete Preset"* button when editing).
+- Detailed in [`FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md).
 
 ---
 
