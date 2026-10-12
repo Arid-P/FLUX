@@ -57,8 +57,15 @@ FF provides complete standalone scheduling capability in Phase 1:
 
 ### 3.3 The Mechanical Flip Clock & Focus Timer
 - **Visual Design:** Fullscreen immersive mechanical split-flap clock displaying hours and minutes (`HH:MM`). Rendered strictly in **Holst (Холст)** (`#0D1B2A` background, `#1B263B` flap tiles, `#D4C4A8` split hairline, `#F4F1DE` tabular digits).
-- **Timer Modes:** Countdown, Stopwatch, and From-To.
-- **Active Session Takeover:** On mobile, active focus engages Android Fullscreen Immersive Sticky mode. On Ubuntu desktop, an always-on-top borderless overlay window is spawned.
+- **Physical 3D Flip Animation:** 4-layer half-card structure executing a 400ms top-down X-axis rotation with camera distance perspective and mechanical click haptics.
+- **Timer Modes:**
+  1. **Countdown:** Decrements to `00:00`. Premature stopping triggers the Stop-Focusing Friction Modal.
+  2. **Stopwatch:** Increments from `00:00`. Tapping *"Finish Session"* (if $\ge 20$ min) completes successfully with zero penalty and streak credit.
+  3. **From–To:** Time-window countdown.
+- **Two-Row Controls Layout:**
+  - Row 1: `Take Break` (75% / 3/4 width pill in `#778D7A`) + `Pause ⏸` (25% / 1/4 width pill, capped at a **5-minute emergency limit**).
+  - Row 2: Full-width button: `"Stop Focusing"` (Countdown mode) or `"Finish Session"` (Stopwatch mode).
+- **Post-Session Celebration:** Upon completion, displays a 2.5-second celebratory card showing focus time logged and streak flame increment (`🔥 18 → 19 Days`) before returning to Home.
 
 ### 3.4 The Stop-Focusing Friction Modal
 To eliminate impulsive session quits:

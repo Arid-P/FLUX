@@ -69,13 +69,18 @@ The central command surface for starting sessions with any preset:
 - **Immersive Mode:** System bars hidden (Immersive Sticky). Screen stays awake (`FLAG_KEEP_SCREEN_ON`).
 - **Flip Clock Layout (Custom `@Composable`):**
   - Two large rectangular split cards: Top card displays Hours (`01`), bottom card displays Minutes (`45`).
-  - Container color: Oxford Slate (`#1B263B`).
+  - Container color: Oxford Slate (`#1B263B`), 1dp border `#415A77`, corner radius 16dp.
   - Font: Monospace tabular numerals (`JetBrains Mono`), color Eggshell Cream (`#F4F1DE`).
   - Flap divider: 1.5dp horizontal hairline separator colored in Warm Sand (`#D4C4A8`).
-  - Subtle split shadow gradient simulated along the flap crease.
-- **Controls Footer:**
-  - Left Button: *"Take Break"* (displays remaining count: `2/2`). If `0`, button is greystyled (`#1B263B` with `#8E9CAE` text).
-  - Right Button: *"Quit Session"* (triggers Stop-Focusing Friction Modal).
+  - **3D Flip Animation Physics:** 4-layer half-card rendering. Digit transitions execute a 400ms top-down flap rotation on the X-axis (`graphicsLayer { rotationX = ...; cameraDistance = 12f * density }`) hinged at the horizontal split line with shadow gradients and tactile mechanical click haptics.
+- **Two-Row Controls Bar (Docked at Bottom):**
+  - **Row 1:**
+    - Left (75% / Three-Quarters Width): `"Take Break (2/2)"` capsule pill in `#1B263B` with `#778D7A` border. Shifts session to Break Mode. If breaks exhausted, greystyled at 30% opacity.
+    - Right (25% / One-Quarter Width): `"Pause ⏸"` capsule pill in `#1B263B` with `#D4C4A8` icon. Limited to a **5-minute emergency limit** with live countdown badge; auto-penalty applies if not resumed.
+  - **Row 2 (100% Full Width):**
+    - In Countdown Mode: `"Stop Focusing"` pill. Tapping triggers the Stop-Focusing Friction Modal with the 15–25s locked delay.
+    - In Stopwatch Mode: `"Finish Session"` pill in `#D4C4A8` with dark navy text. Tapping completes the session cleanly without penalty or streak forfeiture.
+- **Completion Summary Card:** Upon session complete or stopwatch finish, displays a 2.5-second celebratory card showing focus time logged and streak flame increment (`🔥 18 → 19 Days`) before returning to Home.
 
 ---
 
