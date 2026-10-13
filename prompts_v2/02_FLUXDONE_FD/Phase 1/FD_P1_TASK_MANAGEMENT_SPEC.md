@@ -59,9 +59,11 @@ A high-density card rendered inside lists, sections, and smart views:
 * **Pinned State:** If `is_pinned == true`, renders a subtle pin icon `#778D7A` and sorts to the top of the group.
 
 #### Swipe Gestures:
-* **Swipe Left (Threshold 40%):** Reveals Crimson Red background (`#E53935`) with trash icon. Releasing soft-deletes the task to Trash (`is_deleted = 1`) and shows an immediate 5-second Undo Snackbar:  
-  *"Task moved to Trash"* `[ UNDO ]`.
-* **Swipe Right (Threshold 40%):** Reveals Royal Blue background (`#1565C0`) with calendar icon. Releasing shifts `due_date` to Tomorrow (+24 hours), preserving existing time duration.
+* **Phase 1 Actions (Fixed Defaults):**
+  * **Swipe Left (Threshold 40%):** Reveals Crimson Red background (`#E53935`) with trash icon. Releasing soft-deletes the task to Trash (`is_deleted = 1`) and shows an immediate 5-second Undo Snackbar:  
+    *"Task moved to Trash"* `[ UNDO ]`.
+  * **Swipe Right (Threshold 40%):** Reveals Royal Blue background (`#1565C0`) with calendar icon. Releasing shifts `due_date` to Tomorrow (+24 hours), preserving existing time duration.
+* **Phase 2 Customization Roadmap:** In Phase 2, a dedicated Settings section will allow user customization of both swipe left and swipe right gestures (selecting from Delete, Reschedule Tomorrow, Mark Completed, Pin, or None).
 
 ---
 
@@ -91,7 +93,7 @@ Rendered as an expandable full-height modal bottom sheet or dedicated navigation
 |  -------------------------------------------------------------  |
 |  NOTES                                                          |
 |  Focus on *extremal principle* and bounds.                      |
-|  - Check sheet notes from 2024 contest                          |
+|  - Check sheet notes: https://contest.math.org                  |
 |  - `n(n-1)/2` pairs minimum                                    |
 +-----------------------------------------------------------------+
 ```
@@ -103,13 +105,22 @@ Rendered as an expandable full-height modal bottom sheet or dedicated navigation
    * Due Date pill: Quick selectors (`Today`, `Tomorrow`, `Next Week`, `Pick Date`).
    * Start & End Time pickers: Auto-computes `duration_minutes` in real time.
    * Recurrence picker: Displays human-readable recurrence description (opens RRULE dialog from Topic FD-P1-4).
-4. **Subtasks Checklist Engine:**
-   * Each subtask displays checkbox, title field, drag handle, and delete icon.
+4. **Subtasks Checklist Engine (Strictly Lightweight):**
+   * Subtasks are **purely lightweight checklist items**: title and checkbox only. Zero subtask dates, zero subtask reminders.
    * Enter key in an empty subtask field automatically creates the next subtask.
    * Drag handle allows reordering via `sort_order`.
-5. **Live Markdown Notes Editor:**
-   * Uses a customized Compose `VisualTransformation` or live markdown text parser.
+5. **Live Markdown Notes Editor & Clickable Links:**
    * Formats headers (`# H1`), bold (`**bold**`), italic (`*italic*`), bullet points (`- list`), and inline code (`` `code` ``) dynamically as the user types.
+   * **Clickable Web Links:** Any `http://` or `https://` URL is rendered as a clickable link that opens directly in the system browser via Android Intent.
+   * *Phase 4 Roadmap:* Extended markdown capabilities (LaTeX math equations, tables) will expand on this foundation in Phase 4.
+6. **Task Duplication Engine (`[ Duplicate Task ]` in Overflow Menu):**
+   * Invoked via top-bar overflow menu `[ ⋮ ]` → `[ Duplicate Task ]`.
+   * **Deep Copy Invariant:**
+     * A brand-new task UUID is generated.
+     * The title becomes `"${originalTitle} (copy)"` (e.g. *"Physics Assignment (copy)"*).
+     * Deep-copies all subtasks with newly generated subtask UUIDs, preserving their respective completion states.
+     * Copies notes, list, section, priority, due date, start/end times, and duration.
+     * Resets completion status on the new copy: `is_completed = false`, `completed_at = null`.
 
 ---
 
@@ -129,6 +140,18 @@ Docked directly above the software keyboard for rapid 3-second task entry:
 * **Auto-Focus:** Title field gains immediate keyboard focus upon sheet presentation.
 * **Contextual Defaults:** Pre-populates with current list and current calendar time slot if summoned from Calendar View.
 * **Submit Action:** Tapping `[ ➤ ]` (or pressing Enter) saves task atomically to SQLite and dismisses the sheet.
+
+---
+
+### 3.4 Date-Only Tasks vs. Timed Tasks & FluxFoxus (FF) IPC Separation
+
+FluxDone explicitly supports two classes of tasks:
+1. **Date-Only Tasks (`due_date != null`, `start_time == null`, `end_time == null`):**
+   * Represents tasks that must be done on or by a certain day without a locked time window (e.g. *"Submit chemistry lab record today"*).
+   * **FF IPC Isolation:** Date-only tasks remain **strictly local to FluxDone**. They do **NOT** broadcast a Focus Block sync to FluxFoxus, because FluxFoxus enforces discrete start/end focus sessions.
+2. **Timed Tasks (`start_time != null`, `end_time != null`):**
+   * Represents calendar study blocks (e.g. *"4:00 PM – 5:30 PM: IOQM Geometry"*).
+   * **FF IPC Synchronization:** Mutating a timed task immediately broadcasts `com.flux.action.FOCUS_BLOCK_SYNC` to FluxFoxus to schedule or update an auto-focus block (`FF_P2_SCHEDULED_SESSIONS_SPEC.md`).
 
 ---
 
