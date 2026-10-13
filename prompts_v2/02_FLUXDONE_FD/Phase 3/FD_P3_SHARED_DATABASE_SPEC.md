@@ -5,7 +5,7 @@
 **Target Package:** `com.flux.done.database` (Shared Multiplatform Module)  
 **Architecture:** Room 2.7+ Kotlin Multiplatform (KMP) + Bundled SQLite Driver + Coroutines Flow  
 **Target OS:** Ubuntu Linux Workstation (JVM 17+, Linux x86_64 / arm64) & Android (API 26+)  
-**Prerequisites:** [`FD_P1_ROOM_DATABASE_SCHEMA_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_ROOM_DATABASE_SCHEMA_SPEC.md)  
+**Prerequisites:** [`FD_TRD_KOTLIN.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_TRD_KOTLIN.md) & [`GMP_FD_BUILD.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/GMP_FD_BUILD.md)  
 
 ---
 

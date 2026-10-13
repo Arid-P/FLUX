@@ -29,7 +29,7 @@ When a focus session starts on **either** device, all paired devices immediately
 
 | Component | Upstream / Peer Specification | Technical Contract |
 |---|---|---|
-| **Phase 1 Timer Engine** | [`FF_P1_TIMER_AND_LOCK_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_TIMER_AND_LOCK_SPEC.md) | Synchronizes state transitions (`ACTIVE`, `PAUSED_BREAK`, `COMPLETED`, `QUIT_PREMATURELY`). |
+| **Phase 1 Timer Engine** | [`FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%201/FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md) | Synchronizes state transitions (`ACTIVE`, `PAUSED_BREAK`, `COMPLETED`, `QUIT_PREMATURELY`). |
 | **Phase 2 Break Protocol** | [`FF_P2_BREAK_NEGOTIATION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%202/FF_P2_BREAK_NEGOTIATION_SPEC.md) | Break granted on one device immediately propagates break mode to all paired devices. |
 | **Phase 3 Lock Screen & Monotonic Clock** | [`FF_P3_POLISH_AND_OPTIMIZATIONS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%203/FF_P3_POLISH_AND_OPTIMIZATIONS_SPEC.md) | Uses elapsed monotonic timestamps to prevent clock drift during cross-device sync. |
 | **Phase 4 Pre-Open Friction** | [`FF_P4_PRE_OPEN_FRICTION_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/03_FLUXFOXUS_FF/Phase%204/FF_P4_PRE_OPEN_FRICTION_SPEC.md) | Extends habit friction principles to desktop browser tabs and applications. |
