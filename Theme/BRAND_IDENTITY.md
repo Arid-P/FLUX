@@ -40,12 +40,10 @@ This document establishes the official, locked brand identity, launcher icons, a
 
 ---
 
-## 3. Ecosystem Presentation & Tooling Assets
+## 3. Tooling & Cloud Design System
 
-* **Dual Desktop Mockup:** [`Theme/logos/flux_family_duo_presentation.jpg`](file:///home/hp/Flux_Prompts/Theme/logos/flux_family_duo_presentation.jpg)
 * **Google Stitch MCP Project:** `6251538759701554507`
 * **Google Stitch Design System:** `Kinetic Obsidian` (`assets/d7e79850c9554b4eb98bae0f8008f939`)
-* **Stitch Showcase UI Screen:** [`Theme/logos/stitch_brand_showcase.png`](file:///home/hp/Flux_Prompts/Theme/logos/stitch_brand_showcase.png)
 
 ---
 
