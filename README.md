@@ -1,81 +1,62 @@
-# Flux App Family — Architecture & Prompt Suite (v2.0)
+# Flux App Family — Architecture, Specifications & Development Suite
 
-**Version:** 2.0 (Native Kotlin + Jetpack Compose Overhaul)  
-**Target Hardware:** Android (Mobile) & Ubuntu Linux (Desktop Workstation)  
-**Author:** Ari  
-**Status:** Canonical Multi-Agent Specification Suite
+**Target Platforms:** Native Android (API 26+) & Ubuntu Linux Workstation (JVM 17+, Compose Multiplatform)  
+**Role:** Canonical Master Architecture & Developer Prompt Specifications  
+**Repository Branch Strategy:**  
+- **`main`:** Development repository containing `documentation/`, `Theme/`, and future application source code.
+- **`discussion`:** Pure documentation & planning branch preserving the complete Table of Contents ([`CURRENT_TOC.md`](file:///home/hp/Flux_Prompts/CURRENT_TOC.md)) for future feature discussions (Phase 5 Web Portal, P_Theme).
 
 ---
 
-## Directory Overview & Reading Order for AI Agents
-
-To guarantee successful execution and zero architectural drift, AI coding agents must read files in the exact sequence outlined below:
+## 📁 Repository Directory Structure
 
 ```
-prompts_v2/
-├── 00_CORE/                       # 1. Foundation & Global Guardrails
-│   ├── FLUX_SYSTEM_CONTEXT.md      # Master context: Ari persona, dual-device setup, architectural pivot
-│   ├── FLUX_DESIGN_TOKENS.md       # Authoritative design tokens (Holst Theme + 7 Academic Domain Colors)
-│   └── FLUX_AGENT_SKILLS_GUIDE.md  # Toolchain, JDK 17/21, Android SDK 34, KSP, and Gradle rules
+├── documentation/                     # Canonical Multi-Agent Architecture Specifications
+│   ├── 00_CORE/                       # Global guardrails, system context & design tokens
+│   │   ├── FLUX_SYSTEM_CONTEXT.md
+│   │   ├── FLUX_DESIGN_TOKENS.md
+│   │   └── FLUX_AGENT_SKILLS_GUIDE.md
+│   │
+│   ├── 01_INTEGRATION_SYNC/           # Cross-device & inter-app contracts
+│   │   ├── IPC_SPEC_FD_FF_NATIVE.md
+│   │   ├── LINUX_UBUNTU_DAEMON_SPEC.md
+│   │   └── CENTRAL_SYNC_ROADMAP.md
+│   │
+│   ├── 02_FLUXDONE_FD/                # FluxDone: Task & Habit Management Suite
+│   │   ├── Phase 1/                   # Mobile MVP Foundation (6 Specs + PRD/TRD/UI/GMP)
+│   │   ├── Phase 2/                   # Power Features & Core System (6 Specs + GMP)
+│   │   ├── Phase 3/                   # Ubuntu Linux Desktop Companion (5 Specs + GMP)
+│   │   └── Phase 4/                   # Cloud Sync, Ecosystem & AI Notes (4 Specs + GMP)
+│   │
+│   ├── 03_FLUXFOXUS_FF/               # FluxFoxus: Discipline & Focus Enforcer Suite
+│   │   ├── Phase 1/                   # Core Session Engine & Presets (7 Specs + PRD/TRD/UI/GMP)
+│   │   ├── Phase 2/                   # Hardened Anti-Bypass & Schedules (5 Specs + GMP)
+│   │   ├── Phase 3/                   # Focus Score & Session Ergonomics (5 Specs + GMP)
+│   │   └── Phase 4/                   # Cross-Device Daemon & Smart Limits (5 Specs + GMP)
+│   │
+│   └── 04_SECURITY_AND_VALIDATION/    # Security, Validation & AI Development Protocol
+│       ├── SEC_01_SECURE_AUTHENTICATION_AND_IDENTITY_SPEC.md
+│       ├── SEC_02_CRYPTOGRAPHIC_SECURITY_AND_DATA_ENCRYPTION_SPEC.md
+│       ├── SEC_03_INPUT_VALIDATION_AND_DATA_DEFENSE_SPEC.md
+│       └── SEC_04_DEVELOPMENT_AND_APK_DELIVERY_PROTOCOL.md
 │
-├── 01_INTEGRATION_SYNC/           # 2. Cross-Device & Inter-App Contracts
-│   ├── IPC_SPEC_FD_FF_NATIVE.md    # Android Explicit Intent & BroadcastReceiver IPC contract
-│   ├── LINUX_UBUNTU_DAEMON_SPEC.md # FluxFoxus Ubuntu Linux daemon & Compose Desktop architecture
-│   └── CENTRAL_SYNC_ROADMAP.md     # Phase 2 Central DB (Supabase/Postgres) & Web Portal sync
+├── Theme/                             # Theme Palette Photographic References
+│   ├── Холст.jpeg                     # Source palette for FluxFoxus Holst dark theme
+│   ├── Rustic Medley.jpeg             # Alternative rustic palette
+│   ├── starla _ colour palette.jpeg   # Vibrant accent palette
+│   ├── How to use a lot of color...   # High-density swatch reference
+│   └── _.jpeg                         # Contrast swatch reference
 │
-├── 02_FLUXDONE_FD/                # 3. FluxDone (Task & Habit Management)
-│   └── Phase 1/                   # Phase 1 Core Specs
-│       ├── FD_PRD_V2.md            # Product requirements (TickTick parity, calendar timeline tapping)
-│       ├── FD_TRD_KOTLIN.md        # Technical requirements (Compose UI, Room SQLite, StateFlow)
-│       ├── FD_UI_SPECIFICATIONS.md # Screen specs SCR-01 to SCR-13
-│       └── GMP_FD_BUILD.md         # Grand Master Prompt for building FluxDone
-│
-└── 03_FLUXFOXUS_FF/               # 4. FluxFoxus (Discipline & Focus Enforcer)
-    ├── Phase 1/                   # Phase 1 Core Specs (100% Complete)
-    │   ├── FF_PRD_V2.md            # Product requirements (Regain replacement, presets, flip clock)
-    │   ├── FF_TRD_KOTLIN.md        # Technical requirements (Accessibility, UsageStats, Overlays)
-    │   ├── FF_UI_SPECIFICATIONS.md # Screen specs in Holst palette (5 bottom tabs)
-    │   ├── FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md # Home Dashboard, 24h Momentum & Daily Streak Engine
-    │   ├── FF_P1_PRESETS_AND_FOCUS_SPEC.md # Presets list, Floating Island selector & Standalone Planner
-    │   ├── FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md # 3D Flip Clock, 2-row controls, Break mode & completion
-    │   ├── FF_P1_APP_LIMITS_AND_INTERVENTION_SPEC.md # App Limits, 5/10/20/40m Overlay & YouTube Study Mode
-    │   ├── FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md # Stats Screen, App Detail Page, Focus Ratio & Glance Widget
-    │   ├── FF_P1_PRESET_EDITOR_AND_WHITELISTS_SPEC.md # Preset Editor, Multi-State Filtering & Whitelists
-    │   ├── FF_P1_PERMISSIONS_AND_ONBOARDING_SPEC.md # Permissions Checklist, OEM Guides & System Health
-    │   └── GMP_FF_BUILD.md         # Grand Master Prompt for building FluxFoxus P1
-    │
-    ├── Phase 2/                   # Phase 2 Hardened Enforcement Specs (100% Complete)
-    │   ├── FF_P2_UNINSTALL_PROTECTION_SPEC.md # Device Admin & Anti-Tamper Guard (Topic FF-P2-1)
-    │   ├── FF_P2_SCHEDULED_SESSIONS_SPEC.md   # Exact Alarms & Automatic Start Calendar (Topic FF-P2-2)
-    │   ├── FF_P2_BREAK_NEGOTIATION_SPEC.md    # AI Break Negotiation & Stamina Protocol (Topic FF-P2-3)
-    │   ├── FF_P2_STREAK_GRACE_SPEC.md         # Stacking Grace Shields & Calendar Audit (Topic FF-P2-4)
-    │   ├── FF_P2_POST_SESSION_REFLECTION_SPEC.md # 3-Tile Flow Rating & Notification Actions (Topic FF-P2-5)
-    │   └── GMP_FF_P2_BUILD.md                 # Grand Master Prompt for building FluxFoxus P2
-    │
-    ├── Phase 3/                   # Phase 3 Intelligence & Session Ergonomics (100% Complete)
-    │   ├── FF_P3_FOCUS_SCORE_SPEC.md          # 0-100 Daily Focus Score Engine (Topic FF-P3-1)
-    │   ├── FF_P3_SESSION_TEMPLATES_SPEC.md    # Session Blueprints & Auto-Scheduling (Topic FF-P3-2)
-    │   ├── FF_P3_LOCK_SCREEN_STATUS_SPEC.md   # Live Lock Screen Ambient Chronometer (Topic FF-P3-3)
-    │   ├── FF_P3_AI_COACHING_SPEC.md          # AI Focus Coaching & Granular Settings Hub (Topic FF-P3-4)
-    │   ├── FF_P3_POLISH_AND_OPTIMIZATIONS_SPEC.md # YouTube Shorts Guard, WakeLock & Polish (Topic FF-P3-5)
-    │   └── GMP_FF_P3_BUILD.md                 # Grand Master Prompt for building FluxFoxus P3
-    │
-    └── Phase 4/                   # Phase 4 Daemon, Group Limits & Habit Breaking (100% Complete)
-        ├── FF_P4_FOCUS_SCORE_AI_ENHANCEMENT_SPEC.md # Focus Score 5th Component & AI Task Alignment (Topic FF-P4-1)
-        ├── FF_P4_PRE_OPEN_FRICTION_SPEC.md          # Pre-Open Habit Friction Screen & Breathing Timer (Topic FF-P4-2)
-        ├── FF_P4_CATEGORY_LIMITS_SPEC.md            # Category Pools & Shared Intervention (Topic FF-P4-3)
-        ├── FF_P4_SMART_LIMIT_SUGGESTIONS_SPEC.md    # Smart Usage Anomaly Detection & Sunday Report (Topic FF-P4-4)
-        ├── FF_P4_CROSS_DEVICE_SYNC_SPEC.md          # Cross-Device Sync Engine & Linux Daemon (Topic FF-P4-5)
-        └── GMP_FF_P4_BUILD.md                       # Grand Master Prompt for building FluxFoxus P4
+└── CURRENT_TOC.md                     # Master Status & Phase Table of Contents
 ```
 
 ---
 
-## Core Architectural Guardrails for AI Agents
+## 🛠️ Non-Negotiable AI Developer Directives
 
-1. **Zero Flutter / Zero Dart:** The entire suite is strictly native **Kotlin, Jetpack Compose, and Compose Multiplatform**.
-2. **Zero `build_runner`:** Code generation is handled natively via **KSP (Kotlin Symbol Processing)** in Gradle.
-3. **Offline-First Room Storage:** Local SQLite operations never rely on cloud availability.
-4. **Authoritative Design System:**
-   - **FluxFoxus:** Strictly **Holst (Холст)** (`#0D1B2A`, `#1B263B`, `#415A77`, `#778D7A`, `#D4C4A8`, `#F4F1DE`). Sourced directly from `Theme/Холст.jpeg`.
-   - **FluxDone:** The **7 locked academic domain colors** (`#2E7D32`, `#1565C0`, `#43A047`, `#FB8C00`, `#E64A19`, `#E53935`, `#576481`) must be used for Olympiad and JEE lists.
+Before writing code for any phase, the AI developer agent must strictly follow [`SEC_04_DEVELOPMENT_AND_APK_DELIVERY_PROTOCOL.md`](file:///home/hp/Flux_Prompts/documentation/04_SECURITY_AND_VALIDATION/SEC_04_DEVELOPMENT_AND_APK_DELIVERY_PROTOCOL.md):
+
+1. **Phase Pre-Planning Invariant:** Plan the entire phase at once with automated testing specifications at each step (unit, in-memory Room DAO, and UI tests). Do not pause for intermediate reviews.
+2. **Path Mapping Rule:** All specifications live under `documentation/`.
+3. **Zero Web Reviews & Native APK Delivery Invariant:** Strictly zero web previews or browser simulators. Upon phase completion and automated testing, compile the native Android APK (`./gradlew assembleDebug`) and provide the user with a direct, copy-pasteable `curl` command to download the `.apk` directly to their laptop for physical device testing.
+4. **Zero Flutter / Zero Dart / Zero Mocks:** 100% native Kotlin (Jetpack Compose & Compose Multiplatform). Zero mock data in production `main`.
