@@ -5,7 +5,7 @@
 **Target Package:** `com.flux.done.sync.cloud` (Shared KMP Multiplatform Module)  
 **Architecture:** MVI / Clean Architecture (Kotlin 2.x + Room 2.7+ KMP + Google Drive REST API + Ktor Client + Coroutines Flow)  
 **Target Platforms:** Android Phone & Tablet (`com.fluxdone`), Ubuntu Linux Desktop (`com.fluxdone.desktop`)  
-**Prerequisites:** [`FD_P1_ROOM_DATABASE_SCHEMA_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_ROOM_DATABASE_SCHEMA_SPEC.md), [`FD_P2_BACKUP_EXPORT_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%202/FD_P2_BACKUP_EXPORT_SPEC.md), & [`FD_P3_SHARED_DATABASE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%203/FD_P3_SHARED_DATABASE_SPEC.md)  
+**Prerequisites:** [`FD_TRD_KOTLIN.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_TRD_KOTLIN.md), [`FD_P2_BACKUP_EXPORT_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%202/FD_P2_BACKUP_EXPORT_SPEC.md), & [`FD_P3_SHARED_DATABASE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%203/FD_P3_SHARED_DATABASE_SPEC.md)  
 
 ---
 
