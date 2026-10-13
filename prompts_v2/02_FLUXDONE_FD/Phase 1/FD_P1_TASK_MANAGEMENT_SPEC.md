@@ -25,7 +25,7 @@ Tasks are the fundamental atomic units of FluxDone. In an intensive academic and
 | **Hierarchy Baseline** | [`FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md) | Tasks bind to `list_id` and optional `section_id`. Inherits list domain color. |
 | **Calendar View** | `FD_P1_CALENDAR_TIMELINE_SPEC.md` | Tasks with non-null `start_time` and `end_time` render as time-blocks on the timeline. |
 | **Recurrence Engine** | `FD_P1_RECURRENCE_ENGINE_SPEC.md` | Completing a recurring task auto-spawns the next instance per RRULE specification. |
-| **FF IPC Bridge** | `FD_P1_IPC_INTEGRATION_SPEC.md` | Mutating timed tasks broadcasts `com.flux.action.FOCUS_BLOCK_SYNC` to FluxFoxus. |
+| **FF IPC Bridge (Phase 2)** | `FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md` | In Phase 2, mutating timed tasks broadcasts `com.flux.action.FOCUS_BLOCK_SYNC` to FluxFoxus per `IPC_SPEC_FD_FF_NATIVE.md`. |
 
 ---
 

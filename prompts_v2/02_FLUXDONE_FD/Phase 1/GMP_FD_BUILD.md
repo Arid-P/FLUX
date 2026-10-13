@@ -2,14 +2,14 @@
 
 **Version:** 2.0 (Native Android Kotlin Master Build Specification)  
 **Role:** Autonomous AI Senior Android System & UI Engineer  
-**Target:** Android Application (`com.fluxdone`) & Compose Desktop (Ubuntu Linux)  
+**Target:** Android Application (`com.fluxdone`, Jetpack Compose) & Ubuntu Linux Desktop (`com.fluxdone.desktop`, Compose Multiplatform / JetBrains Compose)  
 **Prerequisites:** Read `FLUX_SYSTEM_CONTEXT.md`, `FLUX_DESIGN_TOKENS.md`, `FD_PRD_V2.md`, `FD_TRD_KOTLIN.md`, `FD_UI_SPECIFICATIONS.md`, and all Phase 1 Specs (`FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md`, `FD_P1_TASK_MANAGEMENT_SPEC.md`, `FD_P1_CALENDAR_TIMELINE_SPEC.md`, `FD_P1_RECURRENCE_ENGINE_SPEC.md`, `FD_P1_HABIT_TRACKER_SPEC.md`, `FD_P1_SMART_LISTS_AND_TRASH_SPEC.md`).
 
 ---
 
 ## 0. Non-Negotiable Operational Rules & Invariants
 
-1. **Zero Flutter / Zero Dart:** You are strictly forbidden from writing Dart, using Flutter SDK, or referencing Flutter plugins. FluxDone is 100% **Native Android Kotlin and Jetpack Compose**.
+1. **Zero Flutter / Zero Dart:** You are strictly forbidden from writing Dart, using Flutter SDK, or referencing Flutter plugins. FluxDone is 100% **Native Kotlin (Jetpack Compose on Android & JetBrains Compose Multiplatform on Desktop)**.
 2. **Zero Brittle Code-Gen Loops:** Do not use `build_runner`. All code generation must be standard Kotlin Symbol Processing (**KSP**) running natively through Gradle.
 3. **4-Tier Structural Hierarchy:** Maintain the strict tree invariant:
    $$\text{Folders} \longrightarrow \text{Lists} \longrightarrow \text{Sections} \longrightarrow \text{Tasks}$$
@@ -154,7 +154,7 @@ Execute the implementation in strict dependency order across all 6 core modules:
    - `FolderEntity` (`id`, `name`, `sort_order`, `is_deleted`)
    - `TaskListEntity` (`id`, `folder_id`, `name`, `color_hex`, `is_sectioned`, `is_system`, `sort_order`, `is_deleted`)
    - `SectionEntity` (`id`, `list_id`, `name`, `sort_order`, `is_deleted`)
-   - `TaskEntity` (`id`, `list_id`, `section_id`, `title`, `notes`, `start_time`, `end_time`, `duration_minutes`, `due_date`, `is_completed`, `completed_at`, `priority`, `recurrence_rule`, `parent_recurring_id`, `is_deleted`, `deleted_at`, `deleted_from_list_id`, `deleted_from_section_id`)
+   - `TaskEntity` (`id`, `list_id`, `section_id`, `title`, `notes`, `start_time`, `end_time`, `duration_minutes`, `due_date`, `is_completed`, `completed_at`, `priority`, `recurrence_rule`, `recurrence_series_id`, `is_deleted`, `deleted_at`, `deleted_from_list_id`, `deleted_from_section_id`)
    - `SubtaskEntity` (`id`, `task_id`, `title`, `is_completed`, `sort_order`)
    - `HabitEntity` (`id`, `title`, `habit_type`, `target_count`, `increment_count`, `color_hex`, `icon_identifier`, `frequency_type`, `scheduled_days_mask`, `current_streak`, `best_streak`, `is_archived`, `is_deleted`, `deleted_at`)
    - `HabitCompletionEntity` (`id`, `habit_id`, `completion_date`, `completed_count`, `is_target_met`, `completed_at`)
