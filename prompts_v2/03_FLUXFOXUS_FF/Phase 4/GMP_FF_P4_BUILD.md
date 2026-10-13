@@ -84,7 +84,8 @@
   3. Implement D-Bus / window manager desktop app guard for Steam, Discord, and distracting desktop apps.
   4. Implement Google Account authentication via Android Credential Manager and Linux OAuth 2.0 PKCE loopback receiver.
   5. Build Hybrid Sync engine: Low-latency mDNS LAN broadcast (<20ms) + Google Firebase Realtime Cloud listener (<300ms) with Active Discipline Dominance.
-  6. Build Compose Multiplatform Desktop Focus HUD with floating timer, break controls, and Holst dark theme styling.
+  6. Implement Cross-Device Aggregated App Limits & Global Screen Time Pooling (`device_usage_records` Room DAO + delta sync engine pooling minutes across phone, tablet, and laptop; enforces global budget locks on all devices simultaneously; displays multi-device contribution chips).
+  7. Build Compose Multiplatform Desktop Focus HUD with floating timer, break controls, and Holst dark theme styling.
 
 ---
 

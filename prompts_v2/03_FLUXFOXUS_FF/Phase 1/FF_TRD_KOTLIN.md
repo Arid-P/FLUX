@@ -291,6 +291,20 @@ CREATE TABLE smart_limit_suggestions (
 );
 ```
 
+### 3.15 Table: `device_usage_records` (Phase 4 Cross-Device Sync)
+```sql
+CREATE TABLE device_usage_records (
+    date TEXT NOT NULL,                            -- 'YYYY-MM-DD'
+    target_identifier TEXT NOT NULL,               -- package_name or category
+    device_id TEXT NOT NULL,                       -- Hardware UUID
+    device_name TEXT NOT NULL,                     -- e.g. 'Pixel 8 Pro', 'ThinkPad P14s'
+    device_type TEXT NOT NULL,                     -- 'PHONE', 'TABLET', 'DESKTOP_LINUX'
+    usage_minutes INTEGER NOT NULL,                -- Usage recorded on this device today
+    last_updated_utc INTEGER NOT NULL,
+    PRIMARY KEY (date, target_identifier, device_id)
+);
+```
+
 ---
 
 ## 4. Enforcement Architecture
@@ -318,30 +332,58 @@ CREATE TABLE smart_limit_suggestions (
 
 ## 5. Usage Stats Aggregation & Jetpack Glance Widget Engine
 
-### 5.1 Reactive Stats Pipeline
+### 5.1 Single Source of Truth (SSOT): `UsageStatsDataHub`
+To guarantee strict data centralization and eliminate scattered OS calls, Android's `UsageStatsManager` is accessed exclusively by ONE centralized singleton component: `UsageStatsDataHub`.
+
+```
+           Android OS (UsageStatsManager / System APIs)
+                                │
+                                ▼ (Single Ingestion Pipeline)
+               [ UsageStatsDataHub / Room Cache Repository ]
+                                │ (Emits StateFlow<DailyUsageSnapshot>)
+         ┌──────────────┬───────┴──────┬──────────────┬──────────────┐
+         ▼              ▼              ▼              ▼              ▼
+     Tab.Home       Tab.Limits     Tab.Stats     Accessibility   Glance Widget
+                                                   Overlay
+```
+
 ```kotlin
 @Singleton
-class UsageStatsRepository @Inject constructor(
+class UsageStatsDataHub @Inject constructor(
     @ApplicationContext private val context: Context,
     private val appCategoryDao: AppCategoryDao,
-    private val focusSessionDao: FocusSessionDao
+    private val focusSessionDao: FocusSessionDao,
+    private val deviceUsageRecordDao: DeviceUsageRecordDao
 ) {
     private val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-    // Reactive flow combining Android system stats with Room user overrides
-    fun getDailyStatsFlow(startEpoch: Long, endEpoch: Long): Flow<DailyStatsAggregate> {
-        return appCategoryDao.observeAllOverrides().map { overridesMap ->
-            val rawStats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                startEpoch,
-                endEpoch
-            )
-            val focusSessions = focusSessionDao.getSessionsBetweenSync(startEpoch, endEpoch)
-            buildDailyAggregate(rawStats, overridesMap, focusSessions)
-        }
+    // Central in-memory StateFlow representing the current day's live usage snapshot
+    private val _liveDailyUsage = MutableStateFlow<DailyUsageSnapshot>(DailyUsageSnapshot.Empty)
+    val liveDailyUsage: StateFlow<DailyUsageSnapshot> = _liveDailyUsage.asStateFlow()
+
+    // 1. Single Point of OS Ingestion: Only this function queries Android UsageStatsManager
+    suspend fun refreshUsage(startEpoch: Long, endEpoch: Long) {
+        val rawStats = usageStatsManager.queryUsageStats(
+            UsageStatsManager.INTERVAL_DAILY,
+            startEpoch,
+            endEpoch
+        )
+        val overrides = appCategoryDao.getAllOverridesSync()
+        val sessions = focusSessionDao.getSessionsBetweenSync(startEpoch, endEpoch)
+        val remoteDeviceRecords = deviceUsageRecordDao.getRemoteRecordsForDateSync(getCurrentDateString())
+        
+        // Reconcile local OS stats + remote device usage records into one unified snapshot
+        val updatedSnapshot = buildUnifiedUsageSnapshot(rawStats, overrides, sessions, remoteDeviceRecords)
+        _liveDailyUsage.value = updatedSnapshot
     }
+
+    // 2. All app consumers observe this single reactive Flow
+    fun observeAppUsage(packageName: String): Flow<AppUsageMetrics> =
+        liveDailyUsage.map { it.getMetricsForPackage(packageName) }.distinctUntilChanged()
 }
 ```
+
+* **Zero-Bypass Policy:** No ViewModel, Composable, Worker, or Service may query `UsageStatsManager` directly. All must observe `UsageStatsDataHub.liveDailyUsage`. When `refreshUsage()` is invoked, the entire application's UI, widgets, and enforcement services update simultaneously.
 
 ### 5.2 Jetpack Glance Home Screen Widget (`GlanceAppWidget`)
 - **Component:** `FocusDonutWidget : GlanceAppWidget()`

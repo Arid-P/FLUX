@@ -108,3 +108,27 @@ If hardcoded test fixtures or mock stubs are required for isolated visual or alg
    - **If successful:** Completely remove/revert all hardcoded data, wire the component to the live Room DAO / Repository pipeline, verify with dynamic data, and only then merge into `main`.
    - **If failed:** Revert to the clean unmocked state, diagnose the dynamic flow logic, re-branch, and repeat.
 5. **Zero Mocks in Main:** No mock/stub literals are ever permitted to be committed into `main`.
+
+---
+
+### Rule 6: Single Source of Truth (SSOT) & Centralized Data Hub Architecture
+> [!IMPORTANT]
+> **Strict Anti-Decentralization Guardrail:** Under no circumstances should individual ViewModels, Composables, Workers, or Background Services independently query Android OS system APIs (`UsageStatsManager`, `NotificationManager`, `PowerManager`, Audio/DND, Battery).
+>
+> **The Tree Architecture:**
+> ```
+>            Android OS (UsageStatsManager / System APIs)
+>                                 │
+>                                 ▼ (Single Ingestion Pipeline)
+>                [ Central Data Hub / Room DB Repository ]
+>                                 │ (Emits Kotlin StateFlow / Room Flow)
+>          ┌──────────────┬───────┴──────┬──────────────┬──────────────┐
+>          ▼              ▼              ▼              ▼              ▼
+>      Tab.Home       Tab.Limits     Tab.Stats     Accessibility   Glance Widget
+>                                                    Overlay
+> ```
+> 1. **Single Entry Point:** Only ONE designated Repository / Data Hub connects to the OS service.
+> 2. **Unified State Broadcast:** When a query or refresh occurs, the Data Hub updates its internal Room cache / `StateFlow`.
+> 3. **Instant App-Wide Synchronization:** Every consumer observes the central hub; a single update immediately and simultaneously updates all screens, widgets, and overlay services across the entire app.
+> 4. **Bi-Directional Requests:** Any component requesting a data refresh or configuration change sends that request directly to the Central Hub, which reconciles with Android and broadcasts the updated state down the tree.
+

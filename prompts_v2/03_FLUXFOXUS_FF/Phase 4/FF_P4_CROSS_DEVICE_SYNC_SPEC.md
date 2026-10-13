@@ -276,11 +276,113 @@ When concurrent actions occur:
 
 ---
 
-## 6. Linux Desktop UI Specifications (Compose Multiplatform)
+## 6. Cross-Device Aggregated App Limits & Global Screen Time Pooling
+
+### 6.1 The Siloed Device Trap & The Flux Solution
+In digital wellbeing tools like Regain, application limits are siloed per device:
+* A user with a phone, tablet, and laptop sets 30m on each device.
+* **Vulnerability 1: Device Hopping.** When the phone hits 30m, the user simply hops to the tablet for 30m, then the laptop for 30m, accumulating 90 minutes of aggregate doomscrolling.
+* **Vulnerability 2: The Travel Penalty.** When traveling with only a smartphone for a week, the user only has access to 30m of their intended 1-hour daily budget. Increasing the limit artificially breaks their streak or distorts analytics.
+
+**FluxFoxus solves this with Cross-Device Aggregated App Limits:**
+* **Single Global Ceiling:** A daily limit (e.g. 60m Instagram) applies to the **sum of usage across all paired devices**.
+* **Automatic Travel Rebalancing:** If tablet and laptop have 0 minutes logged today, the smartphone automatically has access to the full 60-minute pool without requiring any limit adjustments or risking streak breakage.
+
+---
+
+### 6.2 Mathematical Model & Realtime Aggregation Pipeline
+
+1. **Per-Device Logging:**
+   * Android (Phone & Tablet): Logged via `UsageStatsManager` in `UsageStatsDataHub`.
+   * Ubuntu Linux: Logged via `fluxfoxus-daemon` active window / browser domain monitor.
+2. **Sync Frequency:**
+   * Whenever an app in `app_limits` or a category in `category_limits` is in the foreground, the device broadcasts a lightweight delta ping every 60 seconds (or immediately on app close/switch) over LAN mDNS socket (<20ms) and Firebase Realtime (<300ms).
+3. **Global Usage Formula:**
+   $$\text{GlobalUsageToday}(p) = \text{LocalUsage}(p) + \sum_{d \in \text{RemoteDevices}} \text{DeviceUsage}(p, d)$$
+   $$\text{RemainingGlobalBudget}(p) = B_{\text{global}}(p) - \text{GlobalUsageToday}(p)$$
+4. **Universal Multi-Device Lock:**
+   * When $\text{GlobalUsageToday}(p) \ge B_{\text{global}}(p)$, the 5/10/20/40m intervention overlay or desktop shield engages on **all paired devices simultaneously**.
+   * If a user consumes their 59th and 60th minute of Instagram on their laptop, picking up their phone immediately triggers the intervention overlay on launch.
+
+---
+
+### 6.3 Room Database Schema: `device_usage_records`
+
+```kotlin
+package com.flux.focus.features.sync.data.entity
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+
+@Entity(
+    tableName = "device_usage_records",
+    primaryKeys = ["date", "target_identifier", "device_id"],
+    indices = [
+        Index("date"),
+        Index("target_identifier")
+    ]
+)
+data class DeviceUsageRecordEntity(
+    @ColumnInfo(name = "date")
+    val date: String, // "YYYY-MM-DD"
+
+    @ColumnInfo(name = "target_identifier")
+    val targetIdentifier: String, // package_name (e.g. "com.instagram.android") or category (e.g. "DISTRACTING")
+
+    @ColumnInfo(name = "device_id")
+    val deviceId: String, // UUID of hardware device
+
+    @ColumnInfo(name = "device_name")
+    val deviceName: String, // e.g. "Pixel 8 Pro", "ThinkPad P14s", "Galaxy Tab S9"
+
+    @ColumnInfo(name = "device_type")
+    val deviceType: String, // "PHONE", "TABLET", "DESKTOP_LINUX"
+
+    @ColumnInfo(name = "usage_minutes")
+    val usageMinutes: Int,
+
+    @ColumnInfo(name = "last_updated_utc")
+    val lastUpdatedUtc: Long
+)
+```
+
+---
+
+### 6.4 UI Specifications: Aggregated Cards & Device Breakdowns
+
+#### On `Tab.Limits`:
+```
++-------------------------------------------------------+
+|  Instagram                              50m / 60m     |
+|  [=====================================....] 10m left |
+|                                                       |
+|  DEVICE CONTRIBUTIONS:                                |
+|  📱 Pixel 8 Pro (This Device):  25m                   |
+|  💻 ThinkPad P14s (Desktop):    15m                   |
+|  📱 Galaxy Tab S9:              10m                   |
++-------------------------------------------------------+
+```
+
+#### On `Tab.Stats`:
+* **Device Filter Segmented Control:**  
+  `[ All Devices (Aggregated) ]` | `[ Pixel 8 Pro ]` | `[ ThinkPad P14s ]` | `[ Galaxy Tab S9 ]`
+* Selecting a specific device filters the charts to that device's local contributions; default is always **All Devices (Aggregated)**.
+
+---
+
+### 6.5 Offline Disconnection & Midnight Streak Reconciliation
+1. **Offline Operation:** If a device loses internet and LAN connectivity, it enforces limits against $\text{LastKnownRemoteUsage} + \text{LocalOfflineUsage}$.
+2. **Reconnection Catch-Up:** Upon reconnection, the device sends its accumulated offline usage minutes. If the sum exceeds the budget, the app locks immediately on all synced devices.
+3. **Streak Integrity:** Streaks evaluate against the final aggregated midnight total. If global usage remained within budget, the streak advances without regard to how minutes were distributed across devices.
+
+---
+
+## 7. Linux Desktop UI Specifications (Compose Multiplatform)
 
 The desktop companion UI adheres strictly to the Holst Dark Palette tokens.
 
-### 6.1 Desktop Focus HUD (Minimalist Floating Pill)
+### 7.1 Desktop Focus HUD (Minimalist Floating Pill)
 
 A lightweight, non-intrusive HUD positioned at the top-right of the desktop screen:
 
@@ -297,7 +399,9 @@ A lightweight, non-intrusive HUD positioned at the top-right of the desktop scre
 
 ---
 
-## 7. Verification & Anti-Mocking Test Specifications
+---
+
+## 8. Verification & Anti-Mocking Test Specifications
 
 ```kotlin
 @RunWith(AndroidJUnit4::class)
@@ -305,6 +409,8 @@ class CrossDeviceSyncEngineTest {
 
     private lateinit var syncRepository: FakeSyncRepository
     private lateinit var syncEngine: CrossDeviceSyncEngine
+    private lateinit var deviceUsageDao: DeviceUsageRecordDao
+    private lateinit var appLimitDao: AppLimitDao
 
     @Before
     fun setup() {
@@ -347,10 +453,28 @@ class CrossDeviceSyncEngineTest {
         assertEquals(SessionStatus.PAUSED_BREAK, syncEngine.currentLocalSessionState.value.status)
         assertEquals(300, syncEngine.currentLocalSessionState.value.breakRemainingSeconds)
     }
+
+    @Test
+    fun crossDeviceUsageAggregation_locksAppWhenSumExceedsGlobalBudget() = runTest {
+        // Given: Instagram has 60m global daily budget
+        // Phone used: 35m, Laptop used: 20m, Tablet used: 10m -> Total = 65m (> 60m)
+        val today = "2026-10-13"
+        val records = listOf(
+            DeviceUsageRecordEntity(today, "com.instagram.android", "dev-phone", "Pixel 8 Pro", "PHONE", 35, System.currentTimeMillis()),
+            DeviceUsageRecordEntity(today, "com.instagram.android", "dev-pc", "ThinkPad P14s", "DESKTOP_LINUX", 20, System.currentTimeMillis()),
+            DeviceUsageRecordEntity(today, "com.instagram.android", "dev-tab", "Galaxy Tab S9", "TABLET", 10, System.currentTimeMillis())
+        )
+        
+        val totalGlobalUsage = syncEngine.calculateGlobalUsage("com.instagram.android", records)
+        assertEquals(65, totalGlobalUsage)
+        
+        val isBlocked = syncEngine.isAppBlockedGlobally("com.instagram.android", globalBudgetMinutes = 60, records = records)
+        assertTrue(isBlocked)
+    }
 }
 ```
 
-### 7.1 Linux Daemon Bash Self-Healing Unit Test
+### 8.1 Linux Daemon Bash Self-Healing Unit Test
 ```bash
 #!/usr/bin/env bash
 # Test hosts backup and restoration integrity
@@ -385,7 +509,7 @@ rm -rf "$TMP_DIR"
 
 ---
 
-## 8. Deliverables & Acceptance Checklist
+## 9. Deliverables & Acceptance Checklist
 
 - [ ] **Dual-Tier Hosts Backup:** Daemon creates pristine `/etc/hosts.flux.orig` on install and `/etc/hosts.flux.bak` immediately before every session modification.
 - [ ] **Demarcated Block Injection:** Blocked domains cleanly inserted and stripped between explicit `# FLUXFOXUS_SESSION_BLOCK_...` markers.
@@ -394,4 +518,7 @@ rm -rf "$TMP_DIR"
 - [ ] **Google Account Pairing:** One-tap Google Sign-In on both Android and Linux clients with secure token storage in Android Keystore and Linux Keyring.
 - [ ] **Hybrid Sync (mDNS LAN + Cloud):** Synchronizes focus state in $<20\text{ms}$ on local Wi-Fi and $<300\text{ms}$ over mobile broadband.
 - [ ] **Active Discipline Dominance:** Starting a session on either device locks both; breaks and completions mirror seamlessly.
+- [ ] **Cross-Device Aggregated App Limits:** Screen time across phone, tablet, and laptop pools into a unified daily budget; breaching the shared budget locks the app on all devices.
+- [ ] **Per-Device Contribution Breakdown:** `Tab.Limits` and `Tab.Stats` display multi-device usage breakdown chips (`Pixel 8 Pro: 25m • ThinkPad: 15m`).
+- [ ] **Travel Freedom:** 0-usage devices leave the entire budget intact for the traveling device with zero manual limit edits and zero streak penalties.
 - [ ] **Holst Desktop UI:** Compose Multiplatform Desktop HUD styled with Holst dark tokens (`#0D1B2A`, `#1B263B`, `#415A77`, `#778D7A`, `#F4F1DE`).
