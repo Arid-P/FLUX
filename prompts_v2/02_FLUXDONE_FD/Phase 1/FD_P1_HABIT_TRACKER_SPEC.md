@@ -27,7 +27,7 @@ Unlike task lists that track one-off obligations, habits track **sustainable rec
 | Component | Upstream / Peer Specification | Technical Contract |
 |---|---|---|
 | **Color Palette** | [`FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md) | Habits select from the 12-swatch palette or custom hex picker. |
-| **Settings & Reminders (Phase 2)** | `FD_P2_NOTIFICATIONS_REMINDERS_SPEC.md` | In Phase 2, `reminder_time` triggers an `AlarmManager` heads-up notification. |
+| **Settings & Reminders (Phase 2)** | [`FD_P2_NOTIFICATIONS_REMINDERS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%202/FD_P2_NOTIFICATIONS_REMINDERS_SPEC.md) | In Phase 2, `reminder_time` triggers an `AlarmManager` heads-up notification. |
 | **Trash Architecture** | `FD_P1_SMART_LISTS_AND_TRASH_SPEC.md` | Deleted habits move to Trash with 30-day auto-purge and 1-tap restore. |
 
 ---

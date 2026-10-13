@@ -26,7 +26,7 @@ It enables flexible repeating patterns, seamless historical completion tracking 
 |---|---|---|
 | **Task Management** | [`FD_P1_TASK_MANAGEMENT_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_TASK_MANAGEMENT_SPEC.md) | Tasks store `recurrence_rule` string and `recurrence_series_id`. Subtasks are cloned fresh for each spawned instance. |
 | **Calendar View** | [`FD_P1_CALENDAR_TIMELINE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_CALENDAR_TIMELINE_SPEC.md) | Timed recurring tasks project their start/end time blocks onto future calendar dates. |
-| **IPC Bridge (Phase 2)** | `FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md` | In Phase 2, when a recurring timed instance becomes active, it coordinates focus sessions with FluxFoxus. |
+| **IPC Bridge (Phase 2)** | [`FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%202/FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md) | In Phase 2, when a recurring timed instance becomes active, it coordinates focus sessions with FluxFoxus per [`IPC_SPEC_FD_FF_NATIVE.md`](file:///home/hp/Flux_Prompts/prompts_v2/01_INTEGRATION_SYNC/IPC_SPEC_FD_FF_NATIVE.md). |
 
 ---
 

@@ -31,7 +31,7 @@ In Ari's academic routine, obligations are distributed across multiple subjects 
 | **Hierarchy & Domains** | [`FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_LISTS_FOLDERS_DOMAINS_SPEC.md) | Displays parent list badge and 12-swatch domain color on task rows. |
 | **Task Management & Notes** | [`FD_P1_TASK_MANAGEMENT_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_TASK_MANAGEMENT_SPEC.md) | Checkbox completion animations, swipe-to-trash, swipe-to-tomorrow, and subtask sync. |
 | **Recurrence Engine** | [`FD_P1_RECURRENCE_ENGINE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%201/FD_P1_RECURRENCE_ENGINE_SPEC.md) | Completing recurring tasks in smart lists spawns next occurrence in target list. |
-| **Settings & IPC Bridge** | `FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md` | Smart list visibility settings persisted in DataStore; shared with Phase 2 Settings screen. |
+| **Settings & IPC Bridge (Phase 2)** | [`FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md`](file:///home/hp/Flux_Prompts/prompts_v2/02_FLUXDONE_FD/Phase%202/FD_P2_SETTINGS_AND_IPC_BRIDGE_SPEC.md) | Smart list visibility settings persisted in DataStore; shared with Phase 2 Settings screen. |
 
 ---
 
