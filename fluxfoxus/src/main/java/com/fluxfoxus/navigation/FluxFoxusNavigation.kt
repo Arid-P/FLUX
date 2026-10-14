@@ -16,6 +16,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import androidx.compose.ui.platform.LocalContext
+import com.fluxfoxus.core.permission.PermissionChecker
+import com.fluxfoxus.core.repository.InstalledAppsRepository
+import com.fluxfoxus.core.repository.UsageStatsRepository
 import com.fluxfoxus.core.database.FluxFoxusDatabase
 import com.fluxfoxus.core.datastore.UserPreferencesRepository
 import com.fluxfoxus.core.designsystem.theme.HolstColors
@@ -67,11 +71,25 @@ fun FluxFoxusNavHost(
     navController: NavHostController,
     db: FluxFoxusDatabase,
     userPrefs: UserPreferencesRepository,
+    installedAppsRepo: InstalledAppsRepository,
+    usageStatsRepo: UsageStatsRepository,
     startDestination: String = Screen.Home.route,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val isMandatoryReady = remember(currentRoute) { PermissionChecker.areMandatoryGranted(context) }
+    val onboardingCompleted by userPrefs.onboardingCompleted.collectAsState(initial = true)
+
+    // Gatekeeper: Keep Home Dashboard unreachable if onboarding is incomplete or mandatory permissions revoked
+    LaunchedEffect(currentRoute, isMandatoryReady, onboardingCompleted) {
+        if (currentRoute != Screen.Onboarding.route && (!onboardingCompleted || !isMandatoryReady)) {
+            navController.navigate(Screen.Onboarding.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
 
     val isBottomBarVisible = bottomNavItems.any { it.route == currentRoute }
 
@@ -127,7 +145,7 @@ fun FluxFoxusNavHost(
         ) {
             composable(Screen.Home.route) {
                 val homeVm: HomeViewModel = viewModel(
-                    factory = HomeViewModel.Factory(db, userPrefs)
+                    factory = HomeViewModel.Factory(db, userPrefs, usageStatsRepo)
                 )
                 HomeScreen(
                     viewModel = homeVm,
@@ -169,7 +187,7 @@ fun FluxFoxusNavHost(
 
             composable(Screen.Limits.route) {
                 val limitsVm: LimitsViewModel = viewModel(
-                    factory = LimitsViewModel.Factory(db)
+                    factory = LimitsViewModel.Factory(db, installedAppsRepo)
                 )
                 LimitsScreen(
                     viewModel = limitsVm,
@@ -201,7 +219,7 @@ fun FluxFoxusNavHost(
             ) { backStackEntry ->
                 val presetId = backStackEntry.arguments?.getString("presetId")
                 val presetVm: PresetEditorViewModel = viewModel(
-                    factory = PresetEditorViewModel.Factory(db, presetId)
+                    factory = PresetEditorViewModel.Factory(db, presetId, installedAppsRepo)
                 )
                 PresetEditorScreen(
                     viewModel = presetVm,
@@ -226,6 +244,7 @@ fun FluxFoxusNavHost(
 
             composable(Screen.Onboarding.route) {
                 OnboardingWizardScreen(
+                    userPrefs = userPrefs,
                     onFinishOnboarding = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Onboarding.route) { inclusive = true }

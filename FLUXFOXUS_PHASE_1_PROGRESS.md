@@ -15,8 +15,9 @@
 | **Topic 2** | Room SQLite Database Layer (9 Entities, 6 DAOs) & DataStore | **Code1** | ✅ Complete | 7 / 7 Passed | [`48e3720`](https://github.com/Arid-P/FLUX/commit/48e3720) |
 | **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ✅ Complete | 8 / 8 Passed | [`2bada6e`](https://github.com/Arid-P/FLUX/commit/2bada6e) |
 | **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ✅ Complete | 13 / 13 Passed | [`fe6fde0`](https://github.com/Arid-P/FLUX/commit/fe6fde0) |
-| **Topic 5** | Jetpack Glance Widget & WorkManager Midnight Engine | **Code1 / Code2** | ✅ Complete | 3 / 3 Passed | In Next Batch |
-| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | ✅ 100% Verified | 33 / 33 Passed | [`fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (43 MB) |
+| **Topic 5** | Jetpack Glance Widget & WorkManager Midnight Engine | **Code1 / Code2** | ✅ Complete | 3 / 3 Passed | [`20d0a2f`](https://github.com/Arid-P/FLUX/commit/20d0a2f) |
+| **Remediation** | Physical Device Audit: App Picker, Insets, Usage Stats & Onboarding Gate | **Code1 / Code2** | ✅ Complete | 4 / 4 Passed | Current Batch |
+| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | ✅ 100% Verified | 37 / 37 Passed | [`fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (43 MB) |
 
 ---
 
@@ -181,10 +182,41 @@
 
 ---
 
+### 🚨 Physical Device Audit Remediation Pass
+- **Audit Findings & Prompt:** Critical audit remediation pass resolving 5 physical device test findings.
+- **Status:** **100% COMPLETE**
+
+- [x] **1. Onboarding & First-Run Gatekeeper (Focus Shield Screen):**
+  - Persistent `onboarding_completed` flag managed in DataStore.
+  - Native permission validator [`PermissionChecker.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/permission/PermissionChecker.kt) checking `PACKAGE_USAGE_STATS`, `SYSTEM_ALERT_WINDOW`, `BIND_ACCESSIBILITY_SERVICE`, `POST_NOTIFICATIONS`, and `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`.
+  - Cold-start gating in [`MainActivity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/MainActivity.kt) and navigation router in [`FluxFoxusNavigation.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/navigation/FluxFoxusNavigation.kt). Home Dashboard is strictly unreachable until the user completes the Focus Shield wizard.
+- [x] **2. Real Installed App Picker (Eliminating Text Fields):**
+  - Created [`InstalledAppsRepository.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/repository/InstalledAppsRepository.kt): Queries Android `PackageManager` via `Intent.ACTION_MAIN` + `Intent.CATEGORY_LAUNCHER`, returning `AppInfo(packageName, appName, icon, isSystemApp)`.
+  - Added Android 11+ `<queries>` launcher intent and `QUERY_ALL_PACKAGES` permission in [`AndroidManifest.xml`](file:///workspaces/FLUX/fluxfoxus/src/main/AndroidManifest.xml).
+  - Built [`AppPickerBottomSheet.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/component/AppPickerBottomSheet.kt) with real app icons, search filtering, and system app toggle.
+  - Completely removed manual package/app text inputs from [`LimitsScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/limits/LimitsScreen.kt) and [`PresetEditorScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/presets/PresetEditorScreen.kt).
+- [x] **3. Home Screen Stats & Busy Chart Ingestion Engine:**
+  - Implemented [`UsageStatsRepository.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/repository/UsageStatsRepository.kt): Queries `UsageStatsManager.queryUsageStats()` from `00:00:00` today to `now()`, with automatic fallback to `UsageEvents` parsing for zero-delay intervals.
+  - Automatically aggregates screen time, calculates Focus-to-Screen ratio, and upserts into Room `daily_usage`.
+  - Added `LifecycleEventEffect(Lifecycle.Event.ON_RESUME)` in [`HomeScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/home/HomeScreen.kt) to refresh usage stats immediately whenever returning to foreground.
+- [x] **4. Planner Start & End Time Configuration:**
+  - Implemented hour/minute and AM/PM start time selector in [`PlannerScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/planner/PlannerScreen.kt).
+  - Dynamically computes and displays finish time banner: `Starts at 09:00 AM • Finishes at 09:45 AM`.
+  - Persists calculated `scheduledStartTimeEpochMs` and `targetDurationMinutes` directly to Room `focus_sessions`.
+- [x] **5. Top Bar UI & Edge-to-Edge Drawing:**
+  - Created [`themes.xml`](file:///workspaces/FLUX/fluxfoxus/src/main/res/values/themes.xml) & [`colors.xml`](file:///workspaces/FLUX/fluxfoxus/src/main/res/values/colors.xml) defining `Theme.FluxFoxus` (`android:Theme.Material.NoActionBar`).
+  - Added `enableEdgeToEdge()` in [`MainActivity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/MainActivity.kt).
+  - Built custom [`RusticMedleyHeader.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/component/RusticMedleyHeader.kt) respecting `statusBarsPadding()`, styled with River Styx `#13191F` and Amber Autumn `#CA9C68`.
+- [x] **Remediation Unit Tests:**
+  - [`InstalledAppsRepositoryTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/repository/InstalledAppsRepositoryTest.kt): 2 / 2 passed (query launchable apps, search filter).
+  - [`UsageStatsRepositoryTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/repository/UsageStatsRepositoryTest.kt): 2 / 2 passed (query and room sync, empty state resilience).
+
+---
+
 ### 🛡️ Quality Gate & Verification Status
 
 | Gate | Target Command | Result | Details |
 | :--- | :--- | :---: | :--- |
-| **Unit & DAO Tests** | `./gradlew :fluxfoxus:testDebugUnitTest` | **100% PASS** | 33 tests passed across all Phase 1 modules (zero failures, zero flakes) |
+| **Unit & DAO Tests** | `./gradlew :fluxfoxus:testDebugUnitTest` | **100% PASS** | **37 tests passed** across all Phase 1 modules (zero failures, zero flakes) |
 | **APK Build Assembly** | `./gradlew :fluxfoxus:assembleDebug` | **SUCCESS** | Output: [`fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (43 MB) |
 | **Git Hygiene** | `git status` / `git push` | **IN SYNC** | Clean tree, pushed periodically to `origin/main` in atomic batches |

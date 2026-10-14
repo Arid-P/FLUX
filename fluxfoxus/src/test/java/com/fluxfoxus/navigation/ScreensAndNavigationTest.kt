@@ -89,9 +89,11 @@ class ScreensAndNavigationTest {
 
     @Test
     fun testOnboardingWizardScreenRenders() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val userPrefs = UserPreferencesRepository(context)
         composeTestRule.setContent {
             FluxFoxusTheme {
-                OnboardingWizardScreen(onFinishOnboarding = {})
+                OnboardingWizardScreen(userPrefs = userPrefs, onFinishOnboarding = {})
             }
         }
         composeTestRule.onNodeWithText("Forge Unbreakable Focus").assertIsDisplayed()
