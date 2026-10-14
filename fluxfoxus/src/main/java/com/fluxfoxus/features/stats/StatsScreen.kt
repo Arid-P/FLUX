@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fluxfoxus.core.designsystem.theme.*
 
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatsScreen(
@@ -31,46 +33,28 @@ fun StatsScreen(
     Scaffold(
         containerColor = HolstColors.Background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+            RusticMedleyHeader(
+                title = "STATS",
+                actions = {
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = HolstColors.Surface,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, HolstColors.Border)
                     ) {
-                        Text(
-                            text = "STATS",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = HolstColors.TextPrimary
+                        Row(modifier = Modifier.padding(2.dp)) {
+                            SegmentPill(
+                                text = "Daily",
+                                isSelected = state.mode == StatsTabMode.DAILY,
+                                onClick = { viewModel.setMode(StatsTabMode.DAILY) }
                             )
-                        )
-
-                        // Segmented Switcher (Daily / Weekly)
-                        Surface(
-                            shape = RoundedCornerShape(20.dp),
-                            color = HolstColors.Surface,
-                            border = androidx.compose.foundation.BorderStroke(1.dp, HolstColors.Border),
-                            modifier = Modifier.padding(end = 16.dp)
-                        ) {
-                            Row(modifier = Modifier.padding(2.dp)) {
-                                SegmentPill(
-                                    text = "Daily",
-                                    isSelected = state.mode == StatsTabMode.DAILY,
-                                    onClick = { viewModel.setMode(StatsTabMode.DAILY) }
-                                )
-                                SegmentPill(
-                                    text = "Weekly",
-                                    isSelected = state.mode == StatsTabMode.WEEKLY,
-                                    onClick = { viewModel.setMode(StatsTabMode.WEEKLY) }
-                                )
-                            }
+                            SegmentPill(
+                                text = "Weekly",
+                                isSelected = state.mode == StatsTabMode.WEEKLY,
+                                onClick = { viewModel.setMode(StatsTabMode.WEEKLY) }
+                            )
                         }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = HolstColors.Background
-                )
+                }
             )
         }
     ) { padding ->

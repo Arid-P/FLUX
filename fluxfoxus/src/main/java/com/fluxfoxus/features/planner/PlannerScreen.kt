@@ -17,12 +17,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fluxfoxus.core.database.entity.FocusSessionEntity
+import com.fluxfoxus.core.database.entity.PresetEntity
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
 import com.fluxfoxus.core.designsystem.theme.FluxTheme
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +39,11 @@ fun PlannerScreen(
 
     Scaffold(
         containerColor = FluxTheme.colors.background,
+        topBar = {
+            RusticMedleyHeader(
+                title = "PLANNER"
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.openScheduleSheet() },
@@ -111,7 +117,7 @@ fun PlannerScreen(
             }
         }
 
-        // Schedule Session Bottom Sheet
+        // Schedule Session Bottom Sheet with Start & End Time Configuration
         if (uiState.isScheduleSheetOpen) {
             ModalBottomSheet(
                 onDismissRequest = { viewModel.closeScheduleSheet() },
@@ -119,10 +125,9 @@ fun PlannerScreen(
                 containerColor = FluxTheme.colors.surface
             ) {
                 ScheduleBottomSheetContent(
+                    selectedDateEpochMs = uiState.selectedDateEpochMs,
                     presets = uiState.availablePresets,
-                    onSchedule = { presetId, title, duration ->
-                        val startMs = System.currentTimeMillis() + 10 * 60 * 1000L
-                        val endMs = startMs + duration * 60 * 1000L
+                    onSchedule = { presetId, title, startMs, endMs, duration ->
                         viewModel.scheduleSession(presetId, title, startMs, endMs, duration)
                     }
                 )
@@ -263,13 +268,56 @@ private fun ScheduledSessionCard(session: FocusSessionEntity) {
 
 @Composable
 private fun ScheduleBottomSheetContent(
-    presets: List<com.fluxfoxus.core.database.entity.PresetEntity>,
-    onSchedule: (presetId: String, title: String, durationMinutes: Int) -> Unit
+    selectedDateEpochMs: Long,
+    presets: List<PresetEntity>,
+    onSchedule: (presetId: String, title: String, startTimeEpochMs: Long, endTimeEpochMs: Long, durationMinutes: Int) -> Unit
 ) {
     var selectedPresetId by remember { mutableStateOf(presets.firstOrNull()?.id ?: "default") }
     val selectedPreset = presets.find { it.id == selectedPresetId }
     var title by remember(selectedPreset) { mutableStateOf(selectedPreset?.name ?: "Focus Session") }
     var durationMinutes by remember { mutableIntStateOf(45) }
+
+    // Start time configuration: calculate next clean 15-minute slot
+    val initialCal = remember(selectedDateEpochMs) {
+        Calendar.getInstance().apply {
+            val nowCal = Calendar.getInstance()
+            timeInMillis = selectedDateEpochMs
+            set(Calendar.HOUR_OF_DAY, nowCal.get(Calendar.HOUR_OF_DAY))
+            val currentMin = nowCal.get(Calendar.MINUTE)
+            val roundedMin = ((currentMin / 15) + 1) * 15
+            if (roundedMin >= 60) {
+                add(Calendar.HOUR_OF_DAY, 1)
+                set(Calendar.MINUTE, 0)
+            } else {
+                set(Calendar.MINUTE, roundedMin)
+            }
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+    }
+
+    var startHour24 by remember { mutableIntStateOf(initialCal.get(Calendar.HOUR_OF_DAY)) }
+    var startMinute by remember { mutableIntStateOf(initialCal.get(Calendar.MINUTE)) }
+
+    // Compute exact start and finish epoch milliseconds
+    val computedStartEpochMs = remember(selectedDateEpochMs, startHour24, startMinute) {
+        val cal = Calendar.getInstance().apply {
+            timeInMillis = selectedDateEpochMs
+            set(Calendar.HOUR_OF_DAY, startHour24)
+            set(Calendar.MINUTE, startMinute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        cal.timeInMillis
+    }
+
+    val computedEndEpochMs = remember(computedStartEpochMs, durationMinutes) {
+        computedStartEpochMs + durationMinutes * 60 * 1000L
+    }
+
+    val timeFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
+    val startStr = timeFormat.format(Date(computedStartEpochMs))
+    val endStr = timeFormat.format(Date(computedEndEpochMs))
 
     Column(
         modifier = Modifier
@@ -324,6 +372,93 @@ private fun ScheduleBottomSheetContent(
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Start Time Selector
+        Text(text = "Start Time:", color = FluxTheme.colors.textMuted, fontSize = 12.sp)
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = FluxTheme.colors.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, FluxTheme.colors.border),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Hour Adjuster
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = {
+                        startHour24 = (startHour24 - 1 + 24) % 24
+                    }) {
+                        Text("-", style = FluxTheme.typography.titleMedium, color = FluxTheme.colors.primary)
+                    }
+                    val displayHour12 = when (val h = startHour24 % 12) {
+                        0 -> 12
+                        else -> h
+                    }
+                    Text(
+                        text = displayHour12.toString().padStart(2, '0'),
+                        style = FluxTheme.typography.titleMedium,
+                        color = FluxTheme.colors.textPrimary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    TextButton(onClick = {
+                        startHour24 = (startHour24 + 1) % 24
+                    }) {
+                        Text("+", style = FluxTheme.typography.titleMedium, color = FluxTheme.colors.primary)
+                    }
+                }
+
+                Text(
+                    text = ":",
+                    style = FluxTheme.typography.titleMedium,
+                    color = FluxTheme.colors.textPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+
+                // Minute Adjuster (15 min steps)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = {
+                        startMinute = (startMinute - 15 + 60) % 60
+                    }) {
+                        Text("-", style = FluxTheme.typography.titleMedium, color = FluxTheme.colors.primary)
+                    }
+                    Text(
+                        text = startMinute.toString().padStart(2, '0'),
+                        style = FluxTheme.typography.titleMedium,
+                        color = FluxTheme.colors.textPrimary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    TextButton(onClick = {
+                        startMinute = (startMinute + 15) % 60
+                    }) {
+                        Text("+", style = FluxTheme.typography.titleMedium, color = FluxTheme.colors.primary)
+                    }
+                }
+
+                // AM / PM Toggle
+                val isPm = startHour24 >= 12
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = FluxTheme.colors.primary.copy(alpha = 0.2f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, FluxTheme.colors.primary),
+                    modifier = Modifier.clickable {
+                        startHour24 = if (isPm) startHour24 - 12 else startHour24 + 12
+                    }
+                ) {
+                    Text(
+                        text = if (isPm) "PM" else "AM",
+                        color = FluxTheme.colors.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+
         // Duration Chips
         Text(text = "Target Duration:", color = FluxTheme.colors.textMuted, fontSize = 12.sp)
         Row(
@@ -352,9 +487,39 @@ private fun ScheduleBottomSheetContent(
             }
         }
 
-        // Save Button
+        // Dynamically Computed Finish Time Readout Banner
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = FluxTheme.colors.primary.copy(alpha = 0.12f),
+            border = androidx.compose.foundation.BorderStroke(1.dp, FluxTheme.colors.primary),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(14.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Starts at $startStr • Finishes at $endStr",
+                    style = FluxTheme.typography.bodyMedium.copy(
+                        color = FluxTheme.colors.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "Total Focus Target: $durationMinutes minutes",
+                    style = FluxTheme.typography.bodySmall.copy(color = FluxTheme.colors.textMuted)
+                )
+            }
+        }
+
+        // Confirm Schedule Button
         Button(
-            onClick = { onSchedule(selectedPresetId, title, durationMinutes) },
+            onClick = {
+                onSchedule(selectedPresetId, title, computedStartEpochMs, computedEndEpochMs, durationMinutes)
+            },
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = FluxTheme.colors.primary,

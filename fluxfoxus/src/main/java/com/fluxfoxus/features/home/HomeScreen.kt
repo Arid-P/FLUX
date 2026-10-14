@@ -30,6 +30,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fluxfoxus.core.designsystem.theme.FluxTheme
 import com.fluxfoxus.core.service.TimerState
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
+
 val TerracottaDistracting = Color(0xFFE07A5F)
 
 @Composable
@@ -43,57 +47,20 @@ fun HomeScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
+    // Lifecycle-aware refresh: Trigger usage refresh when returning to app
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.refreshUsageStats()
+    }
+
     Scaffold(
         containerColor = FluxTheme.colors.background,
-        modifier = modifier.fillMaxSize()
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // 1. Responsive Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        text = "FluxFoxus",
-                        style = FluxTheme.typography.headlineMedium,
-                        color = FluxTheme.colors.textPrimary,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    // Streak Pill
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(FluxTheme.colors.surface)
-                            .border(1.dp, if (!uiState.isStreakDormant) FluxTheme.colors.primary else FluxTheme.colors.border, RoundedCornerShape(12.dp))
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = if (!uiState.isStreakDormant) "🔥 ${uiState.currentStreakDays}" else "💤 0",
-                            color = if (!uiState.isStreakDormant) FluxTheme.colors.primary else FluxTheme.colors.textMuted,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
-                // Average Pills + Settings Button
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+        topBar = {
+            RusticMedleyHeader(
+                title = "FluxFoxus",
+                streakDays = uiState.currentStreakDays,
+                isStreakDormant = uiState.isStreakDormant,
+                onSettingsClick = onNavigateToSettings,
+                actions = {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
@@ -108,17 +75,19 @@ fun HomeScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-
-                    IconButton(onClick = onNavigateToSettings) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings",
-                            tint = FluxTheme.colors.textMuted
-                        )
-                    }
                 }
-            }
-
+            )
+        },
+        modifier = modifier.fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(scrollState)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             // 2. Upcoming Session Alert (if scheduled in <= 15 min)
             if (uiState.upcomingSessionTitle != null) {
                 Box(

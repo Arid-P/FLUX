@@ -1,5 +1,6 @@
 package com.fluxfoxus.features.stats
 
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -102,34 +103,9 @@ fun AppDetailScreen(
     Scaffold(
         containerColor = HolstColors.Background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .background(HolstColors.Border, RoundedCornerShape(8.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = appLabel.take(1).uppercase(),
-                                style = MaterialTheme.typography.titleSmall.copy(
-                                    color = HolstColors.PrimarySand,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = appLabel,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = HolstColors.TextPrimary
-                            )
-                        )
-                    }
-                },
-                navigationIcon = {
+            RusticMedleyHeader(
+                title = appLabel,
+                actions = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -137,10 +113,7 @@ fun AppDetailScreen(
                             tint = HolstColors.TextPrimary
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = HolstColors.Background
-                )
+                }
             )
         }
     ) { padding ->

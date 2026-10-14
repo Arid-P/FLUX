@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.fluxfoxus.core.designsystem.theme.*
 
+import com.fluxfoxus.core.designsystem.component.AppPickerBottomSheet
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
+import com.fluxfoxus.core.designsystem.component.AmberAutumnAccent
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresetEditorScreen(
@@ -37,17 +41,9 @@ fun PresetEditorScreen(
     Scaffold(
         containerColor = HolstColors.Background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (state.isEditing) "Edit Preset" else "New Preset",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = HolstColors.TextPrimary
-                        )
-                    )
-                },
-                navigationIcon = {
+            RusticMedleyHeader(
+                title = if (state.isEditing) "Edit Preset" else "New Preset",
+                actions = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -55,8 +51,6 @@ fun PresetEditorScreen(
                             tint = HolstColors.TextPrimary
                         )
                     }
-                },
-                actions = {
                     TextButton(
                         onClick = { viewModel.savePreset(onSaved) },
                         enabled = state.name.isNotBlank(),
@@ -66,14 +60,11 @@ fun PresetEditorScreen(
                             text = "Save",
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = if (state.name.isNotBlank()) HolstColors.PrimarySand else HolstColors.Border
+                                color = if (state.name.isNotBlank()) AmberAutumnAccent else HolstColors.Border
                             )
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = HolstColors.Background
-                )
+                }
             )
         },
         bottomBar = {
@@ -488,84 +479,16 @@ fun PresetEditorScreen(
     }
 
     // App Selector Dialog
+    // App Selector Bottom Sheet
     if (state.isAppSelectorVisible) {
-        val sampleApps = listOf(
-            "com.instagram.android" to "Instagram",
-            "com.reddit.frontpage" to "Reddit",
-            "com.twitter.android" to "X (Twitter)",
-            "com.zhiliaoapp.musically" to "TikTok",
-            "com.facebook.katana" to "Facebook",
-            "com.discord" to "Discord",
-            "com.netflix.mediaclient" to "Netflix"
+        AppPickerBottomSheet(
+            apps = state.installedApps,
+            selectedPackages = state.blockedPackages,
+            isMultiSelect = true,
+            title = "Select Apps to Block",
+            onTogglePackage = { pkg -> viewModel.toggleAppBlocked(pkg) },
+            onDismiss = { viewModel.setAppSelectorVisible(false) }
         )
-
-        Dialog(onDismissRequest = { viewModel.setAppSelectorVisible(false) }) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = HolstColors.Surface,
-                border = androidx.compose.foundation.BorderStroke(1.dp, HolstColors.Border),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(450.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        text = "Select Blocked Apps",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = HolstColors.TextPrimary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    LazyColumn(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(sampleApps) { (pkg, label) ->
-                            val isBlocked = state.blockedPackages.contains(pkg)
-                            Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = if (isBlocked) HolstColors.AlertCrimson.copy(alpha = 0.2f) else HolstColors.Border,
-                                border = if (isBlocked) androidx.compose.foundation.BorderStroke(1.dp, HolstColors.AlertCrimson) else null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { viewModel.toggleAppBlocked(pkg) }
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(12.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(label, style = MaterialTheme.typography.bodyMedium.copy(color = HolstColors.TextPrimary))
-                                    Text(
-                                        text = if (isBlocked) "BLOCKED" else "ALLOWED",
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            color = if (isBlocked) HolstColors.AlertCrimson else HolstColors.AccentSage,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = { viewModel.setAppSelectorVisible(false) },
-                        colors = ButtonDefaults.buttonColors(containerColor = HolstColors.PrimarySand),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Done", color = HolstColors.Background, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        }
     }
 
     // Whitelist Manager Dialog with Typing Verification

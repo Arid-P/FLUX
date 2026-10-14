@@ -109,6 +109,7 @@ private fun ActiveSessionView(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
@@ -248,6 +249,7 @@ private fun PresetSetupView(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {

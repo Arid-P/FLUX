@@ -26,6 +26,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.Image
+import com.fluxfoxus.core.designsystem.component.AppPickerBottomSheet
+import com.fluxfoxus.core.designsystem.component.RusticMedleyHeader
+import com.fluxfoxus.core.designsystem.component.AmberAutumnAccent
+import com.fluxfoxus.core.repository.AppInfo
 import com.fluxfoxus.core.database.entity.AppLimitEntity
 import com.fluxfoxus.core.designsystem.theme.*
 import kotlinx.coroutines.delay
@@ -42,16 +47,8 @@ fun LimitsScreen(
     Scaffold(
         containerColor = HolstColors.Background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "LIMITS",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = HolstColors.TextPrimary
-                        )
-                    )
-                },
+            RusticMedleyHeader(
+                title = "LIMITS",
                 actions = {
                     IconButton(
                         onClick = { viewModel.openEditor() },
@@ -60,13 +57,10 @@ fun LimitsScreen(
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add Limit",
-                            tint = HolstColors.PrimarySand
+                            tint = AmberAutumnAccent
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = HolstColors.Background
-                )
+                }
             )
         }
     ) { padding ->
@@ -136,10 +130,26 @@ fun LimitsScreen(
         }
     }
 
+    // App Picker Bottom Sheet
+    if (state.isAppPickerVisible) {
+        AppPickerBottomSheet(
+            apps = state.installedApps,
+            onAppSelected = { app -> viewModel.selectAppForNewLimit(app) },
+            onDismiss = {
+                if (state.editingLimit == null && state.pendingAppInfo == null) {
+                    viewModel.closeEditor()
+                } else {
+                    viewModel.closeAppPicker()
+                }
+            }
+        )
+    }
+
     // Add / Edit Modal
-    if (state.isEditorVisible) {
+    if (state.isEditorVisible && (state.editingLimit != null || state.pendingAppInfo != null)) {
         LimitConfigurationModal(
             existingLimit = state.editingLimit,
+            pendingAppInfo = state.pendingAppInfo,
             onDismiss = { viewModel.closeEditor() },
             onSave = { pkg, label, budget, passes, cat ->
                 viewModel.saveLimit(pkg, label, budget, passes, cat)
@@ -294,12 +304,13 @@ fun AppLimitCard(
 @Composable
 fun LimitConfigurationModal(
     existingLimit: AppLimitEntity?,
+    pendingAppInfo: AppInfo?,
     onDismiss: () -> Unit,
     onSave: (packageName: String, label: String, budget: Int, passes: Int, category: String) -> Unit,
     onTurnOff: (AppLimitEntity) -> Unit
 ) {
-    var packageName by remember { mutableStateOf(existingLimit?.packageName ?: "") }
-    var appLabel by remember { mutableStateOf(existingLimit?.appLabel ?: "") }
+    val packageName = existingLimit?.packageName ?: pendingAppInfo?.packageName ?: ""
+    val appLabel = existingLimit?.appLabel ?: pendingAppInfo?.appName ?: ""
     var hours by remember { mutableIntStateOf((existingLimit?.dailyBudgetMinutes ?: 45) / 60) }
     var minutes by remember { mutableIntStateOf((existingLimit?.dailyBudgetMinutes ?: 45) % 60) }
     var extraPasses by remember { mutableIntStateOf(existingLimit?.extraTimePassesUsed ?: 0) }
@@ -335,43 +346,62 @@ fun LimitConfigurationModal(
                     }
                 }
 
-                if (existingLimit == null) {
-                    OutlinedTextField(
-                        value = appLabel,
-                        onValueChange = {
-                            appLabel = it
-                            if (packageName.isBlank()) packageName = "com.app.${it.lowercase().replace(" ", "")}"
-                        },
-                        label = { Text("App Name", color = HolstColors.TextMuted) },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = HolstColors.TextPrimary,
-                            unfocusedTextColor = HolstColors.TextPrimary,
-                            focusedBorderColor = HolstColors.PrimarySand,
-                            unfocusedBorderColor = HolstColors.Border
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                // App Identity Card (Eliminates manual typing)
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = HolstColors.Border.copy(alpha = 0.4f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, HolstColors.Border),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val bitmap = pendingAppInfo?.toImageBitmap()
+                        if (bitmap != null) {
+                            Image(
+                                bitmap = bitmap,
+                                contentDescription = appLabel,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(HolstColors.PrimarySand),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = appLabel.take(1).uppercase(),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        color = HolstColors.Background,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                )
+                            }
+                        }
 
-                    OutlinedTextField(
-                        value = packageName,
-                        onValueChange = { packageName = it },
-                        label = { Text("Package Name", color = HolstColors.TextMuted) },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = HolstColors.TextPrimary,
-                            unfocusedTextColor = HolstColors.TextPrimary,
-                            focusedBorderColor = HolstColors.PrimarySand,
-                            unfocusedBorderColor = HolstColors.Border
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-                    Text(
-                        text = appLabel,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            color = HolstColors.TextPrimary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = appLabel,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    color = HolstColors.TextPrimary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Text(
+                                text = packageName,
+                                style = MaterialTheme.typography.bodySmall.copy(color = HolstColors.MutedBlue)
+                            )
+                        }
+                    }
                 }
 
                 // Time Budget Stepper

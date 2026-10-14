@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.fluxfoxus.core.database.FluxFoxusDatabase
 import com.fluxfoxus.core.database.entity.AppCategoryOverrideEntity
 import com.fluxfoxus.core.database.entity.AppLimitEntity
-import com.fluxfoxus.core.database.entity.AppLimitStreakEntity
-import com.fluxfoxus.core.database.entity.DailyUsageEntity
+import com.fluxfoxus.core.repository.AppInfo
+import com.fluxfoxus.core.repository.InstalledAppsRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -24,8 +24,11 @@ data class LimitsUiState(
     val distractingApps: List<AppLimitItem> = emptyList(),
     val semiProductiveApps: List<AppLimitItem> = emptyList(),
     val otherApps: List<AppLimitItem> = emptyList(),
+    val installedApps: List<AppInfo> = emptyList(),
+    val isAppPickerVisible: Boolean = false,
     val isEditorVisible: Boolean = false,
     val editingLimit: AppLimitEntity? = null,
+    val pendingAppInfo: AppInfo? = null,
     val isStreakWarningVisible: Boolean = false,
     val streakWarningLimit: AppLimitEntity? = null,
     val streakWarningDays: Int = 0,
@@ -37,7 +40,8 @@ data class LimitsUiState(
 )
 
 class LimitsViewModel(
-    private val db: FluxFoxusDatabase
+    private val db: FluxFoxusDatabase,
+    private val installedAppsRepo: InstalledAppsRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LimitsUiState())
@@ -45,6 +49,15 @@ class LimitsViewModel(
 
     init {
         observeLimits()
+        loadInstalledApps()
+    }
+
+    private fun loadInstalledApps() {
+        if (installedAppsRepo == null) return
+        viewModelScope.launch {
+            val apps = installedAppsRepo.getInstalledApps()
+            _uiState.value = _uiState.value.copy(installedApps = apps)
+        }
     }
 
     private fun observeLimits() {
@@ -90,17 +103,38 @@ class LimitsViewModel(
         }
     }
 
+    fun openAppPicker() {
+        _uiState.value = _uiState.value.copy(isAppPickerVisible = true)
+    }
+
+    fun closeAppPicker() {
+        _uiState.value = _uiState.value.copy(isAppPickerVisible = false)
+    }
+
+    fun selectAppForNewLimit(app: AppInfo) {
+        _uiState.value = _uiState.value.copy(
+            isAppPickerVisible = false,
+            isEditorVisible = true,
+            pendingAppInfo = app,
+            editingLimit = null
+        )
+    }
+
     fun openEditor(limit: AppLimitEntity? = null) {
         _uiState.value = _uiState.value.copy(
             isEditorVisible = true,
-            editingLimit = limit
+            isAppPickerVisible = (limit == null),
+            editingLimit = limit,
+            pendingAppInfo = null
         )
     }
 
     fun closeEditor() {
         _uiState.value = _uiState.value.copy(
             isEditorVisible = false,
-            editingLimit = null
+            isAppPickerVisible = false,
+            editingLimit = null,
+            pendingAppInfo = null
         )
     }
 
@@ -186,11 +220,12 @@ class LimitsViewModel(
     }
 
     class Factory(
-        private val db: FluxFoxusDatabase
+        private val db: FluxFoxusDatabase,
+        private val installedAppsRepo: InstalledAppsRepository? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return LimitsViewModel(db) as T
+            return LimitsViewModel(db, installedAppsRepo) as T
         }
     }
 }

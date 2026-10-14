@@ -14,6 +14,7 @@ import com.fluxfoxus.core.service.FocusTimerService
 import com.fluxfoxus.core.service.TimerState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import com.fluxfoxus.core.repository.UsageStatsRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,7 +36,8 @@ data class HomeUiState(
 
 class HomeViewModel(
     private val db: FluxFoxusDatabase,
-    private val userPrefs: UserPreferencesRepository
+    private val userPrefs: UserPreferencesRepository,
+    private val usageStatsRepo: UsageStatsRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -43,6 +45,13 @@ class HomeViewModel(
 
     init {
         observeData()
+        refreshUsageStats()
+    }
+
+    fun refreshUsageStats() {
+        viewModelScope.launch {
+            usageStatsRepo?.refreshUsageStats()
+        }
     }
 
     private fun observeData() {
@@ -138,11 +147,12 @@ class HomeViewModel(
 
     class Factory(
         private val db: FluxFoxusDatabase,
-        private val userPrefs: UserPreferencesRepository
+        private val userPrefs: UserPreferencesRepository,
+        private val usageStatsRepo: UsageStatsRepository? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return HomeViewModel(db, userPrefs) as T
+            return HomeViewModel(db, userPrefs, usageStatsRepo) as T
         }
     }
 }

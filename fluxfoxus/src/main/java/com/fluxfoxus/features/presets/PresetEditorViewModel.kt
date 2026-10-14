@@ -7,6 +7,8 @@ import com.fluxfoxus.core.database.FluxFoxusDatabase
 import com.fluxfoxus.core.database.entity.GlobalContentWhitelistEntity
 import com.fluxfoxus.core.database.entity.PresetAppRuleEntity
 import com.fluxfoxus.core.database.entity.PresetEntity
+import com.fluxfoxus.core.repository.AppInfo
+import com.fluxfoxus.core.repository.InstalledAppsRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -22,6 +24,7 @@ data class PresetEditorUiState(
     val browserMode: String = "STUDY_MODE", // 'BLOCK', 'ALLOW', 'STUDY_MODE'
     val description: String = "",
     val blockedPackages: Set<String> = emptySet(),
+    val installedApps: List<AppInfo> = emptyList(),
     val youtubeWhitelists: List<GlobalContentWhitelistEntity> = emptyList(),
     val browserWhitelists: List<GlobalContentWhitelistEntity> = emptyList(),
     val isEmojiSheetVisible: Boolean = false,
@@ -32,7 +35,8 @@ data class PresetEditorUiState(
 
 class PresetEditorViewModel(
     private val db: FluxFoxusDatabase,
-    private val initialPresetId: String? = null
+    private val initialPresetId: String? = null,
+    private val installedAppsRepo: InstalledAppsRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -66,6 +70,13 @@ class PresetEditorViewModel(
                     val blocked = rules.filter { it.ruleMode == "BLOCKED" }.map { it.packageName }.toSet()
                     _uiState.value = _uiState.value.copy(blockedPackages = blocked)
                 }
+            }
+        }
+
+        viewModelScope.launch {
+            if (installedAppsRepo != null) {
+                val apps = installedAppsRepo.getInstalledApps()
+                _uiState.value = _uiState.value.copy(installedApps = apps)
             }
         }
 
@@ -203,11 +214,12 @@ class PresetEditorViewModel(
 
     class Factory(
         private val db: FluxFoxusDatabase,
-        private val initialPresetId: String? = null
+        private val initialPresetId: String? = null,
+        private val installedAppsRepo: InstalledAppsRepository? = null
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PresetEditorViewModel(db, initialPresetId) as T
+            return PresetEditorViewModel(db, initialPresetId, installedAppsRepo) as T
         }
     }
 }
