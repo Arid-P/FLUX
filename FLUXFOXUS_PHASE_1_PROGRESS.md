@@ -13,14 +13,14 @@
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Topic 1** | Holst (Холст) Design System, Mechanical Flip Clock & Stop Modal | **Code2** | ✅ Complete | 2 / 2 Passed | [`07f84e6`](https://github.com/Arid-P/FLUX/commit/07f84e6) |
 | **Topic 2** | Room SQLite Database Layer (9 Entities, 6 DAOs) & DataStore | **Code1** | ✅ Complete | 7 / 7 Passed | [`48e3720`](https://github.com/Arid-P/FLUX/commit/48e3720) |
-| **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ✅ Complete | 8 / 8 Passed | Pending Push |
-| **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ⏳ Next in Queue | 0 / 0 | Pending |
+| **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ✅ Complete | 8 / 8 Passed | [`2bada6e`](https://github.com/Arid-P/FLUX/commit/2bada6e) |
+| **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ✅ Complete | 13 / 13 Passed | In Next Batch |
 | **Topic 5** | Jetpack Glance Widget & WorkManager Midnight Engine | **Code1 / Code2** | ⏳ In Queue | 0 / 0 | Pending |
-| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | 🔄 Intermediate Passed | 17 / 17 Passed | Pending final build |
+| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | 🔄 Intermediate Passed | 30 / 30 Passed | Pending final build |
 
 ---
 
-## 🔍 Detailed Deliverables Breakdown
+### 🔍 Detailed Deliverables Breakdown
 
 ### 🎨 Topic 1: Holst (Холст) Design System & Flip Clock
 - **Spec:** [`FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase%201/FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md), [`FLUX_DESIGN_TOKENS.md`](file:///workspaces/FLUX/documentation/00_CORE/FLUX_DESIGN_TOKENS.md)
@@ -117,27 +117,48 @@
 
 ### 📱 Topic 4: Core Jetpack Compose UI Screens & ViewModels
 - **Spec:** [`FF_UI_SPECIFICATIONS.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_UI_SPECIFICATIONS.md), individual feature specs
-- **Status:** ⏳ **PENDING TOPIC 3**
+- **Status:** **100% COMPLETE**
 
-- [ ] **Home Dashboard (`Tab.Home`) & Streak Cockpit:**
+- [x] **Home Dashboard (`Tab.Home`) & Streak Cockpit ([`HomeScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/home/HomeScreen.kt), [`HomeViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/home/HomeViewModel.kt)):**
   - Active flame streak pill (`🔥 18` / `💤 0`).
   - 24-hour smooth Bézier Momentum area chart.
   - Session quick launcher card & weekly average pills.
-- [ ] **Active Focus Screen (`Tab.Focus`):**
+- [x] **Active Focus Screen (`Tab.Focus`) ([`FocusScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/focus/FocusScreen.kt), [`FocusViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/focus/FocusViewModel.kt)):**
   - Full-screen mechanical `FlipClock` integration.
   - Two-row bottom controls (`Take Break` 75% + `Pause` 25%, `Stop Focusing` 100%).
   - Seamless break countdown window with Muted Sage Green shift.
-- [ ] **Presets & Planner Screens (`Tab.Planner`, `/presets/create`, `/presets/edit`):**
+- [x] **Planner Screen (`Tab.Planner`) ([`PlannerScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/planner/PlannerScreen.kt), [`PlannerViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/planner/PlannerViewModel.kt)):**
   - 7-day horizontal strip, scheduled session cards, `+ Schedule Session` FAB.
-  - Full Gboard/Android EmojiPicker (`androidx.emoji2`).
-  - App selector & multi-state content whitelist hub.
-- [ ] **Limits & Stats Screens (`Tab.Limits`, `Tab.Stats`, `AppDetailScreen`):**
-  - App limit budget configuration & 3-second hold friction disable.
-  - 5/10/20/40m intervention overlay with `WindowManager` (`TYPE_APPLICATION_OVERLAY`).
-  - Daily & weekly trends, Focus Ratio card, 7-day stacked category bars.
-- [ ] **Permissions Onboarding Wizard (`/onboarding/wizard`):**
-  - Single-page Focus Shields interactive checklist (`UsageStats`, `Overlay`, `Accessibility`, `Battery`).
-  - OEM background cleaner guidance (OneUI, MIUI/HyperOS, OxygenOS).
+  - Preset-first selection, duration selector, and session scheduling into Room.
+- [x] **Preset Editor Screen (`/presets/create`, `/presets/edit`) ([`PresetEditorScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/presets/PresetEditorScreen.kt), [`PresetEditorViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/presets/PresetEditorViewModel.kt)):**
+  - Break steppers (breaks count 0-6, break duration 1-30m).
+  - 3-Way Content-Filtered Apps (YouTube & Web Browsers: Block / Allow / Study Mode 🛡️).
+  - Global Content Whitelist Hub with Typing Verification Friction Engine ("Focus is the art of knowing what to ignore").
+  - Blocked App selector dialog and delete preset flow.
+- [x] **Limits Screen (`Tab.Limits`) ([`LimitsScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/limits/LimitsScreen.kt), [`LimitsViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/limits/LimitsViewModel.kt)):**
+  - Distracting, Semi-Productive, and Other app category sections with spend progress bars.
+  - Add/Edit Limit modal with hours/minutes stepper, 45m 7-day average usage suggestion, and extra passes allowance.
+  - 3-Second Hold Hard Turn-Off Streak Warning modal with duration selection.
+  - Distracted Intervention 2×2 grid overlay (5, 10, 20, 40m).
+- [x] **Stats Screen (`Tab.Stats`) & App Detail Screen ([`StatsScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/stats/StatsScreen.kt), [`StatsViewModel.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/stats/StatsViewModel.kt), [`AppDetailScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/stats/AppDetailScreen.kt)):**
+  - Daily & Weekly Segmented switcher.
+  - Hero Focus / Screen Ratio Card with mathematical multiplier, tier pill (`Monk Mode`, `Deep Work`, etc.), and dual progress bar.
+  - 7-day stacked activity bar chart with Today highlighted in Warm Sand.
+  - App usage list with category dots and deep link into dedicated `AppDetailScreen`.
+  - Instant reactive category assignment (Room `app_category_overrides` update recalculates entire app without flicker).
+  - Local device privacy guarantee badge.
+- [x] **Focus Shields Onboarding Wizard (`/onboarding/wizard`) ([`OnboardingWizardScreen.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/features/onboarding/OnboardingWizardScreen.kt)):**
+  - 2-step onboarding wizard.
+  - 5 focus shields interactive checklist (`POST_NOTIFICATIONS`, `PACKAGE_USAGE_STATS`, `SYSTEM_ALERT_WINDOW`, `BIND_ACCESSIBILITY_SERVICE`, `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`).
+  - Jetpack Compose `LifecycleEventEffect(Lifecycle.Event.ON_RESUME)` real-time auto-detection of permissions when returning from system settings.
+- [x] **Navigation Architecture ([`FluxFoxusNavigation.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/navigation/FluxFoxusNavigation.kt), [`MainActivity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/MainActivity.kt)):**
+  - 5-tab Bottom Navigation Bar styled with Holst color tokens.
+  - Clean nested route mapping between tabs and sub-screens.
+- [x] **Unit & UI Tests:**
+  - [`LimitsViewModelTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/features/limits/LimitsViewModelTest.kt): 3 / 3 passed.
+  - [`PresetEditorViewModelTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/features/presets/PresetEditorViewModelTest.kt): 2 / 2 passed.
+  - [`StatsViewModelTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/features/stats/StatsViewModelTest.kt): 4 / 4 passed.
+  - [`ScreensAndNavigationTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/navigation/ScreensAndNavigationTest.kt): 4 / 4 passed.
 
 ---
 
@@ -159,6 +180,6 @@
 
 | Gate | Target Command | Result | Details |
 | :--- | :--- | :---: | :--- |
-| **Unit & DAO Tests** | `./gradlew :fluxfoxus:testDebugUnitTest` | **100% PASS** | 9 tests passed (7 Database/DataStore + 2 Compose UI) |
-| **APK Build Assembly** | `./gradlew :fluxfoxus:assembleDebug` | **SUCCESS** | Output: [`fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (32 MB) |
-| **Git Hygiene** | `git status` / `git push` | **IN SYNC** | Clean tree, pushed to `origin/main` across 4 atomic batches |
+| **Unit & DAO Tests** | `./gradlew :fluxfoxus:testDebugUnitTest` | **100% PASS** | 30 tests passed (15 Database/IPC/Services + 15 Compose UI/ViewModels) |
+| **APK Build Assembly** | `./gradlew :fluxfoxus:assembleDebug` | **SUCCESS** | Output: [`fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (43 MB) |
+| **Git Hygiene** | `git status` / `git push` | **IN SYNC** | Clean tree, pushed periodically to `origin/main` |
