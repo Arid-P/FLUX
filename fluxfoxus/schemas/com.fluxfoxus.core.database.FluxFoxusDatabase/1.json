@@ -1,0 +1,635 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "41d6c841607b62273005446e4092d846",
+    "entities": [
+      {
+        "tableName": "presets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `emoji` TEXT NOT NULL DEFAULT '⏳', `break_count` INTEGER NOT NULL DEFAULT 2, `break_duration_minutes` INTEGER NOT NULL DEFAULT 5, `youtube_mode` TEXT NOT NULL DEFAULT 'STUDY_MODE', `browser_mode` TEXT NOT NULL DEFAULT 'STUDY_MODE', `description` TEXT, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "emoji",
+            "columnName": "emoji",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'⏳'"
+          },
+          {
+            "fieldPath": "breakCount",
+            "columnName": "break_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "2"
+          },
+          {
+            "fieldPath": "breakDurationMinutes",
+            "columnName": "break_duration_minutes",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "5"
+          },
+          {
+            "fieldPath": "youtubeMode",
+            "columnName": "youtube_mode",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'STUDY_MODE'"
+          },
+          {
+            "fieldPath": "browserMode",
+            "columnName": "browser_mode",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'STUDY_MODE'"
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "preset_app_rules",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`preset_id` TEXT NOT NULL, `package_name` TEXT NOT NULL, `rule_mode` TEXT NOT NULL DEFAULT 'BLOCKED', PRIMARY KEY(`preset_id`, `package_name`), FOREIGN KEY(`preset_id`) REFERENCES `presets`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "presetId",
+            "columnName": "preset_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ruleMode",
+            "columnName": "rule_mode",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'BLOCKED'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "preset_id",
+            "package_name"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_preset_app_rules_preset_id",
+            "unique": false,
+            "columnNames": [
+              "preset_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_preset_app_rules_preset_id` ON `${TABLE_NAME}` (`preset_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "presets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "preset_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "focus_sessions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `session_origin` TEXT NOT NULL DEFAULT 'MANUAL', `preset_id` TEXT NOT NULL, `session_title` TEXT NOT NULL, `linked_task_id` TEXT, `timer_mode` TEXT NOT NULL, `start_time` INTEGER NOT NULL, `end_time` INTEGER, `actual_start_time` INTEGER, `target_duration_minutes` INTEGER NOT NULL, `actual_duration_seconds` INTEGER NOT NULL DEFAULT 0, `breaks_taken` INTEGER NOT NULL DEFAULT 0, `breaks_total_seconds` INTEGER NOT NULL DEFAULT 0, `recurrence_rule` TEXT, `series_id` TEXT, `status` TEXT NOT NULL, `reflection_rating` TEXT, `penalty_delay_applied_seconds` INTEGER NOT NULL DEFAULT 0, `headsup_notification_armed` INTEGER NOT NULL DEFAULT 1, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`preset_id`) REFERENCES `presets`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionOrigin",
+            "columnName": "session_origin",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'MANUAL'"
+          },
+          {
+            "fieldPath": "presetId",
+            "columnName": "preset_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionTitle",
+            "columnName": "session_title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedTaskId",
+            "columnName": "linked_task_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "timerMode",
+            "columnName": "timer_mode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startTime",
+            "columnName": "start_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endTime",
+            "columnName": "end_time",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "actualStartTime",
+            "columnName": "actual_start_time",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "targetDurationMinutes",
+            "columnName": "target_duration_minutes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actualDurationSeconds",
+            "columnName": "actual_duration_seconds",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "breaksTaken",
+            "columnName": "breaks_taken",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "breaksTotalSeconds",
+            "columnName": "breaks_total_seconds",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "recurrenceRule",
+            "columnName": "recurrence_rule",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "seriesId",
+            "columnName": "series_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reflectionRating",
+            "columnName": "reflection_rating",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "penaltyDelayAppliedSeconds",
+            "columnName": "penalty_delay_applied_seconds",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "headsupNotificationArmed",
+            "columnName": "headsup_notification_armed",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_focus_sessions_preset_id",
+            "unique": false,
+            "columnNames": [
+              "preset_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_focus_sessions_preset_id` ON `${TABLE_NAME}` (`preset_id`)"
+          },
+          {
+            "name": "index_focus_sessions_start_time",
+            "unique": false,
+            "columnNames": [
+              "start_time"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_focus_sessions_start_time` ON `${TABLE_NAME}` (`start_time`)"
+          },
+          {
+            "name": "index_focus_sessions_status",
+            "unique": false,
+            "columnNames": [
+              "status"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_focus_sessions_status` ON `${TABLE_NAME}` (`status`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "presets",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "preset_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "app_limits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`package_name` TEXT NOT NULL, `app_label` TEXT NOT NULL, `daily_budget_minutes` INTEGER NOT NULL, `extra_time_passes_used` INTEGER NOT NULL DEFAULT 0, `is_enabled` INTEGER NOT NULL DEFAULT 1, `limit_type` TEXT NOT NULL DEFAULT 'INDIVIDUAL', `created_at` INTEGER NOT NULL, PRIMARY KEY(`package_name`))",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appLabel",
+            "columnName": "app_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dailyBudgetMinutes",
+            "columnName": "daily_budget_minutes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extraTimePassesUsed",
+            "columnName": "extra_time_passes_used",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "isEnabled",
+            "columnName": "is_enabled",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "limitType",
+            "columnName": "limit_type",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'INDIVIDUAL'"
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "package_name"
+          ]
+        }
+      },
+      {
+        "tableName": "streaks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `current_streak` INTEGER NOT NULL DEFAULT 0, `best_streak` INTEGER NOT NULL DEFAULT 0, `last_completed_date` TEXT NOT NULL, `relief_days_json` TEXT NOT NULL DEFAULT '[\"SUNDAY\"]', `accumulated_grace_shields` INTEGER NOT NULL DEFAULT 1, `shields_used_lifetime` INTEGER NOT NULL DEFAULT 0, `last_shield_granted_month` TEXT NOT NULL DEFAULT '2026-10', `last_shield_used_date` TEXT, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentStreak",
+            "columnName": "current_streak",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "bestStreak",
+            "columnName": "best_streak",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "lastCompletedDate",
+            "columnName": "last_completed_date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reliefDaysJson",
+            "columnName": "relief_days_json",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'[\"SUNDAY\"]'"
+          },
+          {
+            "fieldPath": "accumulatedGraceShields",
+            "columnName": "accumulated_grace_shields",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "1"
+          },
+          {
+            "fieldPath": "shieldsUsedLifetime",
+            "columnName": "shields_used_lifetime",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "lastShieldGrantedMonth",
+            "columnName": "last_shield_granted_month",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'2026-10'"
+          },
+          {
+            "fieldPath": "lastShieldUsedDate",
+            "columnName": "last_shield_used_date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "app_limit_streaks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`package_name` TEXT NOT NULL, `current_streak` INTEGER NOT NULL DEFAULT 0, `longest_streak` INTEGER NOT NULL DEFAULT 0, `last_successful_date` TEXT NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`package_name`))",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentStreak",
+            "columnName": "current_streak",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "longestStreak",
+            "columnName": "longest_streak",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
+          },
+          {
+            "fieldPath": "lastSuccessfulDate",
+            "columnName": "last_successful_date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "package_name"
+          ]
+        }
+      },
+      {
+        "tableName": "app_category_overrides",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`package_name` TEXT NOT NULL, `app_label` TEXT NOT NULL, `category` TEXT NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`package_name`))",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appLabel",
+            "columnName": "app_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "package_name"
+          ]
+        }
+      },
+      {
+        "tableName": "global_content_whitelists",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `app_type` TEXT NOT NULL, `target_identifier` TEXT NOT NULL, `display_label` TEXT NOT NULL, `created_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appType",
+            "columnName": "app_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetIdentifier",
+            "columnName": "target_identifier",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayLabel",
+            "columnName": "display_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "daily_usage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date_iso` TEXT NOT NULL, `package_name` TEXT NOT NULL, `total_time_in_foreground_ms` INTEGER NOT NULL, `last_time_used_epoch_ms` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateIso",
+            "columnName": "date_iso",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalTimeInForegroundMs",
+            "columnName": "total_time_in_foreground_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastTimeUsedEpochMs",
+            "columnName": "last_time_used_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_daily_usage_date_iso_package_name",
+            "unique": true,
+            "columnNames": [
+              "date_iso",
+              "package_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_daily_usage_date_iso_package_name` ON `${TABLE_NAME}` (`date_iso`, `package_name`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '41d6c841607b62273005446e4092d846')"
+    ]
+  }
+}
