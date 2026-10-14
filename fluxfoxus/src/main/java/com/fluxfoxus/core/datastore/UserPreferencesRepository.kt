@@ -16,6 +16,8 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "fl
  */
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
 
+    constructor(context: Context) : this(context.dataStore)
+
     companion object {
         val KEY_LAST_USED_PRESET_ID = stringPreferencesKey("last_used_preset_id")
         val KEY_SOUND_CHIME_ENABLED = booleanPreferencesKey("sound_chime_enabled")

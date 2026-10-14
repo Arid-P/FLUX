@@ -30,3 +30,16 @@ data class FluxFoxusColors(
 )
 
 val LocalFluxFoxusColors = staticCompositionLocalOf { FluxFoxusColors() }
+
+object HolstColors {
+    val Background = HolstBackground
+    val Surface = HolstSurface
+    val Border = HolstBorder
+    val AccentSage = HolstAccent
+    val PrimarySand = HolstPrimary
+    val TextPrimary = HolstTextPrimary
+    val TextMuted = HolstTextMuted
+    val MutedBlue = HolstTextMuted
+    val AlertCrimson = HolstErrorDanger
+    val WarningTerracotta = Color(0xFFE07A5F)
+}

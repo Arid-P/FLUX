@@ -48,6 +48,9 @@ interface AppLimitDao {
     @Query("SELECT * FROM app_category_overrides WHERE package_name = :packageName LIMIT 1")
     suspend fun getCategoryOverride(packageName: String): AppCategoryOverrideEntity?
 
+    @Query("SELECT * FROM app_category_overrides WHERE package_name = :packageName LIMIT 1")
+    fun getCategoryOverrideFlow(packageName: String): Flow<AppCategoryOverrideEntity?>
+
     @Query("SELECT * FROM app_category_overrides")
     fun getAllCategoryOverrides(): Flow<List<AppCategoryOverrideEntity>>
 }

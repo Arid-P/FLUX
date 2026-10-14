@@ -32,6 +32,9 @@ android {
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
+            all { testTask ->
+                testTask.maxHeapSize = "512m"
+            }
         }
     }
 
@@ -63,6 +66,7 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.compose.navigation)
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation(libs.lifecycle.runtime.compose)
