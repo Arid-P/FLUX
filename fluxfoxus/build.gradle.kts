@@ -73,8 +73,9 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     debugImplementation(libs.compose.ui.tooling)
 
-    // Glance AppWidget
+    // Glance AppWidget & WorkManager
     implementation(libs.glance.appwidget)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -91,6 +92,7 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.13")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation("androidx.work:work-testing:2.9.0")
     testImplementation(libs.turbine)
     testImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

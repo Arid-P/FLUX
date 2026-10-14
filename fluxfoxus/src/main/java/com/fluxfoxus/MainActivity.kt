@@ -16,6 +16,9 @@ class MainActivity : ComponentActivity() {
         val db = FluxFoxusDatabase.getDatabase(applicationContext)
         val userPrefs = UserPreferencesRepository(applicationContext)
 
+        // Schedule periodic midnight streak evaluation
+        com.fluxfoxus.core.work.MidnightStreakWorker.schedule(applicationContext)
+
         setContent {
             FluxFoxusTheme {
                 val navController = rememberNavController()
