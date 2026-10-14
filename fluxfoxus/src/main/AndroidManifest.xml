@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
@@ -26,6 +28,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Focus Timer Foreground Service -->
+        <service
+            android:name=".core.service.FocusTimerService"
+            android:foregroundServiceType="specialUse"
+            android:exported="false" />
+
+        <!-- Focus Enforcement Accessibility Service -->
+        <service
+            android:name=".core.service.FocusAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <!-- Inter-App Broadcast Receiver for FluxDone -->
+        <receiver
+            android:name=".core.ipc.FdIntegrationReceiver"
+            android:permission="com.fluxfoxus.permission.FOCUS_IPC"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.flux.action.FOCUS_BLOCK_SYNC" />
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

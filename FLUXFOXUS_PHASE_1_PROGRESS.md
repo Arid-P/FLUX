@@ -13,10 +13,10 @@
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Topic 1** | Holst (Холст) Design System, Mechanical Flip Clock & Stop Modal | **Code2** | ✅ Complete | 2 / 2 Passed | [`07f84e6`](https://github.com/Arid-P/FLUX/commit/07f84e6) |
 | **Topic 2** | Room SQLite Database Layer (9 Entities, 6 DAOs) & DataStore | **Code1** | ✅ Complete | 7 / 7 Passed | [`48e3720`](https://github.com/Arid-P/FLUX/commit/48e3720) |
-| **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ⏳ In Queue | 0 / 0 | Pending |
-| **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ⏳ In Queue | 0 / 0 | Pending |
+| **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ✅ Complete | 8 / 8 Passed | Pending Push |
+| **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ⏳ Next in Queue | 0 / 0 | Pending |
 | **Topic 5** | Jetpack Glance Widget & WorkManager Midnight Engine | **Code1 / Code2** | ⏳ In Queue | 0 / 0 | Pending |
-| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | 🔄 Intermediate Passed | 9 / 9 Passed | Pending final build |
+| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | 🔄 Intermediate Passed | 17 / 17 Passed | Pending final build |
 
 ---
 
@@ -89,24 +89,29 @@
 
 ### ⚙️ Topic 3: Android Native System Services & Inter-App IPC
 - **Spec:** [`FF_TRD_KOTLIN.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_TRD_KOTLIN.md) Section 4 & 5, [`IPC_SPEC_FD_FF_NATIVE.md`](file:///workspaces/FLUX/documentation/01_INTEGRATION_SYNC/IPC_SPEC_FD_FF_NATIVE.md)
-- **Status:** ⏳ **NEXT IN QUEUE**
+- **Status:** **100% COMPLETE**
 
-- [ ] **`FocusTimerService` (Foreground Service):**
+- [x] **`FocusTimerService` ([`FocusTimerService.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/service/FocusTimerService.kt)):**
   - Countdown ticker with `SupervisorJob()` coroutine scope.
-  - Ongoing Android Notification with `HH:MM` remaining and action intents (`Take Break`, `Pause`).
+  - Ongoing Android Notification with `HH:MM` remaining and action intents (`Take Break`, `Pause`, `Resume`).
   - Partial wake-lock acquisition (`PowerManager.PARTIAL_WAKE_LOCK`).
   - Observable `StateFlow<TimerState>` for Compose UI layer.
-- [ ] **`FocusAccessibilityService` (App Interception):**
+  - Emergency 5-minute pause timeout auto-termination.
+- [x] **`FocusAccessibilityService` ([`FocusAccessibilityService.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/service/FocusAccessibilityService.kt)):**
   - `TYPE_WINDOW_STATE_CHANGED` interception.
-  - Blocklist resolution against active preset.
-  - Auto-redirection to Home launcher or intervention overlay.
-  - Multi-state inspection: YouTube channel handle & Web browser URL domain check against `global_content_whitelists`.
-- [ ] **`FdIntegrationReceiver` (IPC Gateway):**
+  - Blocklist resolution against active preset app rules.
+  - Auto-redirection to Home launcher on blocked packages.
+  - Multi-state inspection: YouTube channel handle/title & Web browser URL domain check against `global_content_whitelists`.
+  - Configured via [`accessibility_service_config.xml`](file:///workspaces/FLUX/fluxfoxus/src/main/res/xml/accessibility_service_config.xml).
+- [x] **`FdIntegrationReceiver` ([`FdIntegrationReceiver.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/ipc/FdIntegrationReceiver.kt)):**
   - Receiver for `com.flux.action.FOCUS_BLOCK_SYNC`.
   - Signature-level protection (`com.fluxfoxus.permission.FOCUS_IPC`).
   - `goAsync()` persistence into `focus_sessions` without UI thread blocking.
-- [ ] **System Services Unit / Integration Tests:**
-  - Service lifecycle and IPC payload validation tests.
+  - Handles `CREATE`, `UPDATE`, `DELETE`, and JSON payload fallback.
+- [x] **System Services Unit / Integration Tests:**
+  - [`FdIntegrationReceiverTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/ipc/FdIntegrationReceiverTest.kt): 4 / 4 passed (Create, Update, Delete, JSON payload).
+  - [`FocusAccessibilityServiceTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/service/FocusAccessibilityServiceTest.kt): 3 / 3 passed (YouTube handle/label match, Browser domain match, System package exemptions).
+  - [`FocusTimerServiceTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/service/FocusTimerServiceTest.kt): 1 / 1 passed (StateFlow emissions and transitions).
 
 ---
 

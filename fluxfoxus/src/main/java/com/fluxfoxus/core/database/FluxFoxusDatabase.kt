@@ -64,5 +64,8 @@ abstract class FluxFoxusDatabase : RoomDatabase() {
                 instance
             }
         }
+        fun setDatabaseForTesting(database: FluxFoxusDatabase?) {
+            INSTANCE = database
+        }
     }
 }
