@@ -1,0 +1,159 @@
+# 🦊 FluxFoxus (FF) — Phase 1 Master Progress Tracker
+
+> **Document Status:** Live Implementation Tracker  
+> **Target Specification:** [`documentation/03_FLUXFOXUS_FF/Phase 1/GMP_FF_BUILD.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase%201/GMP_FF_BUILD.md)  
+> **Architecture Split:** Code1 (Storage, Native Services, Repositories) & Code2 (Compose UI, Holst Design System)  
+> **Last Updated:** 2026-10-14
+
+---
+
+## 📊 Phase 1 Executive Summary
+
+| Topic ID | Module Description | Primary Agent | Status | Tests | Git Commit |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Topic 1** | Holst (Холст) Design System, Mechanical Flip Clock & Stop Modal | **Code2** | ✅ Complete | 2 / 2 Passed | [`07f84e6`](https://github.com/Arid-P/FLUX/commit/07f84e6) |
+| **Topic 2** | Room SQLite Database Layer (9 Entities, 6 DAOs) & DataStore | **Code1** | ✅ Complete | 7 / 7 Passed | [`48e3720`](https://github.com/Arid-P/FLUX/commit/48e3720) |
+| **Topic 3** | Android Native System Services & Inter-App IPC Gateway | **Code1** | ⏳ In Queue | 0 / 0 | Pending |
+| **Topic 4** | Jetpack Compose Feature Screens & ViewModels | **Code2 / Code1** | ⏳ In Queue | 0 / 0 | Pending |
+| **Topic 5** | Jetpack Glance Widget & WorkManager Midnight Engine | **Code1 / Code2** | ⏳ In Queue | 0 / 0 | Pending |
+| **Topic 6** | Phase 1 Full Verification & Native APK Delivery | **Orchestrator** | 🔄 Intermediate Passed | 9 / 9 Passed | Pending final build |
+
+---
+
+## 🔍 Detailed Deliverables Breakdown
+
+### 🎨 Topic 1: Holst (Холст) Design System & Flip Clock
+- **Spec:** [`FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase%201/FF_P1_FLIP_CLOCK_AND_SESSION_SPEC.md), [`FLUX_DESIGN_TOKENS.md`](file:///workspaces/FLUX/documentation/00_CORE/FLUX_DESIGN_TOKENS.md)
+- **Status:** **100% COMPLETE**
+
+- [x] **Color Tokens ([`Color.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/theme/Color.kt)):**
+  - `#0D1B2A` (`HolstBackground`) — Abyssal Navy canvas
+  - `#1B263B` (`HolstSurface`) — Oxford Slate card & flap surface
+  - `#415A77` (`HolstBorder`) — Muted Steel Blue border
+  - `#778D7A` (`HolstAccent`) — Muted Sage Green break indicator
+  - `#D4C4A8` (`HolstPrimary`) — Warm Sand Khaki primary action & split line
+  - `#F4F1DE` (`HolstTextPrimary`) — Eggshell Cream high contrast text
+  - `#8E9CAE` (`HolstTextMuted`) — Slate Blue-Grey secondary labels
+  - `#DC2626` (`HolstErrorDanger`) — Crimson alert
+- [x] **Typography Tokens ([`Type.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/theme/Type.kt)):**
+  - Tabular monospace figures (`FontFeatureSettings("tnum")`) for jitter-free ticking.
+- [x] **Theme Wrapper ([`Theme.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/theme/Theme.kt)):**
+  - `FluxFoxusTheme` and `FluxTheme.colors` accessor.
+- [x] **Mechanical Flip Clock Composable ([`FlipClock.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/component/FlipClock.kt)):**
+  - Vertical split flap cards for Hours (`HH`) and Minutes (`MM`).
+  - 1.5dp Warm Sand Khaki horizontal hairline divider.
+  - 3D perspective flip physics (`rotationX`, `cameraDistance = 12f * density`, `TransformOrigin`).
+  - Upper and lower static cards with clipping and dynamic shadow gradient.
+  - Mode transition (Focus Cream `#F4F1DE` → Break Sage Green `#778D7A`).
+- [x] **Asymmetric Stop-Focusing Friction Modal ([`StopFocusingModal.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/designsystem/component/StopFocusingModal.kt)):**
+  - Dynamic delay: $\text{clamp}(15 + \lfloor\text{distractionMinutes} / 15\rfloor, 15, 25)$ seconds.
+  - Circular countdown ring in `#D4C4A8`.
+  - `[ Keep Going ]` always active and unlocked in `#778D7A`.
+  - `[ Quit Session ]` strictly locked with 30% alpha until delay expires, unlocking with `#DC2626` Crimson border.
+- [x] **Compose UI Tests ([`FlipClockAndModalTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/designsystem/component/FlipClockAndModalTest.kt)):**
+  - Split-flap digit rendering verification (`assertIsDisplayed`).
+  - Asymmetric button interaction verification (`performClick`).
+
+---
+
+### 🗄️ Topic 2: Room SQLite Database Layer & DataStore
+- **Spec:** [`FF_TRD_KOTLIN.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase%201/FF_TRD_KOTLIN.md) Section 3
+- **Status:** **100% COMPLETE**
+
+- [x] **Entities (TRD v2.0 Schema Compliant):**
+  - `presets` ([`PresetEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/PresetEntity.kt))
+  - `preset_app_rules` ([`PresetAppRuleEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/PresetAppRuleEntity.kt)) with cascade delete on `preset_id`
+  - `focus_sessions` ([`FocusSessionEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/FocusSessionEntity.kt)) with FK cascade to `presets`
+  - `app_limits` ([`AppLimitEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/AppLimitEntity.kt))
+  - `streaks` ([`StreakEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/StreakEntity.kt)) single-row record (`id = 1`)
+  - `app_limit_streaks` ([`AppLimitStreakEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/AppLimitStreakEntity.kt))
+  - `app_category_overrides` ([`AppCategoryOverrideEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/AppCategoryOverrideEntity.kt))
+  - `global_content_whitelists` ([`GlobalContentWhitelistEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/GlobalContentWhitelistEntity.kt))
+  - `daily_usage` ([`DailyUsageEntity.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/entity/DailyUsageEntity.kt))
+- [x] **Reactive Kotlin Flow DAOs:**
+  - [`PresetDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/PresetDao.kt): CRUD, preset app rules, Flow streams.
+  - [`FocusSessionDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/FocusSessionDao.kt): Active session query, date range filters, completed session counts.
+  - [`AppLimitDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/AppLimitDao.kt): Limits, limit streaks, category overrides.
+  - [`StreakDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/StreakDao.kt): Single-row streak query and updates.
+  - [`WhitelistDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/WhitelistDao.kt): Type queries, whitelist checks.
+  - [`DailyUsageDao.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/dao/DailyUsageDao.kt): Foreground time cache queries.
+- [x] **Database Definition ([`FluxFoxusDatabase.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/database/FluxFoxusDatabase.kt)):**
+  - Room 2.7+ with bundled SQLite, version 1, schema JSON exported to `fluxfoxus/schemas/`.
+- [x] **User Preferences ([`UserPreferencesRepository.kt`](file:///workspaces/FLUX/fluxfoxus/src/main/java/com/fluxfoxus/core/datastore/UserPreferencesRepository.kt)):**
+  - Jetpack DataStore backed repository managing `lastUsedPresetId`, sound alert toggles, haptics, pause emergency duration, and onboarding status.
+- [x] **Unit & In-Memory Tests:**
+  - [`FluxFoxusDatabaseTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/database/FluxFoxusDatabaseTest.kt): 6 comprehensive test suites covering cascading deletions, Flow emissions, active session retrieval, streak constraints, and whitelisting.
+  - [`UserPreferencesRepositoryTest.kt`](file:///workspaces/FLUX/fluxfoxus/src/test/java/com/fluxfoxus/core/datastore/UserPreferencesRepositoryTest.kt): DataStore read/write/default verification.
+
+---
+
+### ⚙️ Topic 3: Android Native System Services & Inter-App IPC
+- **Spec:** [`FF_TRD_KOTLIN.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_TRD_KOTLIN.md) Section 4 & 5, [`IPC_SPEC_FD_FF_NATIVE.md`](file:///workspaces/FLUX/documentation/01_INTEGRATION_SYNC/IPC_SPEC_FD_FF_NATIVE.md)
+- **Status:** ⏳ **NEXT IN QUEUE**
+
+- [ ] **`FocusTimerService` (Foreground Service):**
+  - Countdown ticker with `SupervisorJob()` coroutine scope.
+  - Ongoing Android Notification with `HH:MM` remaining and action intents (`Take Break`, `Pause`).
+  - Partial wake-lock acquisition (`PowerManager.PARTIAL_WAKE_LOCK`).
+  - Observable `StateFlow<TimerState>` for Compose UI layer.
+- [ ] **`FocusAccessibilityService` (App Interception):**
+  - `TYPE_WINDOW_STATE_CHANGED` interception.
+  - Blocklist resolution against active preset.
+  - Auto-redirection to Home launcher or intervention overlay.
+  - Multi-state inspection: YouTube channel handle & Web browser URL domain check against `global_content_whitelists`.
+- [ ] **`FdIntegrationReceiver` (IPC Gateway):**
+  - Receiver for `com.flux.action.FOCUS_BLOCK_SYNC`.
+  - Signature-level protection (`com.fluxfoxus.permission.FOCUS_IPC`).
+  - `goAsync()` persistence into `focus_sessions` without UI thread blocking.
+- [ ] **System Services Unit / Integration Tests:**
+  - Service lifecycle and IPC payload validation tests.
+
+---
+
+### 📱 Topic 4: Core Jetpack Compose UI Screens & ViewModels
+- **Spec:** [`FF_UI_SPECIFICATIONS.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_UI_SPECIFICATIONS.md), individual feature specs
+- **Status:** ⏳ **PENDING TOPIC 3**
+
+- [ ] **Home Dashboard (`Tab.Home`) & Streak Cockpit:**
+  - Active flame streak pill (`🔥 18` / `💤 0`).
+  - 24-hour smooth Bézier Momentum area chart.
+  - Session quick launcher card & weekly average pills.
+- [ ] **Active Focus Screen (`Tab.Focus`):**
+  - Full-screen mechanical `FlipClock` integration.
+  - Two-row bottom controls (`Take Break` 75% + `Pause` 25%, `Stop Focusing` 100%).
+  - Seamless break countdown window with Muted Sage Green shift.
+- [ ] **Presets & Planner Screens (`Tab.Planner`, `/presets/create`, `/presets/edit`):**
+  - 7-day horizontal strip, scheduled session cards, `+ Schedule Session` FAB.
+  - Full Gboard/Android EmojiPicker (`androidx.emoji2`).
+  - App selector & multi-state content whitelist hub.
+- [ ] **Limits & Stats Screens (`Tab.Limits`, `Tab.Stats`, `AppDetailScreen`):**
+  - App limit budget configuration & 3-second hold friction disable.
+  - 5/10/20/40m intervention overlay with `WindowManager` (`TYPE_APPLICATION_OVERLAY`).
+  - Daily & weekly trends, Focus Ratio card, 7-day stacked category bars.
+- [ ] **Permissions Onboarding Wizard (`/onboarding/wizard`):**
+  - Single-page Focus Shields interactive checklist (`UsageStats`, `Overlay`, `Accessibility`, `Battery`).
+  - OEM background cleaner guidance (OneUI, MIUI/HyperOS, OxygenOS).
+
+---
+
+### 🧩 Topic 5: Jetpack Glance Widget & WorkManager Midnight Engine
+- **Spec:** [`FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_P1_USAGE_STATS_AND_WIDGET_SPEC.md), [`FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md`](file:///workspaces/FLUX/documentation/03_FLUXFOXUS_FF/Phase 1/FF_P1_HOME_DASHBOARD_AND_STREAKS_SPEC.md)
+- **Status:** ⏳ **PENDING TOPIC 4**
+
+- [ ] **Jetpack Glance Widget:**
+  - 4-segment screen time donut ring home screen widget (`glance-appwidget`).
+  - Real-time refresh from Room SQLite cache / Central Data Hub.
+- [ ] **WorkManager Midnight Streak Evaluator:**
+  - Evaluates daily goal achievement at midnight.
+  - Sunday relief day protection (rest days never break streak).
+  - Updates `streaks` record atomically.
+
+---
+
+### 🛡️ Quality Gate & Verification Status
+
+| Gate | Target Command | Result | Details |
+| :--- | :--- | :---: | :--- |
+| **Unit & DAO Tests** | `./gradlew :fluxfoxus:testDebugUnitTest` | **100% PASS** | 9 tests passed (7 Database/DataStore + 2 Compose UI) |
+| **APK Build Assembly** | `./gradlew :fluxfoxus:assembleDebug` | **SUCCESS** | Output: [`fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk`](file:///workspaces/FLUX/fluxfoxus/build/outputs/apk/debug/fluxfoxus-debug.apk) (32 MB) |
+| **Git Hygiene** | `git status` / `git push` | **IN SYNC** | Clean tree, pushed to `origin/main` across 4 atomic batches |
